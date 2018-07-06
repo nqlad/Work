@@ -1,21 +1,33 @@
 <?php
+ini_set("display_errors",1);
+error_reporting(E_ALL);
 
- try {
-     $host = 'localhost';
-     $port = 5432;
-     $dbname = 'postgres';
-     $user = 'postgres';
-     $pass = 'yfNL4W';
-     $DB = new PDO("pgsql:host=$host;port=$port;dbname=$dbname", $user, $pass);
-     foreach ($DB->query('select * from Notes;') as $row){
-         print_r($row);
-     }
+header("Content-Type: application/json; charset=UTF-8");
 
- } catch(PDOException $e) {
-        echo 'Error: '.$e->getMessage();
- }
- echo "test";
+include_once 'config/Database.php';
+include_once  'object/Notes.php';
 
- $url = (isset($_GET['q'])) ? $_GET['q']:'';
- $url = rtrim($url,'/');
- $urls = explode('/',$url);
+$url= $_SERVER['REQUEST_URI'];
+$url = ltrim($url, '/');
+$urls = explode('/', $url);
+
+$database = new Database();
+$db = $database->getConnection();
+
+$note = new Notes($db);
+
+$notes = $note->readAll();
+$countNotes = $notes->rowCount();
+
+if($countNotes <= 0){
+
+    echo json_encode(array("message"=>"No notes found."));
+}
+if ($urls[1] == null){
+
+    $notesArr = array();
+    $notesArr = $notes->fetchAll(PDO::FETCH_KEY_PAIR);
+    echo json_encode($notesArr);
+}
+
+

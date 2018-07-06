@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: heify
- * Date: 05.07.18
- * Time: 16:46
- */
 
 class Database
 {

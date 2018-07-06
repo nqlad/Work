@@ -1,17 +1,9 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: heify
- * Date: 05.07.18
- * Time: 17:10
- */
-
 class Notes
 {
     /** @var PDO */
     private $connect;
 
-    /** @var int */
     private $id;
 
     private $note;
@@ -25,18 +17,15 @@ class Notes
     /**
      * @return PDOStatement
      */
-    function read()
+    function readAll()
     {
-        $query = "select * from Notes;";
+        $query = "select id, note from Notes;";
         //$executeQuery = $this->connect->prepare($query);
         //$executeQuery->bindParam('id', 1);
         //$executeQuery->execute();
 
         $stmt = $this->connect->prepare($query);
-        $stmt->execute([1]);
-
-        var_dump($stmt->fetchAll(PDO::FETCH_ASSOC));die();
-
-        //return $executeQuery;
+        $stmt->execute();
+        return $stmt;
     }
 }

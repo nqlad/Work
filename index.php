@@ -14,6 +14,7 @@
  } catch(PDOException $e) {
         echo 'Error: '.$e->getMessage();
  }
+ echo "test";
 
  $url = (isset($_GET['q'])) ? $_GET['q']:'';
  $url = rtrim($url,'/');

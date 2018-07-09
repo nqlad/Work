@@ -25,17 +25,16 @@ class Notes
     function readAll()
     {
         $query = "select id, note from Notes;";
-        //$executeQuery = $this->connect->prepare($query);
-        //$executeQuery->bindParam('id', 1);
-        //$executeQuery->execute();
-
         $stmt = $this->connect->prepare($query);
         $stmt->execute();
         return $stmt;
     }
 
-    function read()
+    function readById($id)
     {
-
+        $query = "select id, note from Notes where id = ?";
+        $stmt = $this->connect->prepare($query);
+        $stmt->execute([$id]);
+        return $stmt;
     }
 }

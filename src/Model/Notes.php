@@ -1,4 +1,9 @@
 <?php
+
+namespace App\Model;
+
+use PDO, PDOStatement;
+
 class Notes
 {
     /** @var PDO */
@@ -27,5 +32,10 @@ class Notes
         $stmt = $this->connect->prepare($query);
         $stmt->execute();
         return $stmt;
+    }
+
+    function read()
+    {
+
     }
 }

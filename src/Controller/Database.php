@@ -1,5 +1,9 @@
 <?php
 
+namespace App\Controller;
+
+use PDO, PDOException;
+
 class Database
 {
     private $host = 'localhost';
@@ -16,12 +20,13 @@ class Database
     {
         $this->connect = null;
 
-        try{
-            $this->connect = new PDO("pgsql:host=". $this->host . ";port=". $this->port . ";dbname=". $this->dbname, $this->user, $this->pass);
-        }catch (PDOException $e){
+        try {
+            $this->connect = new PDO("pgsql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->dbname, $this->user, $this->pass);
+        } catch (PDOException $e) {
             echo "Connection error: " . $e->getMessage();
         }
 
         return $this->connect;
     }
 }
+

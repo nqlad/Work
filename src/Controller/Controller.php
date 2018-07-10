@@ -19,7 +19,7 @@ class Controller
         $url    = ltrim($url, '/');
         $urls   = explode('/', $url);
 
-        $database   = new Database();
+        $database   = new \App\Model\Database();
         $db         = $database->getConnection();
 
         $note = new \App\Model\Notes($db);

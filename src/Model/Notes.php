@@ -18,19 +18,6 @@ class Notes
         $this->connect = $db;
     }
 
-    function read(){
-
-    }
-
-    function update(){
-
-    }
-
-    function delete(){
-
-    }
-
-
     /**
      * @return PDOStatement
      */

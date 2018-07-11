@@ -3,11 +3,9 @@
 namespace App\Http;
 
 
+use Psr\Http\Message\RequestInterface;
+
 interface RequestFactoryInterface
 {
-    public function getMethod();
-
-    public function getUri();
-
-    public function createRequest();
+    public function createRequest():RequestInterface;
 }

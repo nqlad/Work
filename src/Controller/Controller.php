@@ -6,56 +6,30 @@ use PDO;
 
 class Controller
 {
-    private $method;
+//    private $method;
+//
+//    public function __construct($mtd)
+//    {
+//        $this->method = $mtd;
+//    }
 
-    public function __construct($mtd)
+    /**
+     * @param $notes
+     * @param $urls
+     * @return array|null
+     */
+    public function requestGet($notes, $urls): array
     {
-        $this->method = $mtd;
-    }
-
-    function start()
-    {
-        $url    = $_SERVER['REQUEST_URI'];
-        $url    = ltrim($url, '/');
-        $urls   = explode('/', $url);
-
-        $database   = new \App\Model\Database();
-        $db         = $database->getConnection();
-
-        $note = new \App\Model\Notes($db);
-
-        $notes      = $note->readAll();
-
-        if ($this->method == 'GET'){
-            $this->requestGet($notes,$urls);
-        }
-        if ($this->method == 'POST'){
-            echo 'gdfgd';
-        }
-    }
-
-    function requestGet($notes,$urls){
-
+        //"message" => "No notes found."
         $countNotes = $notes->rowCount();
-
         if ($countNotes <= 0) {
-            echo json_encode(array("message" => "No notes found."));
-            return;
+            $response = [];
         }
-
+//todo разделить
         if ($urls[1] == null) {
-            $notesArr = array();
-            $notesArr = $notes->fetchAll(PDO::FETCH_KEY_PAIR);
-
-            echo json_encode($notesArr);
-        } else {
-            $noteId = $urls[2];
-            echo json_encode(array(
-                'id'=>$noteId,
-
-            ));
+            $response = $notes->fetchAll(PDO::FETCH_KEY_PAIR);
         }
 
-
+        return $response;
     }
 }

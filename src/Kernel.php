@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: rdavletshin
- * Date: 10.07.18
- * Time: 12:29
- */
 
 namespace App;
 
@@ -37,7 +31,8 @@ class Kernel
     public function run(): void
     {
         $request = $this->requestFactory->createRequest();
-        $response = $this->requestHandler->handlerRequest($request);
-        $this->responseSender->sendResponse($response);
+        var_dump($request);
+//        $response = $this->requestHandler->handlerRequest($request);
+//        $this->responseSender->sendResponse($response);
     }
 }

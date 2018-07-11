@@ -3,7 +3,9 @@
 namespace App\Http;
 
 
+use Psr\Http\Message\ResponseInterface;
+
 interface ResponseSenderInterface
 {
-    public function sendResponse($response): void;
+    public function sendResponse(ResponseInterface $response): void;
 }

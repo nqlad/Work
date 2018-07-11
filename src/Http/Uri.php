@@ -244,9 +244,11 @@ class Uri implements UriInterface
      */
     public function setAuthority($authority): void
     {
+        //todo
         $userInfo = $this->getUserInfo();
         $host = $this->getHost();
         $port = $this->getPort();
         $this->authority = $authority;
+
     }
 }

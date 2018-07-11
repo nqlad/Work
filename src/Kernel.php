@@ -2,37 +2,33 @@
 
 namespace App;
 
-
-use App\Http\RequestFactory;
-use App\Http\RequestHandler;
-use App\Http\ResponseSender;
-
+use App\Http\RequestFactoryInterface;
+use App\Http\RequestHandlerInterface;
+use App\Http\ResponseSenderInterface;
 
 class Kernel
 {
-    /** @var RequestFactory */
+    /** @var RequestFactoryInterface*/
     private $requestFactory;
-    /** @var RequestHandler */
+    /** @var RequestHandlerInterface */
     private $requestHandler;
-    /** @var ResponseSender */
+    /** @var ResponseSenderInterface */
     private $responseSender;
 
-    public function __construct()
-    {
-        $requestFactory = new RequestFactory();
-        $requestHandler = new RequestHandler();
-        $responseSender = new ResponseSender();
-
+    public function __construct(
+        RequestFactoryInterface $requestFactory,
+        RequestHandlerInterface $requestHandler,
+        ResponseSenderInterface $responseSender
+    ) {
         $this->requestFactory = $requestFactory;
         $this->requestHandler = $requestHandler;
         $this->responseSender = $responseSender;
     }
-
     public function run(): void
     {
         $request = $this->requestFactory->createRequest();
         var_dump($request);
-//        $response = $this->requestHandler->handlerRequest($request);
+//        $response = $this->requestHandler->handleRequest($request);
 //        $this->responseSender->sendResponse($response);
     }
 }

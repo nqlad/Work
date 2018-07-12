@@ -86,7 +86,7 @@ class StringStream implements StreamInterface
 
     public function read($length)
     {
-        return $this->contents;
+        return substr($this->contents,0,$length);
     }
 
     public function getContents()

@@ -3,7 +3,7 @@
 namespace App\Http;
 
 
-use App\Model\Request;
+use App\Http\Request;
 use Psr\Http\Message\RequestInterface;
 
 class RequestFactory implements RequestFactoryInterface
@@ -11,6 +11,8 @@ class RequestFactory implements RequestFactoryInterface
 
     public function createRequest(): RequestInterface
     {
-        // TODO: Implement createRequest() method.
+        $method = $server;
+        $request = new Request((met));
+        return $request;
     }
 }

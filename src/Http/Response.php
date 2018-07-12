@@ -37,6 +37,4 @@ class Response
     {
         return $this->version;
     }
-
-
 }

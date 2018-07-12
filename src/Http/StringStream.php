@@ -96,6 +96,6 @@ class StringStream implements StreamInterface
 
     public function getMetadata($key = null)
     {
-        // TODO: Implement getMetadata() method.
+        throw new \DomainException('Not implemented');
     }
 }

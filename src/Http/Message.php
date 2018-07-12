@@ -28,6 +28,20 @@ class Message implements MessageInterface
         $this->protocolVersion = $protocolVersion;
         $this->headers = $headers;
         $this->body = $body;
+
+        foreach ($headers as $name => $values) {
+            if (!is_string($name)) {
+                throw new \InvalidArgumentException('Name of header MUST be string!');
+            }
+            if (!is_array($values)) {
+                throw new \InvalidArgumentException('Values of header MUST be array!');
+            }
+            foreach ($values as $value) {
+                if (!is_string($value)) {
+                    throw new \InvalidArgumentException('Each value of header MUST be string!');
+                }
+            }
+        }
     }
 
 
@@ -46,63 +60,78 @@ class Message implements MessageInterface
 
     public function getHeaders()
     {
-        $result=[];
-        foreach ($this->headers as $header){
-            $headers = explode(':',$header);
-            $name = $headers[0];
-            $values = explode(',',ltrim($headers[1]));
-            $result += [$name => $values];
-        }
-        return $result;
+        return $this->headers;
     }
 
     public function hasHeader($name): bool
     {
-        $headers=[];
-        foreach ($this->getHeaders() as $nameHeader => $values) {
-                     $header =  $nameHeader . ": " . implode(",", $values);
-                     array_push($headers,$header);
-        }
-
-        if (in_array($name,$headers)){
-            return true;
-        }else {
-            return false;
-        }
+        return array_key_exists($name, $this->headers);
     }
 
     public function getHeader($name)
     {
-        $header=[];
+        $header = [];
+
         foreach ($this->getHeaders() as $nameHeader => $values) {
-            if ($nameHeader === $name){
+            if ($nameHeader === $name) {
                 $header = $values;
             }
         }
+
         return $header;
     }
 
 
     public function getHeaderLine($name)
     {
-        return implode(',',$this->getHeader($name));
+        if (!$this->hasHeader($name)) {
+            $line = '';
+        } else {
+            $line = implode(', ', $this->getHeader($name));
+        }
+
+        return $line;
     }
 
 
     public function withHeader($name, $value)
     {
-  //todo
+        $message = clone $this;
+        $headers = $this->getHeaders();
+
+        if (is_string($value)) {
+            foreach ($headers as $nameHeader => $values) {
+                if ($nameHeader === $name) {
+                    unset($headers[$nameHeader]);
+                    $headers += [$nameHeader => [$value]];
+                }
+            }
+        } elseif (is_array($value)) {
+            foreach ($headers as $nameHeader => $values) {
+                if ($nameHeader === $name) {
+                    unset($headers[$nameHeader]);
+                    $headers += [$nameHeader => $value];
+                }
+            }
+        }
+
+        $this->setHeaders($headers);
+
+        return $message;
     }
 
     public function withAddedHeader($name, $value)
     {
         $message = clone $this;
-        $values = $value;
-        if (gettype($value) == "string"){
-            $values = [$value];
+        $headers = $this->getHeaders();
+
+        if (is_string($value)) {
+            $headers += [$name => [$value]];
+        } elseif (is_array($value)) {
+            $headers += [$name => $value];
         }
-        $header = $name . ": " . implode(",", $values);
-        array_push($this->headers,$header);
+
+        $this->setHeaders($headers);
 
         return $message;
     }
@@ -110,17 +139,15 @@ class Message implements MessageInterface
     public function withoutHeader($name)
     {
         $message = clone $this;
-        $header = '';
-        foreach ($this->getHeaders() as $nameHeader => $values) {
-            if($nameHeader == $name){
-                $header =  $nameHeader . ": " . implode(",", $values);
+        $headers = $this->getHeaders();
+
+        foreach ($headers as $nameHeader => $values) {
+            if ($nameHeader === $name) {
+                unset($headers[$nameHeader]);
             }
         }
-        for ($i = 0; $i < count($this->headers); $i++){
-            if($this->headers[$i] == $header){
-                unset($this->headers[$i]);
-            }
-        }
+
+        $this->setHeaders($headers);
 
         return $message;
     }
@@ -154,4 +181,13 @@ class Message implements MessageInterface
         $this->body = $body;
     }
 
+    /**
+     * @param \string[][] $headers
+     */
+    public function setHeaders(array $headers): void
+    {
+        $this->headers = $headers;
+    }
+
 }
+

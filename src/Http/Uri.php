@@ -35,7 +35,8 @@ class Uri implements UriInterface
         $this->setAuthority($url);
         $this->setUserInfo($url);
         $this->host = parse_url($url, PHP_URL_HOST);
-        $this->port = (int)parse_url($url, PHP_URL_PORT) == 0 ? null : (int)parse_url($url, PHP_URL_PORT);
+        $port = (int) parse_url($url, PHP_URL_PORT);
+        $this->port = $port === 0 ? null : $port;
         $this->path = parse_url($url, PHP_URL_PATH);
         $this->query = parse_url($url, PHP_URL_QUERY);
         $this->fragment = parse_url($url, PHP_URL_FRAGMENT);
@@ -120,9 +121,11 @@ class Uri implements UriInterface
         if ($this->userInfo !== '') {
             $authority = $this->userInfo . '@' . $authority;
         }
+
         if ($this->port !== null) {
             $authority .= ':' . $this->port;
         }
+
         return $authority;
     }
 

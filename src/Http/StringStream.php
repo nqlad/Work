@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: rdavletshin
- * Date: 11.07.18
- * Time: 15:11
- */
 
 namespace App\Http;
 
@@ -99,3 +93,4 @@ class StringStream implements StreamInterface
         throw new \DomainException('Not implemented');
     }
 }
+

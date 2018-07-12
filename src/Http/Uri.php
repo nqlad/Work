@@ -25,13 +25,16 @@ class Uri implements UriInterface
 
     public function __construct(string $url)
     {
-        $this->scheme = parse_url($url, PHP_URL_SCHEME);
-        $this->host = parse_url($url, PHP_URL_HOST);
-        $port = (int) parse_url($url, PHP_URL_PORT);
-        $this->port = $port === 0 ? null : $port;
-        $this->path = parse_url($url, PHP_URL_PATH);
-        $this->query = parse_url($url, PHP_URL_QUERY);
+        $this->scheme   = parse_url($url, PHP_URL_SCHEME);
+        $this->host     = parse_url($url, PHP_URL_HOST);
+
+        $port           = (int) parse_url($url, PHP_URL_PORT);
+        $this->port     = $port === 0 ? null : $port;
+
+        $this->path     = parse_url($url, PHP_URL_PATH);
+        $this->query    = parse_url($url, PHP_URL_QUERY);
         $this->fragment = parse_url($url, PHP_URL_FRAGMENT);
+
         $this->setUserInfo($url);
         $this->setAuthority($url);
     }
@@ -98,7 +101,7 @@ class Uri implements UriInterface
 
     public function withUserInfo($user, $password = null)
     {
-        $uri = clone $this;
+        $uri            = clone $this;
         $this->userInfo = $user ? $user . ($password == null ? '' : ':' . $password) : '';
 
         return $uri;
@@ -154,15 +157,6 @@ class Uri implements UriInterface
         return $this->fragment;
     }
 
-    /**
-     * @param mixed $pass
-     */
-    public function setPass($pass): void
-    {
-        $this->pass = $pass;
-    }
-
-
     public function withPort($port)
     {
         $uri = clone $this;
@@ -200,7 +194,19 @@ class Uri implements UriInterface
      */
     public function __toString()
     {
-        // TODO: Implement __toString() method.
+        $scheme     = $this->getScheme();
+        $authority  = $this->getAuthority();
+        $path       = $this->getPath();
+        $query      = $this->getQuery();
+        $fragment   = $this->getFragment();
+
+        $uri  = $scheme ? $scheme . ':' : '';
+        $uri .= $authority ? '//' . $authority : '';
+        $uri .= $path ? $path : '';
+        $uri .= $query ? '?' . $query : '';
+        $uri .= $fragment ? '#' . $fragment : '';
+
+        return $uri;
     }
 
     /**
@@ -240,10 +246,11 @@ class Uri implements UriInterface
      */
     public function setAuthority($authority): void
     {
-        $userInfo = $this->getUserInfo();
-        $host = $this->getHost();
-        $port = $this->getPort();
-        $this->authority = ($userInfo ? $userInfo . '@' : '') . $host . ($port === null ? '' : ':' . $port);
+        $userInfo   = $this->getUserInfo();
+        $host       = $this->getHost();
+        $port       = $this->getPort();
 
+        $this->authority = ($userInfo ? $userInfo . '@' : '') . $host . ($port === null ? '' : ':' . $port);
     }
 }
+

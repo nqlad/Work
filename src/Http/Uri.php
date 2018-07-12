@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: rdavletshin
- * Date: 11.07.18
- * Time: 15:14
- */
 
 namespace App\Http;
 
@@ -32,14 +26,14 @@ class Uri implements UriInterface
     public function __construct(string $url)
     {
         $this->scheme = parse_url($url, PHP_URL_SCHEME);
-        $this->setAuthority($url);
-        $this->setUserInfo($url);
         $this->host = parse_url($url, PHP_URL_HOST);
         $port = (int) parse_url($url, PHP_URL_PORT);
         $this->port = $port === 0 ? null : $port;
         $this->path = parse_url($url, PHP_URL_PATH);
         $this->query = parse_url($url, PHP_URL_QUERY);
         $this->fragment = parse_url($url, PHP_URL_FRAGMENT);
+        $this->setUserInfo($url);
+        $this->setAuthority($url);
     }
 
     /**
@@ -105,8 +99,7 @@ class Uri implements UriInterface
     public function withUserInfo($user, $password = null)
     {
         $uri = clone $this;
-        $uri->setUserInfo($user);
-        $uri->setPass($password);
+        $this->userInfo = $user ? $user . ($password == null ? '' : ':' . $password) : '';
 
         return $uri;
     }
@@ -247,11 +240,10 @@ class Uri implements UriInterface
      */
     public function setAuthority($authority): void
     {
-        //todo
         $userInfo = $this->getUserInfo();
         $host = $this->getHost();
         $port = $this->getPort();
-        $this->authority = $authority;
+        $this->authority = ($userInfo ? $userInfo . '@' : '') . $host . ($port === null ? '' : ':' . $port);
 
     }
 }

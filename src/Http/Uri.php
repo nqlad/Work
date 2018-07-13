@@ -126,11 +126,39 @@ class Uri implements UriInterface
     }
 
     /**
+     * @param mixed $authority
+     */
+    public function setAuthority($authority): void
+    {
+        $userInfo   = $this->getUserInfo();
+        $host       = $this->getHost();
+        $port       = $this->getPort();
+
+        $this->authority = ($userInfo ? $userInfo . '@' : '') . $host . ($port === null ? '' : ':' . $port);
+    }
+
+    /**
      * @return mixed
      */
     public function getPort()
     {
         return $this->port;
+    }
+
+    /**
+     * @param mixed $port
+     */
+    public function setPort($port): void
+    {
+        $this->port = $port;
+    }
+
+    public function withPort($port)
+    {
+        $uri = clone $this;
+        $uri->setPort($port);
+
+        return $uri;
     }
 
     /**
@@ -142,27 +170,11 @@ class Uri implements UriInterface
     }
 
     /**
-     * @return mixed
+     * @param mixed $path
      */
-    public function getQuery()
+    public function setPath($path): void
     {
-        return $this->query;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getFragment()
-    {
-        return $this->fragment;
-    }
-
-    public function withPort($port)
-    {
-        $uri = clone $this;
-        $uri->setPort($port);
-
-        return $uri;
+        $this->path = $path;
     }
 
     public function withPath($path)
@@ -173,12 +185,44 @@ class Uri implements UriInterface
         return $uri;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getQuery()
+    {
+        return $this->query;
+    }
+
+    /**
+     * @param mixed $query
+     */
+    public function setQuery($query): void
+    {
+        $this->query = $query;
+    }
+
     public function withQuery($query)
     {
         $uri = clone $this;
         $uri->setQuery($query);
 
         return $uri;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getFragment()
+    {
+        return $this->fragment;
+    }
+
+    /**
+     * @param mixed $fragment
+     */
+    public function setFragment($fragment): void
+    {
+        $this->fragment = $fragment;
     }
 
     public function withFragment($fragment)
@@ -207,50 +251,6 @@ class Uri implements UriInterface
         $uri .= $fragment ? '#' . $fragment : '';
 
         return $uri;
-    }
-
-    /**
-     * @param mixed $port
-     */
-    public function setPort($port): void
-    {
-        $this->port = $port;
-    }
-
-    /**
-     * @param mixed $path
-     */
-    public function setPath($path): void
-    {
-        $this->path = $path;
-    }
-
-    /**
-     * @param mixed $query
-     */
-    public function setQuery($query): void
-    {
-        $this->query = $query;
-    }
-
-    /**
-     * @param mixed $fragment
-     */
-    public function setFragment($fragment): void
-    {
-        $this->fragment = $fragment;
-    }
-
-    /**
-     * @param mixed $authority
-     */
-    public function setAuthority($authority): void
-    {
-        $userInfo   = $this->getUserInfo();
-        $host       = $this->getHost();
-        $port       = $this->getPort();
-
-        $this->authority = ($userInfo ? $userInfo . '@' : '') . $host . ($port === null ? '' : ':' . $port);
     }
 }
 

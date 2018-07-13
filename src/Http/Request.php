@@ -12,11 +12,17 @@ class Request extends Message implements RequestInterface
 
     private $method;
 
+    private $httpMethodsMap = [
+        'get'=>'GET',
+        'post'=>'POST'
+
+    ];
+
     //private $requestTarget;
 
     public function __construct(
         UriInterface $uri,
-        $method
+        string $method
     ) {
         $this->uri     = $uri;
         $this->method   = $method;

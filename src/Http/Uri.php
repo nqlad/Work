@@ -102,7 +102,7 @@ class Uri implements UriInterface
     public function withUserInfo($user, $password = null)
     {
         $uri            = clone $this;
-        $this->userInfo = $user ? $user . ($password == null ? '' : ':' . $password) : '';
+        $uri->userInfo = $user ? $user . ($password == null ? '' : ':' . $password) : '';
 
         return $uri;
     }

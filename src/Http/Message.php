@@ -115,7 +115,7 @@ class Message implements MessageInterface
             }
         }
 
-        $this->setHeaders($headers);
+        $message->setHeaders($headers);
 
         return $message;
     }
@@ -131,7 +131,7 @@ class Message implements MessageInterface
             $headers += [$name => $value];
         }
 
-        $this->setHeaders($headers);
+        $message->setHeaders($headers);
 
         return $message;
     }
@@ -147,7 +147,7 @@ class Message implements MessageInterface
             }
         }
 
-        $this->setHeaders($headers);
+        $message->setHeaders($headers);
 
         return $message;
     }

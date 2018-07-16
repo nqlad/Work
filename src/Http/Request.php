@@ -8,7 +8,7 @@ use Psr\Http\Message\UriInterface;
 
 class Request extends Message implements RequestInterface
 {
-
+    /** @var Uri */
     private $uri;
 
     private $method;
@@ -64,7 +64,7 @@ class Request extends Message implements RequestInterface
     /**
      * @param mixed $requestTarget
      */
-    public function setRequestTarget($requestTarget): void
+    private function setRequestTarget($requestTarget): void
     {
         $this->requestTarget = $requestTarget;
     }
@@ -85,7 +85,7 @@ class Request extends Message implements RequestInterface
     /**
      * @param mixed $method
      */
-    public function setMethod($method): void
+    private function setMethod($method): void
     {
         $this->method = $method;
     }
@@ -106,31 +106,19 @@ class Request extends Message implements RequestInterface
         return $this->uri;
     }
 
-    /**
-     * @param Uri|UriInterface $uri
-     */
-    public function setUri(UriInterface $uri): void
-    {
-        $this->uri = $uri;
-    }
-
-    //todo
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
         $request    = clone $this;
-        $requestUri = $request->getUri();
 
         if($preserveHost == false) {
             if ($uri->getHost() !== null) {
-                $requestUri->setHost($uri->getHost());
+                $request = $this->uri->withHost($uri->getHost());
             }
         } elseif($preserveHost == true){
             if(($this->uri->getHost() == null) and ($uri->getHost() !== null)){
-                $requestUri->setHost($uri->getHost());
+                $request = $this->uri->withHost($uri->getHost());
             }
         }
-
-        $request->setUri($requestUri);
 
         return $request;
     }

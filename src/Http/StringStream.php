@@ -93,4 +93,3 @@ class StringStream implements StreamInterface
         throw new \DomainException('Not implemented');
     }
 }
-

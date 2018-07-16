@@ -46,7 +46,7 @@ class Message implements MessageInterface
     }
 
 
-    public function setProtocolVersion(string $protocolVersion): void
+    private function setProtocolVersion(string $protocolVersion): void
     {
         $this->protocolVersion = $protocolVersion;
     }
@@ -67,7 +67,7 @@ class Message implements MessageInterface
     /**
      * @param \string[][] $headers
      */
-    public function setHeaders(array $headers): void
+    private function setHeaders(array $headers): void
     {
         $this->headers = $headers;
     }
@@ -165,7 +165,7 @@ class Message implements MessageInterface
         return $message;
     }
 
-    public function setBody(StreamInterface $body): void
+    private function setBody(StreamInterface $body): void
     {
         $this->body = $body;
     }

@@ -103,7 +103,7 @@ class Response extends Message implements ResponseInterface
     /**
      * @param mixed $statusCode
      */
-    public function setStatusCode($statusCode): void
+    private function setStatusCode($statusCode): void
     {
         $this->statusCode = $statusCode;
     }
@@ -133,7 +133,7 @@ class Response extends Message implements ResponseInterface
     /**
      * @param mixed $reasonPhrase
      */
-    public function setReasonPhrase($reasonPhrase): void
+    private function setReasonPhrase($reasonPhrase): void
     {
         $this->reasonPhrase = $reasonPhrase;
     }

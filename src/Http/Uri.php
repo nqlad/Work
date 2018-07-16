@@ -50,7 +50,7 @@ class Uri implements UriInterface
     /**
      * @param mixed $host
      */
-    public function setHost($host): void
+    private function setHost($host): void
     {
         $this->host = $host;
     }
@@ -68,7 +68,7 @@ class Uri implements UriInterface
         return $this->scheme;
     }
 
-    public function setScheme($scheme): void
+    private function setScheme($scheme): void
     {
         $this->scheme = $scheme;
     }
@@ -92,7 +92,7 @@ class Uri implements UriInterface
     /**
      * @param mixed $userInfo
      */
-    public function setUserInfo($userInfo): void
+    private function setUserInfo($userInfo): void
     {
         $userName = parse_url($userInfo, PHP_URL_USER);
         $password = parse_url($userInfo, PHP_URL_PASS);
@@ -128,7 +128,7 @@ class Uri implements UriInterface
     /**
      * @param mixed $authority
      */
-    public function setAuthority($authority): void
+    private function setAuthority($authority): void
     {
         $userInfo   = $this->getUserInfo();
         $host       = $this->getHost();
@@ -148,7 +148,7 @@ class Uri implements UriInterface
     /**
      * @param mixed $port
      */
-    public function setPort($port): void
+    private function setPort($port): void
     {
         $this->port = $port;
     }
@@ -172,7 +172,7 @@ class Uri implements UriInterface
     /**
      * @param mixed $path
      */
-    public function setPath($path): void
+    private function setPath($path): void
     {
         $this->path = $path;
     }
@@ -196,7 +196,7 @@ class Uri implements UriInterface
     /**
      * @param mixed $query
      */
-    public function setQuery($query): void
+    private function setQuery($query): void
     {
         $this->query = $query;
     }
@@ -220,7 +220,7 @@ class Uri implements UriInterface
     /**
      * @param mixed $fragment
      */
-    public function setFragment($fragment): void
+    private function setFragment($fragment): void
     {
         $this->fragment = $fragment;
     }
@@ -253,4 +253,3 @@ class Uri implements UriInterface
         return $uri;
     }
 }
-

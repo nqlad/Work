@@ -7,5 +7,5 @@ use Psr\Http\Message\RequestInterface;
 
 interface RequestFactoryInterface
 {
-    public function createRequest(): RequestInterface;
+    public function createRequest(array $serverConfig): RequestInterface;
 }

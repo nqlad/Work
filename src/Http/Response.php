@@ -3,38 +3,79 @@
 namespace App\Http;
 
 
-class Response
+use Psr\Http\Message\ResponseInterface;
+
+class Response extends Message implements ResponseInterface
 {
-    private $status;
+    private $statusCode;
 
-    private $headers;
+    private $reasonPhrase;
 
-    private $body;
+    private $httpStatusCodeMap = [
+        200=>'OK',
+        204=>'No Content',
 
-    private $version;
+        400=>'Bad Request',
+        404=>'Not Found',
 
-    public function __construct($body)
+        500=>'Internal Server Error'
+    ];
+
+    public function __construct(int $status)
     {
-        $status     = 200;
-        $version    = '1.1';
+        //parent::__construct();
 
-        $this->status   = $status;
-        $this->body     = $body;
-        $this->version  = $version;
+        if(!is_int($status)){
+            throw new \InvalidArgumentException('Http status code MUST be Int!');
+        }elseif (!array_key_exists($status,$this->httpStatusCodeMap)){
+            throw new \InvalidArgumentException('Invalid status code!');
+        }
+
+        $this->statusCode = $status;
+        $this->reasonPhrase = $this->httpStatusCodeMap[$status];
     }
 
-    public function getStatus()
+
+    public function getStatusCode()
     {
-        return $this->status;
+        return $this->statusCode;
     }
 
-    public function getBody()
+    /**
+     * @param mixed $statusCode
+     */
+    public function setStatusCode($statusCode): void
     {
-        return $this->body;
+        $this->statusCode = $statusCode;
     }
 
-    public function getVersion()
+    public function withStatus($code, $reasonPhrase = '')
     {
-        return $this->version;
+        if(!array_key_exists($code,$this->httpStatusCodeMap)){
+            throw new \InvalidArgumentException('Invalid status code!');
+        }
+
+        $response = clone $this;
+        $response->setStatusCode($code);
+        if ($reasonPhrase !== ''){
+            $response->setReasonPhrase($reasonPhrase);
+        }else{
+            $response->setReasonPhrase($this->httpStatusCodeMap[$code]);
+        }
+
+        return $response;
+    }
+
+    public function getReasonPhrase()
+    {
+        return $this->reasonPhrase;
+    }
+
+    /**
+     * @param mixed $reasonPhrase
+     */
+    public function setReasonPhrase($reasonPhrase): void
+    {
+        $this->reasonPhrase = $reasonPhrase;
     }
 }

@@ -24,12 +24,12 @@ class StringStream implements StreamInterface
 
     public function close()
     {
-        // TODO: Implement close() method.
+        throw new \DomainException('Not implemented');
     }
 
     public function detach()
     {
-        // TODO: Implement detach() method.
+        throw new \DomainException('Not implemented');
     }
 
     public function getSize(): int
@@ -39,27 +39,27 @@ class StringStream implements StreamInterface
 
     public function tell()
     {
-        // TODO: Implement tell() method.
+        throw new \DomainException('Not implemented');
     }
 
     public function eof()
     {
-        // TODO: Implement eof() method.
+        throw new \DomainException('Not implemented');
     }
 
     public function isSeekable()
     {
-        // TODO: Implement isSeekable() method.
+        throw new \DomainException('Not implemented');
     }
 
     public function seek($offset, $whence = SEEK_SET)
     {
-        // TODO: Implement seek() method.
+        throw new \DomainException('Not implemented');
     }
 
     public function rewind()
     {
-        // TODO: Implement rewind() method.
+        throw new \DomainException('Not implemented');
     }
 
     public function isWritable()

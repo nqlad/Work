@@ -4,6 +4,7 @@ namespace App\Http;
 
 
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 
 class Response extends Message implements ResponseInterface
 {
@@ -80,9 +81,13 @@ class Response extends Message implements ResponseInterface
         511=>'Network Authentication Required'
     ];
 
-    public function __construct(int $status)
-    {
-        //parent::__construct();
+    public function __construct(
+        int $status,
+        string $protocolVersion,
+        array $headers,
+        StreamInterface $body
+    ){
+        parent::__construct($protocolVersion,$headers,$body);
 
         if(!is_int($status)){
             throw new \InvalidArgumentException('Http status code MUST be Int!');
@@ -90,7 +95,7 @@ class Response extends Message implements ResponseInterface
             throw new \InvalidArgumentException('Invalid status code!');
         }
 
-        $this->statusCode = $status;
+        $this->statusCode   = $status;
         $this->reasonPhrase = $this->httpStatusCodeMap[$status];
     }
 

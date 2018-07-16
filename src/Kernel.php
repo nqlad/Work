@@ -27,8 +27,7 @@ class Kernel
     public function run(): void
     {
         $request = $this->requestFactory->createRequest($_SERVER);
-        var_dump($request);
-//        $response = $this->requestHandler->handleRequest($request);
-//        $this->responseSender->sendResponse($response);
+        $response = $this->requestHandler->handleRequest($request);
+        $this->responseSender->sendResponse($response);
     }
 }

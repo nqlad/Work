@@ -8,71 +8,78 @@ use Psr\Http\Message\UriInterface;
 
 class Request extends Message implements RequestInterface
 {
+
     private $uri;
 
     private $method;
 
     private $httpMethodsMap = [
-        'get'=>'GET',
-        'post'=>'POST'
-
+        'GET',
+        'HEAD',
+        'POST',
+        'PUT',
+        'DELETE',
+        'OPTIONS',
+        'PATCH'
     ];
 
-    //private $requestTarget;
+    private $requestTarget;
 
+    /**
+     * Request constructor.
+     * @param UriInterface $uri
+     * @param string $method
+     * @param string $protocolVersion
+     * @param array $headers
+     * @param StringStream $body
+     */
     public function __construct(
         UriInterface $uri,
-        string $method
-    ) {
-        $this->uri     = $uri;
-        $this->method   = $method;
+        string $method,
+        string $protocolVersion,
+        array $headers,
+        StringStream $body
+    ){
+        parent::__construct($protocolVersion,$headers,$body);
+
+        $this->uri = $uri;
+
+        if(!in_array($method,$this->httpMethodsMap)){
+            throw new \InvalidArgumentException('Error! Incorrect Http Method!');
+        }
+
+        $this->method = $method;
     }
 
     public function getRequestTarget()
     {
-//        if ($this->requestTarget !== null) {
-//            return $this->requestTarget;
-//        }
-//        $target = $this->uri->getPath();
-//        if ($target == '') {
-//            $target = '/';
-//        }
-//        if ($this->uri->getQuery() != '') {
-//            $target .= '?' . $this->uri->getQuery();
-//        }
-//        var_dump($target);
-//        return $target;
+        $requestTarget = $this->uri->getPath() ? $this->uri->getPath() : '/';
+        $requestTarget .= $this->uri->getQuery() ? '?' . $this->uri->getQuery() : '';
+
+        $this->setRequestTarget($requestTarget);
+
+        return $requestTarget;
+    }
+
+    /**
+     * @param mixed $requestTarget
+     */
+    public function setRequestTarget($requestTarget): void
+    {
+        $this->requestTarget = $requestTarget;
     }
 
     public function withRequestTarget($requestTarget)
     {
-        // TODO: Implement withRequestTarget() method.
+        $request = clone $this;
+        $request->setRequestTarget($requestTarget);
+
+        return $request;
     }
 
     public function getMethod()
     {
         return $this->method;
-    }
-
-    public function withMethod($method)
-    {
-        $request = clone $this;
-        $request->setMethod($method);
-
-        return $request;
-    }
-
-    public function getUri()
-    {
-        return $this->uri;
-    }
-
-    public function withUri(UriInterface $uri, $preserveHost = false)
-    {
-        $request = clone $this;
-        //todo
-
-        return $request;
     }
 
     /**
@@ -83,11 +90,48 @@ class Request extends Message implements RequestInterface
         $this->method = $method;
     }
 
+    public function withMethod($method)
+    {
+        $request = clone $this;
+        $request->setMethod($method);
+
+        return $request;
+    }
+
     /**
-     * @param UriInterface $uri
+     * @return Uri|UriInterface
+     */
+    public function getUri()
+    {
+        return $this->uri;
+    }
+
+    /**
+     * @param Uri|UriInterface $uri
      */
     public function setUri(UriInterface $uri): void
     {
         $this->uri = $uri;
+    }
+
+    //todo
+    public function withUri(UriInterface $uri, $preserveHost = false)
+    {
+        $request    = clone $this;
+        $requestUri = $request->getUri();
+
+        if($preserveHost == false) {
+            if ($uri->getHost() !== null) {
+                $requestUri->setHost($uri->getHost());
+            }
+        } elseif($preserveHost == true){
+            if(($this->uri->getHost() == null) and ($uri->getHost() !== null)){
+                $requestUri->setHost($uri->getHost());
+            }
+        }
+
+        $request->setUri($requestUri);
+
+        return $request;
     }
 }

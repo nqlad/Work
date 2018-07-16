@@ -25,9 +25,8 @@ class Message implements MessageInterface
      */
     public function __construct(string $protocolVersion, array $headers, StreamInterface $body)
     {
-        $this->protocolVersion = $protocolVersion;
-        $this->headers = $headers;
-        $this->body = $body;
+        $this->protocolVersion  = $protocolVersion;
+        $this->body             = $body;
 
         foreach ($headers as $name => $values) {
             if (!is_string($name)) {
@@ -42,6 +41,8 @@ class Message implements MessageInterface
                 }
             }
         }
+
+        $this->headers = $headers;
     }
 
 

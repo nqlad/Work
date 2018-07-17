@@ -25,15 +25,15 @@ class Uri implements UriInterface
 
     public function __construct(string $url)
     {
-        $this->scheme   = parse_url($url, PHP_URL_SCHEME);
-        $this->host     = parse_url($url, PHP_URL_HOST);
+        $this->scheme   = (string) parse_url($url, PHP_URL_SCHEME);
+        $this->host     = (string) parse_url($url, PHP_URL_HOST);
 
         $port           = (int) parse_url($url, PHP_URL_PORT);
         $this->port     = $port === 0 ? null : $port;
 
-        $this->path     = parse_url($url, PHP_URL_PATH);
-        $this->query    = parse_url($url, PHP_URL_QUERY);
-        $this->fragment = parse_url($url, PHP_URL_FRAGMENT);
+        $this->path     = (string) parse_url($url, PHP_URL_PATH);
+        $this->query    = (string) parse_url($url, PHP_URL_QUERY);
+        $this->fragment = (string) parse_url($url, PHP_URL_FRAGMENT);
 
         $this->setUserInfo($url);
         $this->setAuthority($url);

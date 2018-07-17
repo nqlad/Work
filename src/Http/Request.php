@@ -49,16 +49,17 @@ class Request extends Message implements RequestInterface
         }
 
         $this->method = $method;
+
+        $this->requestTarget = $this->uri->getPath() ? $this->uri->getPath() : '/';
+        $this->requestTarget .= $this->uri->getQuery() ? '?' . $this->uri->getQuery() : '';
     }
 
+    /**
+     * @return string
+     */
     public function getRequestTarget()
     {
-        $requestTarget = $this->uri->getPath() ? $this->uri->getPath() : '/';
-        $requestTarget .= $this->uri->getQuery() ? '?' . $this->uri->getQuery() : '';
-
-        $this->setRequestTarget($requestTarget);
-
-        return $requestTarget;
+        return $this->requestTarget;
     }
 
     /**
@@ -69,6 +70,10 @@ class Request extends Message implements RequestInterface
         $this->requestTarget = $requestTarget;
     }
 
+    /**
+     * @param mixed $requestTarget
+     * @return Request|RequestInterface
+     */
     public function withRequestTarget($requestTarget)
     {
         $request = clone $this;
@@ -77,6 +82,9 @@ class Request extends Message implements RequestInterface
         return $request;
     }
 
+    /**
+     * @return string
+     */
     public function getMethod()
     {
         return $this->method;
@@ -90,9 +98,18 @@ class Request extends Message implements RequestInterface
         $this->method = $method;
     }
 
+    /**
+     * @param string $method
+     * @return Request|RequestInterface
+     */
     public function withMethod($method)
     {
         $request = clone $this;
+
+        if(!in_array($method,$this->httpMethodsMap)){
+            throw new \InvalidArgumentException('Invalid Http Method!');
+        }
+
         $request->setMethod($method);
 
         return $request;
@@ -106,17 +123,31 @@ class Request extends Message implements RequestInterface
         return $this->uri;
     }
 
+    /**
+     * @param Uri $uri
+     */
+    public function setUri(Uri $uri): void
+    {
+        $this->uri = $uri;
+    }
+
+    /**
+     * @param UriInterface $uri
+     * @param bool $preserveHost
+     * @return Request|RequestInterface
+     */
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
         $request    = clone $this;
 
+
         if($preserveHost == false) {
-            if ($uri->getHost() !== null) {
-                $request = $this->uri->withHost($uri->getHost());
+            if ($uri->getHost() !== '') {
+                $request->setUri($this->uri->withHost(($uri->getHost())));
             }
         } elseif($preserveHost == true){
             if(($this->uri->getHost() == null) and ($uri->getHost() !== null)){
-                $request = $this->uri->withHost($uri->getHost());
+                $request->setUri($this->uri->withHost(($uri->getHost())));
             }
         }
 

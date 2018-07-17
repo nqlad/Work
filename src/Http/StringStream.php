@@ -16,7 +16,9 @@ class StringStream implements StreamInterface
         $this->contents = $contents;
     }
 
-
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->contents;
@@ -78,7 +80,7 @@ class StringStream implements StreamInterface
         return true;
     }
 
-    public function read($length)
+    public function read($length): string
     {
         return substr($this->contents,0,$length);
     }

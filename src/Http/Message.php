@@ -51,11 +51,15 @@ class Message implements MessageInterface
         $this->protocolVersion = $protocolVersion;
     }
 
-    public function getProtocolVersion()
+    public function getProtocolVersion(): string
     {
         return $this->protocolVersion;
     }
 
+    /**
+     * @param string $version
+     * @return Message|MessageInterface
+     */
     public function withProtocolVersion($version)
     {
         $message = clone $this;
@@ -72,25 +76,36 @@ class Message implements MessageInterface
         $this->headers = $headers;
     }
 
+    /**
+     * @return \string[][]
+     */
     public function getHeaders()
     {
         return $this->headers;
     }
 
+    /**
+     * @param string $name
+     * @return string[]
+     */
     public function getHeader($name)
     {
-        $header = [];
+        $headerValues = [];
 
         foreach ($this->getHeaders() as $headerName => $values) {
             if ($headerName === $name) {
-                $header = $values;
+                $headerValues = $values;
             }
         }
 
-        return $header;
+        return $headerValues;
     }
 
-
+    /**
+     * @param string $name
+     * @param string|string[] $value
+     * @return Message|MessageInterface
+     */
     public function withHeader($name, $value)
     {
         $message = clone $this;
@@ -117,11 +132,19 @@ class Message implements MessageInterface
         return $message;
     }
 
+    /**
+     * @param string $name
+     * @return bool
+     */
     public function hasHeader($name): bool
     {
         return array_key_exists($name, $this->headers);
     }
 
+    /**
+     * @param string $name
+     * @return string
+     */
     public function getHeaderLine($name)
     {
         if (!$this->hasHeader($name)) {
@@ -133,6 +156,11 @@ class Message implements MessageInterface
         return $line;
     }
 
+    /**
+     * @param string $name
+     * @param string|string[] $value
+     * @return Message|MessageInterface
+     */
     public function withAddedHeader($name, $value)
     {
         $message = clone $this;
@@ -149,6 +177,10 @@ class Message implements MessageInterface
         return $message;
     }
 
+    /**
+     * @param string $name
+     * @return Message|MessageInterface
+     */
     public function withoutHeader($name)
     {
         $message = clone $this;
@@ -170,11 +202,18 @@ class Message implements MessageInterface
         $this->body = $body;
     }
 
+    /**
+     * @return StreamInterface
+     */
     public function getBody(): StreamInterface
     {
         return $this->body;
     }
 
+    /**
+     * @param StreamInterface $body
+     * @return Message|MessageInterface
+     */
     public function withBody(StreamInterface $body)
     {
         $message = clone $this;

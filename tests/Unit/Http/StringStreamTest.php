@@ -17,7 +17,7 @@ class StringStreamTest extends TestCase
     /**
      * @expectedException \DomainException
      */
-    public function testSeek()
+    public function testSeek_seek_DomainException()
     {
         $stream = new StringStream('test');
         $stream->seek('');
@@ -26,23 +26,23 @@ class StringStreamTest extends TestCase
     /**
      * @expectedException \DomainException
      */
-    public function testTell()
+    public function testTell_tell_DomainException()
     {
         $stream = new StringStream('test');
         $stream->tell();
     }
 
-    public function testIsReadable()
+    public function testIsReadable_isReadableTrueReturned()
     {
         $stream = new StringStream('test');
 
-        self::assertTrue($stream->isReadable());
+        $this->assertTrue($stream->isReadable());
     }
 
     /**
      * @expectedException \DomainException
      */
-    public function testEof()
+    public function testEof_eof_DomainException()
     {
         $stream = new StringStream('test');
         $stream->eof();
@@ -51,7 +51,7 @@ class StringStreamTest extends TestCase
     /**
      * @expectedException \DomainException
      */
-    public function testDetach()
+    public function testDetach_detach_DomainException()
     {
         $stream = new StringStream('test');
         $stream->detach();
@@ -60,30 +60,30 @@ class StringStreamTest extends TestCase
     /**
      * @expectedException \DomainException
      */
-    public function testIsSeekable()
+    public function testIsSeekable_isSeekable_DomainException()
     {
         $stream = new StringStream('test');
         $stream->isSeekable();
     }
 
-    public function testRead()
+    public function testRead_readInt_readString()
     {
         $stream = new StringStream('test');
 
-        self::assertEquals('t',$stream->read(1));
+        $this->assertEquals('t',$stream->read(1));
     }
 
-    public function testWrite()
+    public function testWrite_writeString_writeInt()
     {
         $stream = new StringStream('test');
 
-        self::assertEquals(4,$stream->write('test'));
+        $this->assertEquals(4,$stream->write('test'));
     }
 
     /**
      * @expectedException \DomainException
      */
-    public function testRewind()
+    public function testRewind_rewind_DomainException()
     {
         $stream = new StringStream('test');
         $stream->rewind();
@@ -92,7 +92,7 @@ class StringStreamTest extends TestCase
     /**
      * @expectedException \DomainException
      */
-    public function testGetMetadata()
+    public function testGetMetadata_getMetadata_DomainException()
     {
         $stream = new StringStream('test');
         $stream->getMetadata();
@@ -101,30 +101,30 @@ class StringStreamTest extends TestCase
     /**
      * @expectedException \DomainException
      */
-    public function testClose()
+    public function testClose_close_DomainException()
     {
         $stream = new StringStream('test');
         $stream->close();
     }
 
-    public function testIsWritable()
+    public function testIsWritable_isWritableTrueReturned()
     {
         $stream = new StringStream('test');
 
-        self::assertTrue($stream->isWritable());
+        $this->assertTrue($stream->isWritable());
     }
 
-    public function testGetSize()
+    public function testGetSize_getSizeStringStream_getSizeIntReturned()
     {
         $stream = new StringStream('test');
 
-        self::assertEquals(4,$stream->getSize());
+        $this->assertEquals(4,$stream->getSize());
     }
 
-    public function testGetContents()
+    public function testGetContents_getContentsStreamString_getContentStringReturned()
     {
         $stream = new StringStream('test');
 
-        self::assertEquals('test',$stream->getContents());
+        $this->assertEquals('test',$stream->getContents());
     }
 }

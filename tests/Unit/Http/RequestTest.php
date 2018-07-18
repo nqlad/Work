@@ -19,7 +19,7 @@ class RequestTest extends TestCase
         new Request($uri, 'TEST', '1.0', [], new StringStream(''));
     }
 
-    public function testGetRequestTarget()
+    public function testGetRequestTarget_getRequestTargetUriString_getRequestStringReturned()
     {
         $uri        = new Uri('http://login:pass@secure.example.com:443/test/query.php?kingkong=toto#doc3');
         $request    = new Request($uri, 'GET', '1.0', [], new StringStream(''));
@@ -27,7 +27,7 @@ class RequestTest extends TestCase
         $this->assertEquals('/test/query.php?kingkong=toto', $request->getRequestTarget());
     }
 
-    public function testGetRequestTarget_withoutRequestTarget()
+    public function testGetRequestTarget_getRequestTargetUriWithoutRequestTargetString_getRequestTargetSlashReturned()
     {
         $uri        = new Uri('http://login:pass@secure.example.com:443');
         $request    = new Request($uri, 'GET', '1.0', [], new StringStream(''));
@@ -35,7 +35,7 @@ class RequestTest extends TestCase
         $this->assertEquals('/', $request->getRequestTarget());
     }
 
-    public function testWithRequestTarget()
+    public function testWithRequestTarget_withRequestTargetString_RequestObjectWithNewRequestTargetReturned()
     {
         $uri            = new Uri('http://login:pass@secure.example.com:443');
         $request        = new Request($uri, 'GET', '1.0', [], new StringStream(''));
@@ -44,7 +44,7 @@ class RequestTest extends TestCase
         $this->assertEquals('/test/query.php?kingkong=toto', $testRequest->getRequestTarget());
     }
 
-    public function testGetMethod()
+    public function testGetMethod_getMethodString_getMethodStringReturned()
     {
         $uri        = new Uri('http://login:pass@secure.example.com:443/test/query.php?kingkong=toto#doc3');
 
@@ -56,7 +56,7 @@ class RequestTest extends TestCase
     /**
      * @expectedException \InvalidArgumentException
      */
-    public function testWithMethod_InvalidHttpMethod()
+    public function testWithMethod_InvalidHttpMethod_InvalidArgumentExceptionReturned()
     {
         $uri        = new Uri('http://login:pass@secure.example.com:443/test/query.php?kingkong=toto#doc3');
         $request    = new Request($uri, 'GET', '1.0', [], new StringStream(''));
@@ -64,7 +64,7 @@ class RequestTest extends TestCase
         $request->withMethod('TEST');
     }
 
-    public function testWithMethod()
+    public function testWithMethod_withMethodString_RequestObjectWithNewMethodStringReturned()
     {
         $uri            = new Uri('http://login:pass@secure.example.com:443/test/query.php?kingkong=toto#doc3');
         $request        = new Request($uri, 'GET', '1.0', [], new StringStream(''));
@@ -73,7 +73,7 @@ class RequestTest extends TestCase
         $this->assertEquals('POST', $testRequest->getMethod());
     }
 
-    public function testGetUri()
+    public function testGetUri_getUriString_getUriStringReturned()
     {
         $uri        = new Uri('http://login:pass@secure.example.com:443');
         $request    = new Request($uri, 'GET', '1.0', [], new StringStream(''));
@@ -81,7 +81,7 @@ class RequestTest extends TestCase
         $this->assertEquals('http://login:pass@secure.example.com:443', $request->getUri());
     }
 
-    public function testWithUri_preserveHostFalse_oldUriWithHost_newUriWithoutHost()
+    public function testWithUri_withUriOldUriHaveHostNewUriWithoutHost_RequestObjectWithOldHost()
     {
         $uri            = new Uri('http://secure.example.com:443');
         $request        = new Request($uri, 'GET', '1.0', [], new StringStream(''));
@@ -92,7 +92,7 @@ class RequestTest extends TestCase
         $this->assertEquals('secure.example.com', $testRequestUri->getHost());
     }
 
-    public function testWithUri_preserveHostFalse_oldUriWithHost_newUriWithNewHost()
+    public function testWithUri_withUriOldUriHaveHostNewUriWithNewHost_RequestObjectWithNewHost()
     {
         $uri            = new Uri('http://secure.example.com:443/test.php');
         $request        = new Request($uri, 'GET', '1.0', [], new StringStream(''));
@@ -103,7 +103,7 @@ class RequestTest extends TestCase
         $this->assertEquals('test.com', $testRequestUri->getHost());
     }
 
-    public function testWithUri_preserveHostTrue_oldUriWithoutHost_newUriWithHost()
+    public function testWithUri_withUriOldUriWithoutHostNewUriWithHostPreserveHostTrue_RequestObjectWithNewHost()
     {
         $uri            = new Uri('http:/test.php');
         $request        = new Request($uri, 'GET', '1.0', [], new StringStream(''));
@@ -114,7 +114,7 @@ class RequestTest extends TestCase
         $this->assertEquals('test.com', $testRequestUri->getHost());
     }
 
-    public function testWithUri_preserveHostTrue_oldUriWithoutHost_newUriWithoutHost()
+    public function testWithUri_withUriOldUriWithoutHostNewUriWithoutHostPreserveHostTrue_RequestObjectWithEmptyHost()
     {
         $uri            = new Uri('http:/test_1.php');
         $request        = new Request($uri, 'GET', '1.0', [], new StringStream(''));
@@ -125,7 +125,7 @@ class RequestTest extends TestCase
         $this->assertEquals('', $testRequestUri->getHost());
     }
 
-    public function testWithUri_preserveHostTrue_oldUriWithHost_newUriWithHost()
+    public function testWithUri_withUriOldUriWithHostNewUriWithHostPreserveHostTrue_RequestObjectWithOldHost()
     {
         $uri            = new Uri('http://secure.example.com:443');
         $request        = new Request($uri, 'GET', '1.0', [], new StringStream(''));
@@ -136,7 +136,7 @@ class RequestTest extends TestCase
         $this->assertEquals('secure.example.com', $testRequestUri->getHost());
     }
 
-    public function testWithUri_preserveHostTrue_oldUriWithHost_newUriWithoutHost()
+    public function testWithUri_withUriOldUriWithHostNewUriWithoutHostPreserveHostTrue_RequestObjectWithOldHost()
     {
         $uri            = new Uri('http://secure.example.com:443');
         $request        = new Request($uri, 'GET', '1.0', [], new StringStream(''));

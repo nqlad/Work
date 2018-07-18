@@ -19,7 +19,7 @@ class StringStream implements StreamInterface
     /**
      * @return string
      */
-    public function __toString()
+    public function __toString():string
     {
         return $this->contents;
     }
@@ -64,7 +64,7 @@ class StringStream implements StreamInterface
         throw new \DomainException('Not implemented');
     }
 
-    public function isWritable()
+    public function isWritable(): bool
     {
         return true;
     }
@@ -75,7 +75,7 @@ class StringStream implements StreamInterface
         return strlen($string);
     }
 
-    public function isReadable()
+    public function isReadable(): bool
     {
         return true;
     }
@@ -85,7 +85,7 @@ class StringStream implements StreamInterface
         return substr($this->contents,0,$length);
     }
 
-    public function getContents()
+    public function getContents(): string
     {
         return $this->contents;
     }

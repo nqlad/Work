@@ -7,5 +7,5 @@ use App\Entity\Note;
 
 interface PersisterInterface
 {
-    public function persist(Note $note): void;
+    public function persist(Note $note): Note;
 }

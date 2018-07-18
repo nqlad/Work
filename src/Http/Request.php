@@ -11,6 +11,7 @@ class Request extends Message implements RequestInterface
     /** @var Uri */
     private $uri;
 
+    /** @var string  */
     private $method;
 
     private $httpMethodsMap = [
@@ -23,6 +24,7 @@ class Request extends Message implements RequestInterface
         'PATCH'
     ];
 
+    /** @var string  */
     private $requestTarget;
 
     /**
@@ -44,7 +46,7 @@ class Request extends Message implements RequestInterface
 
         $this->uri = $uri;
 
-        if(!in_array($method,$this->httpMethodsMap)){
+        if (!in_array($method,$this->httpMethodsMap)) {
             throw new \InvalidArgumentException('Error! Incorrect Http Method!');
         }
 
@@ -54,17 +56,11 @@ class Request extends Message implements RequestInterface
         $this->requestTarget .= $this->uri->getQuery() ? '?' . $this->uri->getQuery() : '';
     }
 
-    /**
-     * @return string
-     */
-    public function getRequestTarget()
+    public function getRequestTarget(): string
     {
         return $this->requestTarget;
     }
 
-    /**
-     * @param mixed $requestTarget
-     */
     private function setRequestTarget($requestTarget): void
     {
         $this->requestTarget = $requestTarget;
@@ -72,9 +68,9 @@ class Request extends Message implements RequestInterface
 
     /**
      * @param mixed $requestTarget
-     * @return Request|RequestInterface
+     * @return RequestInterface
      */
-    public function withRequestTarget($requestTarget)
+    public function withRequestTarget($requestTarget): RequestInterface
     {
         $request = clone $this;
         $request->setRequestTarget($requestTarget);
@@ -82,17 +78,11 @@ class Request extends Message implements RequestInterface
         return $request;
     }
 
-    /**
-     * @return string
-     */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
 
-    /**
-     * @param mixed $method
-     */
     private function setMethod($method): void
     {
         $this->method = $method;
@@ -100,13 +90,13 @@ class Request extends Message implements RequestInterface
 
     /**
      * @param string $method
-     * @return Request|RequestInterface
+     * @return RequestInterface
      */
-    public function withMethod($method)
+    public function withMethod($method): RequestInterface
     {
         $request = clone $this;
 
-        if(!in_array($method,$this->httpMethodsMap)){
+        if (!in_array($method,$this->httpMethodsMap)) {
             throw new \InvalidArgumentException('Invalid Http Method!');
         }
 
@@ -115,17 +105,12 @@ class Request extends Message implements RequestInterface
         return $request;
     }
 
-    /**
-     * @return Uri|UriInterface
-     */
-    public function getUri()
+    public function getUri(): UriInterface
     {
         return $this->uri;
     }
 
-    /**
-     * @param Uri $uri
-     */
+
     public function setUri(Uri $uri): void
     {
         $this->uri = $uri;
@@ -134,19 +119,19 @@ class Request extends Message implements RequestInterface
     /**
      * @param UriInterface $uri
      * @param bool $preserveHost
-     * @return Request|RequestInterface
+     * @return RequestInterface
      */
-    public function withUri(UriInterface $uri, $preserveHost = false)
+    public function withUri(UriInterface $uri, $preserveHost = false): RequestInterface
     {
         $request    = clone $this;
 
 
-        if($preserveHost == false) {
+        if ($preserveHost == false) {
             if ($uri->getHost() !== '') {
                 $request->setUri($this->uri->withHost(($uri->getHost())));
             }
-        } elseif($preserveHost == true){
-            if(($this->uri->getHost() == null) and ($uri->getHost() !== null)){
+        } elseif ($preserveHost == true) {
+            if (($this->uri->getHost() == null) and ($uri->getHost() !== null)) {
                 $request->setUri($this->uri->withHost(($uri->getHost())));
             }
         }

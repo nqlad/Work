@@ -35,7 +35,7 @@ class ResponseSender implements ResponseSenderInterface
     //todo output
     private function sendBody(StreamInterface $body)
     {
-        if($body->isReadable()){
+        if ($body->isReadable()) {
             echo $body->read(self::SIZE)  . '<br/>';
         }
     }

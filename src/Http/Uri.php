@@ -41,17 +41,12 @@ class Uri implements UriInterface
         $this->setAuthority($url);
     }
 
-    /**
-     * @return string
-     */
-    public function getHost()
+
+    public function getHost(): string
     {
         return $this->host;
     }
 
-    /**
-     * @param mixed $host
-     */
     private function setHost($host): void
     {
         $this->host = $host;
@@ -59,9 +54,9 @@ class Uri implements UriInterface
 
     /**
      * @param string $host
-     * @return Uri|UriInterface
+     * @return UriInterface
      */
-    public function withHost($host)
+    public function withHost($host): UriInterface
     {
         $uri = clone $this;
         $uri->setHost($host);
@@ -69,10 +64,7 @@ class Uri implements UriInterface
         return $uri;
     }
 
-    /**
-     * @return string
-     */
-    public function getScheme()
+    public function getScheme(): string
     {
         return $this->scheme;
     }
@@ -84,13 +76,13 @@ class Uri implements UriInterface
 
     /**
      * @param string $scheme
-     * @return Uri|UriInterface
+     * @return UriInterface
      */
-    public function withScheme($scheme)
+    public function withScheme($scheme): UriInterface
     {
         $uri = clone $this;
 
-        if(!in_array($scheme,$this->uriSchemeMap)){
+        if (!in_array($scheme,$this->uriSchemeMap)) {
             throw new \InvalidArgumentException('Unsupported schemes!');
         }
 
@@ -99,30 +91,25 @@ class Uri implements UriInterface
         return $uri;
     }
 
-    /**
-     * @return string
-     */
-    public function getUserInfo()
+    public function getUserInfo(): string
     {
         return $this->userInfo;
     }
 
-    /**
-     * @param mixed $userInfo
-     */
     private function setUserInfo($userInfo): void
     {
-        $userName = parse_url($userInfo, PHP_URL_USER);
-        $password = parse_url($userInfo, PHP_URL_PASS);
+        $userName       = parse_url($userInfo, PHP_URL_USER);
+        $password       = parse_url($userInfo, PHP_URL_PASS);
+
         $this->userInfo = $userName . ($password ? ':' . $password : '');
     }
 
     /**
      * @param string $user
-     * @param null|string $password
-     * @return Uri|UriInterface
+     * @param null $password
+     * @return UriInterface
      */
-    public function withUserInfo($user, $password = null)
+    public function withUserInfo($user, $password = null): UriInterface
     {
         $uri            = clone $this;
         $uri->userInfo = $user ? $user . ($password == null ? '' : ':' . $password) : '';
@@ -130,10 +117,7 @@ class Uri implements UriInterface
         return $uri;
     }
 
-    /**
-     * @return string
-     */
-    public function getAuthority()
+    public function getAuthority(): string
     {
         $authority = $this->host;
 
@@ -148,9 +132,6 @@ class Uri implements UriInterface
         return $authority;
     }
 
-    /**
-     * @param mixed $authority
-     */
     private function setAuthority($authority): void
     {
         $userInfo   = $this->getUserInfo();
@@ -168,9 +149,6 @@ class Uri implements UriInterface
         return $this->port;
     }
 
-    /**
-     * @param $port
-     */
     private function setPort($port): void
     {
         $this->port = $port;
@@ -178,13 +156,13 @@ class Uri implements UriInterface
 
     /**
      * @param int|null $port
-     * @return Uri|UriInterface
+     * @return UriInterface
      */
-    public function withPort($port)
+    public function withPort($port): UriInterface
     {
         $uri = clone $this;
 
-        if(($port <= 0) or ($port >= 65536)){
+        if (($port <= 0) or ($port >= 65536)) {
             throw new \InvalidArgumentException('Invalid Port!');
         }
 
@@ -193,17 +171,11 @@ class Uri implements UriInterface
         return $uri;
     }
 
-    /**
-     * @return string
-     */
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
 
-    /**
-     * @param mixed $path
-     */
     private function setPath($path): void
     {
         $this->path = $path;
@@ -211,9 +183,9 @@ class Uri implements UriInterface
 
     /**
      * @param string $path
-     * @return Uri|UriInterface
+     * @return UriInterface
      */
-    public function withPath($path)
+    public function withPath($path): UriInterface
     {
         $uri = clone $this;
         $uri->setPath($path);
@@ -221,17 +193,11 @@ class Uri implements UriInterface
         return $uri;
     }
 
-    /**
-     * @return string
-     */
-    public function getQuery()
+    public function getQuery(): string
     {
         return $this->query;
     }
 
-    /**
-     * @param mixed $query
-     */
     private function setQuery($query): void
     {
         $this->query = $query;
@@ -239,9 +205,9 @@ class Uri implements UriInterface
 
     /**
      * @param string $query
-     * @return Uri|UriInterface
+     * @return UriInterface
      */
-    public function withQuery($query)
+    public function withQuery($query): UriInterface
     {
         $uri = clone $this;
         $uri->setQuery($query);
@@ -249,17 +215,11 @@ class Uri implements UriInterface
         return $uri;
     }
 
-    /**
-     * @return string
-     */
-    public function getFragment()
+    public function getFragment(): string
     {
         return $this->fragment;
     }
 
-    /**
-     * @param mixed $fragment
-     */
     private function setFragment($fragment): void
     {
         $this->fragment = $fragment;
@@ -267,9 +227,9 @@ class Uri implements UriInterface
 
     /**
      * @param string $fragment
-     * @return Uri|UriInterface
+     * @return UriInterface
      */
-    public function withFragment($fragment)
+    public function withFragment($fragment): UriInterface
     {
         $uri = clone $this;
         $uri->setFragment($fragment);
@@ -277,10 +237,7 @@ class Uri implements UriInterface
         return $uri;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function __toString(): string
     {
         $scheme     = $this->getScheme();
         $authority  = $this->getAuthority();

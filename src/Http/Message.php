@@ -58,9 +58,9 @@ class Message implements MessageInterface
 
     /**
      * @param string $version
-     * @return Message|MessageInterface
+     * @return MessageInterface
      */
-    public function withProtocolVersion($version)
+    public function withProtocolVersion($version): MessageInterface
     {
         $message = clone $this;
         $message->setProtocolVersion($version);
@@ -68,27 +68,17 @@ class Message implements MessageInterface
         return $message;
     }
 
-    /**
-     * @param \string[][] $headers
-     */
     private function setHeaders(array $headers): void
     {
         $this->headers = $headers;
     }
 
-    /**
-     * @return \string[][]
-     */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers;
     }
 
-    /**
-     * @param string $name
-     * @return string[]
-     */
-    public function getHeader($name)
+    public function getHeader($name): array
     {
         $headerValues = [];
 
@@ -104,9 +94,9 @@ class Message implements MessageInterface
     /**
      * @param string $name
      * @param string|string[] $value
-     * @return Message|MessageInterface
+     * @return MessageInterface
      */
-    public function withHeader($name, $value)
+    public function withHeader($name, $value): MessageInterface
     {
         $message = clone $this;
         $headers = $this->getHeaders();
@@ -132,20 +122,12 @@ class Message implements MessageInterface
         return $message;
     }
 
-    /**
-     * @param string $name
-     * @return bool
-     */
     public function hasHeader($name): bool
     {
         return array_key_exists($name, $this->headers);
     }
 
-    /**
-     * @param string $name
-     * @return string
-     */
-    public function getHeaderLine($name)
+    public function getHeaderLine($name): string
     {
         if (!$this->hasHeader($name)) {
             $line = '';
@@ -159,9 +141,9 @@ class Message implements MessageInterface
     /**
      * @param string $name
      * @param string|string[] $value
-     * @return Message|MessageInterface
+     * @return MessageInterface
      */
-    public function withAddedHeader($name, $value)
+    public function withAddedHeader($name, $value): MessageInterface
     {
         $message = clone $this;
         $headers = $this->getHeaders();
@@ -179,9 +161,9 @@ class Message implements MessageInterface
 
     /**
      * @param string $name
-     * @return Message|MessageInterface
+     * @return MessageInterface
      */
-    public function withoutHeader($name)
+    public function withoutHeader($name): MessageInterface
     {
         $message = clone $this;
         $headers = $this->getHeaders();
@@ -202,9 +184,6 @@ class Message implements MessageInterface
         $this->body = $body;
     }
 
-    /**
-     * @return StreamInterface
-     */
     public function getBody(): StreamInterface
     {
         return $this->body;
@@ -212,9 +191,9 @@ class Message implements MessageInterface
 
     /**
      * @param StreamInterface $body
-     * @return Message|MessageInterface
+     * @return MessageInterface
      */
-    public function withBody(StreamInterface $body)
+    public function withBody(StreamInterface $body): MessageInterface
     {
         $message = clone $this;
         $message->setBody($body);

@@ -7,5 +7,8 @@ error_reporting(E_ALL);
 
 require(__DIR__ . '/../vendor/autoload.php');
 
+//$databaseDriver = new \App\Database\PostgresDriver('');
+//$action = new \App\Action\PostNoteAction();
+
 //$kernel = new \App\Kernel();
 //$kernel->run();

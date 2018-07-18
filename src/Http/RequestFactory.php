@@ -4,6 +4,7 @@ namespace App\Http;
 
 
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\UriInterface;
 
 class RequestFactory implements RequestFactoryInterface
 {
@@ -19,13 +20,13 @@ class RequestFactory implements RequestFactoryInterface
 
         return $request;
     }
-    private function getHeaders(array $serverConfig)
+    private function getHeaders(array $serverConfig): array
     {
         $headers = [''=>['']];
 
         foreach ($serverConfig as $name => $values){
 
-            if(strncmp($name,'HTTP_',5)===0){
+            if (strncmp($name,'HTTP_',5) === 0) {
                 $name       = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
                 $value      = explode(',',$values);
                 $headers    += [$name => $value];
@@ -37,24 +38,24 @@ class RequestFactory implements RequestFactoryInterface
         return $headers;
     }
 
-    private function getUri(array $serverConfig)
+    private function getUri(array $serverConfig): UriInterface
     {
         return new Uri($serverConfig['REQUEST_URI']);
     }
 
-    private function getMethod(array $serverConfig)
+    private function getMethod(array $serverConfig): string
     {
         return $serverConfig['REQUEST_METHOD'];
     }
 
-    private function getProtocolVersion(array $serverConfig)
+    private function getProtocolVersion(array $serverConfig): string
     {
-        $serverProtocol = explode('/',$serverConfig['SERVER_PROTOCOL']);
+        $serverProtocol = explode('/', $serverConfig['SERVER_PROTOCOL']);
 
         return $serverProtocol[1];
     }
 
-    private function getBody()
+    private function getBody(): StringStream
     {
         return new StringStream(file_get_contents('php://input'));
     }

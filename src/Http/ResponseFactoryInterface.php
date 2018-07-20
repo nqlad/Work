@@ -20,4 +20,6 @@ interface ResponseFactoryInterface
     public function setRequest(RequestInterface $request): void;
 
     public function createDeleteNoteResponse(Note $note): ResponseInterface;
+
+    public function createUpdateNoteResponse(Note $note): ResponseInterface;
 }

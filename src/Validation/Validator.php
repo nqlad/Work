@@ -12,8 +12,9 @@ class Validator implements ValidatorInterface
 
     public function validate(Note $note): array
     {
-        $this->checkForNullAndAddViolation($note);
+        $this->checkForNullTitleAndAddViolation($note);
         $this->checkLengthAndAddViolation($note);
+        $this->checkForNullIdAndAddViolation($note);
 
         return $this->violations;
     }
@@ -25,10 +26,17 @@ class Validator implements ValidatorInterface
         }
     }
 
-    private function checkForNullAndAddViolation(Note $note): void
+    private function checkForNullTitleAndAddViolation(Note $note): void
     {
         if ($note->title === null) {
             $this->violations[] = new Violation("title", "The request is missing title");
+        }
+    }
+
+    private function checkForNullIdAndAddViolation(Note $note): void
+    {
+        if ($note->id === null) {
+            $this->violations[] = new Violation("id","The request is missing id");
         }
     }
 

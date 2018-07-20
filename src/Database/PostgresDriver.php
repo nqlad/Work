@@ -86,4 +86,15 @@ class PostgresDriver implements PersisterInterface, FinderInterface
 
         return $note;
     }
+
+    public function updateNote(Note $note): bool
+    {
+        $query  = "update Notes set note = :title where id = :id;";
+        $stmt   = $this->connection->prepare($query);
+        if ($stmt->execute([':id' => $note->id, ':title' => $note->title])) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

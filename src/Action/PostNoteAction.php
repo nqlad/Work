@@ -6,10 +6,12 @@ namespace App\Action;
 use App\Database\PersisterInterface;
 use App\Http\RequestHandlerInterface;
 use App\Http\ResponseFactoryInterface;
+use App\Http\StringStream;
 use App\Serialization\DeserializerInterface;
 use App\Validation\ValidatorInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 
 class PostNoteAction implements RequestHandlerInterface
 {
@@ -55,7 +57,7 @@ class PostNoteAction implements RequestHandlerInterface
         return $response;
     }
 
-    private function getBody(RequestInterface $request)
+    private function getBody(RequestInterface $request): StreamInterface
     {
         return $request->getBody();
     }

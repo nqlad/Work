@@ -118,4 +118,16 @@ class ResponseFactory implements ResponseFactoryInterface
 
         return $response;
     }
+
+    public function createUpdateNoteResponse(Note $note): ResponseInterface
+    {
+        $status             = 200;
+        $protocolVersion    = $this->request->getProtocolVersion();
+        $headers            = $this->request->getHeaders();
+        $body               = $this->getBodyForNote($note);
+
+        $response = new Response($status, $protocolVersion, $headers, $body);
+
+        return $response;
+    }
 }

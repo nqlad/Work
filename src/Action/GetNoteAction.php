@@ -49,9 +49,9 @@ class GetNoteAction implements RequestHandlerInterface
 
 
         if (count($violationList) > 0) {
-            $response = $this->responseFactory->createViolationListResponse($violationList);
+            $response   = $this->responseFactory->createViolationListResponse($violationList);
         } else {
-            $response = $this->responseFactory->createFindNoteResponse($note);
+            $response   = $this->responseFactory->createFindNoteResponse($note);
         }
 
         return $response;

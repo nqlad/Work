@@ -48,9 +48,9 @@ class DeleteNoteAction implements RequestHandlerInterface
         $violationList  = $this->validator->validateForNullNoteInDB($note);
 
         if (count($violationList) > 0) {
-            $response = $this->responseFactory->createViolationListResponse($violationList);
+            $response   = $this->responseFactory->createViolationListResponse($violationList);
         } else {
-            $response = $this->responseFactory->createDeleteNoteResponse($note);
+            $response   = $this->responseFactory->createDeleteNoteResponse($note);
         }
 
         return $response;

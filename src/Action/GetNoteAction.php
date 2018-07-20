@@ -42,7 +42,7 @@ class GetNoteAction implements RequestHandlerInterface
         $this->responseFactory->setRequest($request);
 
         $requestTargets = explode('/',$request->getRequestTarget());
-        $noteId = end($requestTargets);
+        $noteId         = end($requestTargets);
 
         $note           = $this->finder->findOneNote($noteId);
         $violationList  = $this->validator->validateForNullNoteInDB($note);

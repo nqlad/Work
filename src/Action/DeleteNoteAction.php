@@ -31,10 +31,10 @@ class DeleteNoteAction implements RequestHandlerInterface
         ResponseFactoryInterface $responseFactory,
         ValidatorInterface $validator
     ) {
-        $this->deserialize = $deserialize;
-        $this->persister = $persister;
-        $this->responseFactory = $responseFactory;
-        $this->validator = $validator;
+        $this->deserialize      = $deserialize;
+        $this->persister        = $persister;
+        $this->responseFactory  = $responseFactory;
+        $this->validator        = $validator;
     }
 
     public function handleRequest(RequestInterface $request): ResponseInterface
@@ -42,7 +42,7 @@ class DeleteNoteAction implements RequestHandlerInterface
         $this->responseFactory->setRequest($request);
 
         $requestTargets = explode('/',$request->getRequestTarget());
-        $noteId = end($requestTargets);
+        $noteId         = end($requestTargets);
 
         $note           = $this->persister->deleteNote($noteId);
         $violationList  = $this->validator->validateForNullNoteInDB($note);

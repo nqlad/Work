@@ -27,14 +27,14 @@ class PostNoteAction implements RequestHandlerInterface
 
     public function __construct(
         DeserializerInterface $deserializer,
-        ValidatorInterface $validator,
         PersisterInterface $persister,
-        ResponseFactoryInterface $responseFactory
+        ResponseFactoryInterface $responseFactory,
+        ValidatorInterface $validator
     ) {
-        $this->deserializer = $deserializer;
-        $this->validator = $validator;
-        $this->persister = $persister;
-        $this->responseFactory = $responseFactory;
+        $this->deserializer     = $deserializer;
+        $this->persister        = $persister;
+        $this->responseFactory  = $responseFactory;
+        $this->validator        = $validator;
     }
 
     public function handleRequest(RequestInterface $request): ResponseInterface

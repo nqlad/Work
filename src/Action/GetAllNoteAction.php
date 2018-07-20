@@ -26,9 +26,9 @@ class GetAllNoteAction implements RequestHandlerInterface
         FinderInterface $finder,
         ResponseFactoryInterface $responseFactory
     ) {
-        $this->deserialize = $deserialize;
-        $this->finder = $finder;
-        $this->responseFactory = $responseFactory;
+        $this->deserialize      = $deserialize;
+        $this->finder           = $finder;
+        $this->responseFactory  = $responseFactory;
     }
 
     public function handleRequest(RequestInterface $request): ResponseInterface

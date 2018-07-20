@@ -39,11 +39,6 @@ class PostNoteAction implements RequestHandlerInterface
 
     public function handleRequest(RequestInterface $request): ResponseInterface
     {
-        // deserialization request body to Note
-        // Note validation
-        // if violations then create and return violation response
-        // persist note to database
-        // create and return note response
         $this->responseFactory->setRequest($request);
 
         $requestBody    = $this->getBody($request);
@@ -54,9 +49,8 @@ class PostNoteAction implements RequestHandlerInterface
         if (count($validationList) > 0) {
             $response = $this->responseFactory->createViolationListResponse($validationList);
         } else {
-            $response = $this->responseFactory->createNoteResponse($this->persister->persist($note));
+            $response = $this->responseFactory->createPostNoteResponse($this->persister->persist($note));
         }
-        //var_dump($response);
 
         return $response;
     }

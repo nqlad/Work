@@ -31,4 +31,13 @@ class Validator implements ValidatorInterface
             $this->violations[] = new Violation("title", "The request is missing title");
         }
     }
+
+    public function validateForNullNoteInDB(Note $note): array
+    {
+        if ($note->id === null) {
+            $this->violations[] = new Violation("id","ID not found");
+        }
+
+        return $this->violations;
+    }
 }

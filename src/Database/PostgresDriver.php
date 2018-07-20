@@ -6,7 +6,7 @@ namespace App\Database;
 use App\Entity\Note;
 use PDO;
 
-class PostgresDriver implements PersisterInterface
+class PostgresDriver implements PersisterInterface, FinderInterface
 {
     /** @var \PDO */
     private $connection = null;
@@ -36,6 +36,53 @@ class PostgresDriver implements PersisterInterface
         $stmt->execute([':note' => $note->title]);
 
         $note->id = $stmt->fetch(PDO::FETCH_ASSOC)['id'];
+
+        return $note;
+    }
+
+    public function findAllNote(): ?array
+    {
+        $query  = "select id, note from Notes;";
+        $stmt   = $this->connection->prepare($query);
+        $stmt->execute();
+
+        $notes = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
+        return $notes;
+    }
+
+    public function findOneNote(string $id): Note
+    {
+        $note = new Note();
+
+        $query  = "select note from Notes where id = :id;";
+        $stmt   = $this->connection->prepare($query);
+        $stmt->execute([':id' => $id]);
+
+        $title = $stmt->fetch(PDO::FETCH_ASSOC)['note'];
+
+        if ($title !== null) {
+            $note->id       = $id;
+            $note->title    = $title;
+        }
+
+        return $note;
+    }
+
+    public function deleteNote(string $id): Note
+    {
+        $note = new Note();
+
+        $query  = "delete from Notes where id = :id returning note;";
+        $stmt   = $this->connection->prepare($query);
+        $stmt->execute([':id' => $id]);
+
+        $title = $stmt->fetch(PDO::FETCH_ASSOC)['note'];
+
+        if ($title !== null) {
+            $note->id       = $id;
+            $note->title    = $title;
+        }
 
         return $note;
     }

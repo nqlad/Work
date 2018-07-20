@@ -12,7 +12,7 @@ $validator          = new \App\Validation\Validator();
 $persister          = new \App\Database\PostgresDriver('pgsql:host=localhost;port=5432;dbname=postgres','postgres','yfNL4W');
 $requestFactory     = new \App\Http\RequestFactory();
 $responseFactory    = new \App\Http\ResponseFactory($deserializer);
-$requestHandler     = new \App\Action\PostNoteAction($deserializer,$validator,$persister,$responseFactory);
+$requestHandler     = new \App\Action\GetNoteAction($deserializer,$persister,$responseFactory,$validator);
 $responseSender     = new \App\Http\ResponseSender();
 
 $request = $requestFactory->createRequest($_SERVER);

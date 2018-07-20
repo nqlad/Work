@@ -9,9 +9,15 @@ use Psr\Http\Message\ResponseInterface;
 
 interface ResponseFactoryInterface
 {
-    public function createNoteResponse(Note $note): ResponseInterface;
+    public function createPostNoteResponse(Note $note): ResponseInterface;
+
+    public function createFindAllNoteResponse(array $notes): ResponseInterface;
+
+    public function createFindNoteResponse(Note $note): ResponseInterface;
 
     public function createViolationListResponse(array $violationList): ResponseInterface;
 
     public function setRequest(RequestInterface $request): void;
+
+    public function createDeleteNoteResponse(Note $note): ResponseInterface;
 }

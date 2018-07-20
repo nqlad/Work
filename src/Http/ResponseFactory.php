@@ -30,7 +30,7 @@ class ResponseFactory implements ResponseFactoryInterface
         $this->request = $request;
     }
 
-    public function createNoteResponse(Note $note): ResponseInterface
+    public function createPostNoteResponse(Note $note): ResponseInterface
     {
         $status             = 200;
         $protocolVersion    = $this->request->getProtocolVersion();
@@ -41,6 +41,12 @@ class ResponseFactory implements ResponseFactoryInterface
 
         return $response;
     }
+
+    private function getBodyForNote(Note $note): StreamInterface
+    {
+        return new StringStream($this->deserializer->serialize($note));
+    }
+
 
     public function createViolationListResponse(array $violationList): ResponseInterface
     {
@@ -55,12 +61,6 @@ class ResponseFactory implements ResponseFactoryInterface
         return $response;
     }
 
-
-    private function getBodyForNote(Note $note): StreamInterface
-    {
-        return new StringStream($this->deserializer->serialize($note));
-    }
-
     private function getBodyForViolationResponse(array $violationList): StreamInterface
     {
         $body = [];
@@ -70,5 +70,52 @@ class ResponseFactory implements ResponseFactoryInterface
         }
 
         return new StringStream(implode($body));
+    }
+
+    public function createFindAllNoteResponse(array $notes): ResponseInterface
+    {
+        $status             = 200;
+        $protocolVersion    = $this->request->getProtocolVersion();
+        $headers            = $this->request->getHeaders();
+        $body               = $this->getBodyForFindAllResponse($notes);
+
+        $response = new Response($status, $protocolVersion, $headers, $body);
+
+        if (count($notes) === 0) {
+            $response = $response->withStatus(204);
+        }
+
+        return $response;
+    }
+
+    private function getBodyForFindAllResponse(array $notes): StreamInterface
+    {
+        $body = $this->deserializer->serialize($notes);
+
+        return new StringStream($body);
+    }
+
+    public function createFindNoteResponse(Note $note): ResponseInterface
+    {
+        $status             = 200;
+        $protocolVersion    = $this->request->getProtocolVersion();
+        $headers            = $this->request->getHeaders();
+        $body               = $this->getBodyForNote($note);
+
+        $response = new Response($status, $protocolVersion, $headers, $body);
+
+        return $response;
+    }
+
+    public function createDeleteNoteResponse(Note $note): ResponseInterface
+    {
+        $status             = 200;
+        $protocolVersion    = $this->request->getProtocolVersion();
+        $headers            = $this->request->getHeaders();
+        $body               = $this->getBodyForNote($note);
+
+        $response = new Response($status, $protocolVersion, $headers, $body);
+
+        return $response;
     }
 }

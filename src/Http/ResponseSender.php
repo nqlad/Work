@@ -15,8 +15,8 @@ class ResponseSender implements ResponseSenderInterface
     //todo output
     public function sendResponse($response): void
     {
-        header(sprintf('HTTP/%s %d %s',$response->getProtocolVersion(), $response->getStatusCode(), $response->getReasonPhrase()));
-    //echo 'HTTP/' . $response->getProtocolVersion() . ' ' .  $response->getStatusCode() . ' ' . $response->getReasonPhrase() . '<br/>';
+//        header(sprintf('HTTP/%s %d %s',$response->getProtocolVersion(), $response->getStatusCode(), $response->getReasonPhrase()));
+    echo 'HTTP/' . $response->getProtocolVersion() . ' ' .  $response->getStatusCode() . ' ' . $response->getReasonPhrase() . '<br/>';
 
         $this->sendHeaders($response->getHeaders());
         $this->sendBody($response->getBody());
@@ -25,20 +25,20 @@ class ResponseSender implements ResponseSenderInterface
     //todo output
     private function sendHeaders(array $headers): void
     {
-        foreach ($headers as $name => $values) {
-            $replace = true;
-            foreach ($values as $value) {
-                header("$name: $value", $replace);
-                $replace = false;
-            }
-        }
-
 //        foreach ($headers as $name => $values) {
+//            $replace = true;
 //            foreach ($values as $value) {
-//                echo $name . ': ' . $value;
+//                header("$name: $value", $replace);
+//                $replace = false;
 //            }
-//            echo  '<br/>';
 //        }
+
+        foreach ($headers as $name => $values) {
+            foreach ($values as $value) {
+                echo $name . ': ' . $value;
+            }
+            echo  '<br/>';
+        }
     }
 
     //todo output
@@ -46,7 +46,7 @@ class ResponseSender implements ResponseSenderInterface
     {
         if ($body->isReadable()) {
             echo $body->read(self::SIZE);
-            flush();
+            //flush();
         }
     }
 }

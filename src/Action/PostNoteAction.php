@@ -3,17 +3,40 @@
 namespace App\Action;
 
 
-use App\Database\PostgresDriver;
+use App\Database\PersisterInterface;
 use App\Http\RequestHandlerInterface;
-use App\Http\Response;
-use App\Http\StringStream;
-use App\Serialization\Deserialization;
-use App\Validation\Validation;
+use App\Http\ResponseFactoryInterface;
+use App\Serialization\DeserializerInterface;
+use App\Validation\ValidatorInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class PostNoteAction implements RequestHandlerInterface
 {
+    /** @var DeserializerInterface */
+    private $deserializer;
+
+    /** @var ValidatorInterface */
+    private $validator;
+
+    /** @var PersisterInterface */
+    private $persister;
+
+    /** @var ResponseFactoryInterface */
+    private $responseFactory;
+
+    public function __construct(
+        DeserializerInterface $deserializer,
+        ValidatorInterface $validator,
+        PersisterInterface $persister,
+        ResponseFactoryInterface $responseFactory
+    ) {
+        $this->deserializer = $deserializer;
+        $this->validator = $validator;
+        $this->persister = $persister;
+        $this->responseFactory = $responseFactory;
+    }
+
     public function handleRequest(RequestInterface $request): ResponseInterface
     {
         // deserialization request body to Note
@@ -21,48 +44,21 @@ class PostNoteAction implements RequestHandlerInterface
         // if violations then create and return violation response
         // persist note to database
         // create and return note response
-        $requestBody = $this->getBody($request);
+        $this->responseFactory->setRequest($request);
 
-        $deserialazer   = new Deserialization();
+        $requestBody    = $this->getBody($request);
+        $note           = $this->deserializer->deserialize($requestBody);
 
-        $note = $deserialazer->deserialize($requestBody);
+        $validationList = $this->validator->validate($note);
 
-        $validation = new Validation();
-        $violations = $validation->validate($note);
-
-        if (!sizeof($violations) == 0) {
-            $status = $this->getStatus($violations);
+        if (count($validationList) > 0) {
+            $response = $this->responseFactory->createViolationListResponse($validationList);
         } else {
-            $databaseDriver = new PostgresDriver('pgsql:host=localhost;port=5432;dbname=postgres','postgres','yfNL4W');
-
-            $note       = $databaseDriver->persist($note);
-            $status     = $this->getStatus($violations);
-            $responseBody = new StringStream($note->__toString());
+            $response = $this->responseFactory->createNoteResponse($this->persister->persist($note));
         }
-
-        $protocolVersion    = $this->getProtocolVersion($request);
-        $headers            = $this->getHeaders($request);
-        $response           = new Response($status, $protocolVersion, $headers, $responseBody);
-        var_dump($response);
+        //var_dump($response);
 
         return $response;
-    }
-
-    private function getStatus(array $violations)
-    {
-        $violations === null ? $status = 400 : $status = 200;
-
-        return $status;
-    }
-
-    private function getProtocolVersion(RequestInterface $request)
-    {
-        return $request->getProtocolVersion();
-    }
-
-    private function getHeaders(RequestInterface $request)
-    {
-        return $request->getHeaders();
     }
 
     private function getBody(RequestInterface $request)

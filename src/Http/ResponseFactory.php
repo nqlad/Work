@@ -3,39 +3,72 @@
 namespace App\Http;
 
 
+use App\Entity\Note;
+use App\Serialization\SerializerInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
 
-class ResponseFactory implements RequestHandlerInterface
+class ResponseFactory implements ResponseFactoryInterface
 {
-    public function handleRequest(RequestInterface $request): ResponseInterface
+    /** @var SerializerInterface */
+    private $deserializer;
+
+    /** @var RequestInterface */
+    private $request;
+
+    public function __construct(SerializerInterface $deserializer)
     {
-        $status             = $this->getStatus($request);
-        $protocolVersion    = $this->getProtocolVersion($request);
-        $headers            = $this->getHeaders($request);
-        $body               = $this->getBody($request);
+        $this->deserializer = $deserializer;
+    }
+
+    /**
+     * @param RequestInterface $request
+     */
+    public function setRequest(RequestInterface $request): void
+    {
+        $this->request = $request;
+    }
+
+    public function createNoteResponse(Note $note): ResponseInterface
+    {
+        $status             = 200;
+        $protocolVersion    = $this->request->getProtocolVersion();
+        $headers            = $this->request->getHeaders();
+        $body               = $this->getBodyForNote($note);
+
         $response           = new Response($status, $protocolVersion, $headers, $body);
 
         return $response;
     }
 
-    private function getStatus(RequestInterface $request)
+    public function createViolationListResponse(array $violationList): ResponseInterface
     {
-        return 200;
+
+        $status             = 400;
+        $protocolVersion    = $this->request->getProtocolVersion();
+        $headers            = $this->request->getHeaders();
+        $body               = $this->getBodyForViolationResponse($violationList);
+
+        $response           = new Response($status, $protocolVersion, $headers, $body);
+
+        return $response;
     }
 
-    private function getProtocolVersion(RequestInterface $request)
+
+    private function getBodyForNote(Note $note): StreamInterface
     {
-        return $request->getProtocolVersion();
+        return new StringStream($this->deserializer->serialize($note));
     }
 
-    private function getHeaders(RequestInterface $request)
+    private function getBodyForViolationResponse(array $violationList): StreamInterface
     {
-        return $request->getHeaders();
-    }
+        $body = [];
 
-    private function getBody(RequestInterface $request)
-    {
-        return $request->getBody();
+        foreach ($violationList as $violation) {
+            array_push($body,$this->deserializer->serialize($violation));
+        }
+
+        return new StringStream(implode($body));
     }
 }

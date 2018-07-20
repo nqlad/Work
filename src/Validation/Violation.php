@@ -3,7 +3,7 @@
 namespace App\Validation;
 
 
-class Violation
+class Violation implements \JsonSerializable
 {
     /** @var string */
     private $path;
@@ -25,5 +25,10 @@ class Violation
     public function getMessage(): string
     {
         return $this->message;
+    }
+
+    public function jsonSerialize()
+    {
+        return get_object_vars($this);
     }
 }

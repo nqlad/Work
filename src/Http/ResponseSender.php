@@ -15,28 +15,38 @@ class ResponseSender implements ResponseSenderInterface
     //todo output
     public function sendResponse($response): void
     {
-    echo 'HTTP/' . $response->getProtocolVersion() . ' ' .  $response->getStatusCode() . ' ' . $response->getReasonPhrase() . '<br/>';
+        header(sprintf('HTTP/%s %d %s',$response->getProtocolVersion(), $response->getStatusCode(), $response->getReasonPhrase()));
+    //echo 'HTTP/' . $response->getProtocolVersion() . ' ' .  $response->getStatusCode() . ' ' . $response->getReasonPhrase() . '<br/>';
 
         $this->sendHeaders($response->getHeaders());
         $this->sendBody($response->getBody());
     }
 
     //todo output
-    private function sendHeaders(array $headers)
+    private function sendHeaders(array $headers): void
     {
         foreach ($headers as $name => $values) {
+            $replace = true;
             foreach ($values as $value) {
-                echo $name . ': ' . $value;
+                header("$name: $value", $replace);
+                $replace = false;
             }
-            echo  '<br/>';
         }
+
+//        foreach ($headers as $name => $values) {
+//            foreach ($values as $value) {
+//                echo $name . ': ' . $value;
+//            }
+//            echo  '<br/>';
+//        }
     }
 
     //todo output
-    private function sendBody(StreamInterface $body)
+    private function sendBody(StreamInterface $body): void
     {
         if ($body->isReadable()) {
-            echo $body->read(self::SIZE)  . '<br/>';
+            echo $body->read(self::SIZE);
+            flush();
         }
     }
 }

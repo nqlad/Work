@@ -7,11 +7,18 @@ error_reporting(E_ALL);
 
 require(__DIR__ . '/../vendor/autoload.php');
 
-$requestFactory = new \App\Http\RequestFactory();
-$requestHandler = new \App\Action\PostNoteAction();
+$deserializer       = new \App\Serialization\JsonSerializer();
+$validator          = new \App\Validation\Validator();
+$persister          = new \App\Database\PostgresDriver('pgsql:host=localhost;port=5432;dbname=postgres','postgres','yfNL4W');
+$requestFactory     = new \App\Http\RequestFactory();
+$responseFactory    = new \App\Http\ResponseFactory($deserializer);
+$requestHandler     = new \App\Action\PostNoteAction($deserializer,$validator,$persister,$responseFactory);
+$responseSender     = new \App\Http\ResponseSender();
+
 $request = $requestFactory->createRequest($_SERVER);
+
 $response = $requestHandler->handleRequest($request);
-//$this->responseSender->sendResponse($response);
+$responseSender->sendResponse($response);
 
 
 

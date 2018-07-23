@@ -46,7 +46,8 @@ class PostNoteAction implements RequestHandlerInterface
         $requestBody    = $this->getBody($request);
         $note           = $this->deserializer->deserialize($requestBody);
 
-        $validationList = $this->validator->validate($note);
+        $validationList = $this->validator->validateForNullIdInUri($request);
+        $validationList += $this->validator->validate($note);
 
         if (count($validationList) > 0) {
             $response   = $this->responseFactory->createViolationListResponse($validationList);

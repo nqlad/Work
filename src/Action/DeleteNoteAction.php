@@ -41,10 +41,9 @@ class DeleteNoteAction implements RequestHandlerInterface
     {
         $this->responseFactory->setRequest($request);
 
-        $requestTargets = explode('/',$request->getRequestTarget());
-        $noteId         = end($requestTargets);
-
+        $noteId         = $this->getNoteIdFromUri($request);
         $note           = $this->persister->deleteNote($noteId);
+
         $violationList  = $this->validator->validateForNullNoteInDB($note);
 
         if (count($violationList) > 0) {
@@ -54,5 +53,12 @@ class DeleteNoteAction implements RequestHandlerInterface
         }
 
         return $response;
+    }
+
+    private function getNoteIdFromUri(RequestInterface $request): string
+    {
+        $requestTargets = explode('/',$request->getRequestTarget());
+
+        return end($requestTargets);
     }
 }

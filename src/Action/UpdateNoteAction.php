@@ -46,9 +46,10 @@ class UpdateNoteAction implements RequestHandlerInterface
         $requestBody    = $this->getBody($request);
         $note           = $this->deserialize->deserialize($requestBody);
 
-        $note           = $this->checkForNullIdInUri($request,$note);
+        $note           = $this->findNoteIdInUri($request,$note);
 
         $violationList  = $this->validator->validate($note);
+        $violationList  += $this->validator->validateForNullNoteInDB($note);
 
         if (count($violationList) > 0 or !($this->persister->updateNote($note))) {
             $response   = $this->responseFactory->createViolationListResponse($violationList);
@@ -59,7 +60,7 @@ class UpdateNoteAction implements RequestHandlerInterface
         return $response;
     }
 
-    private function checkForNullIdInUri(RequestInterface $request,Note $note): Note
+    private function findNoteIdInUri(RequestInterface $request,Note $note): Note
     {
         $requestTargets = explode('/',$request->getRequestTarget());
 

@@ -4,6 +4,7 @@ namespace App\Validation;
 
 
 use App\Entity\Note;
+use Psr\Http\Message\RequestInterface;
 
 class Validator implements ValidatorInterface
 {
@@ -14,7 +15,6 @@ class Validator implements ValidatorInterface
     {
         $this->checkForNullTitleAndAddViolation($note);
         $this->checkLengthAndAddViolation($note);
-        $this->checkForNullIdAndAddViolation($note);
 
         return $this->violations;
     }
@@ -33,17 +33,21 @@ class Validator implements ValidatorInterface
         }
     }
 
-    private function checkForNullIdAndAddViolation(Note $note): void
-    {
-        if ($note->id === null) {
-            $this->violations[] = new Violation("id","The request is missing id");
-        }
-    }
-
     public function validateForNullNoteInDB(Note $note): array
     {
         if ($note->id === null) {
             $this->violations[] = new Violation("id","ID not found");
+        }
+
+        return $this->violations;
+    }
+
+    public function validateForNullIdInUri(RequestInterface $request): array
+    {
+        $requestTargets = explode('/',$request->getRequestTarget());
+
+        if (end($requestTargets) !== 'notes') {
+            $this->violations[] = new Violation("id","In URI MUST NOT be id");
         }
 
         return $this->violations;

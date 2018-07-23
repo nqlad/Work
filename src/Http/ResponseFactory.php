@@ -22,22 +22,14 @@ class ResponseFactory implements ResponseFactoryInterface
         $this->deserializer = $deserializer;
     }
 
-    /**
-     * @param RequestInterface $request
-     */
-    public function setRequest(RequestInterface $request): void
-    {
-        $this->request = $request;
-    }
 
-    public function createPostNoteResponse(Note $note): ResponseInterface
+    public function createNoteResponse(RequestInterface $request, Note $note, int $statusCode): ResponseInterface
     {
-        $status             = 200;
-        $protocolVersion    = $this->request->getProtocolVersion();
-        $headers            = $this->request->getHeaders();
+        $protocolVersion    = $request->getProtocolVersion();
+        $headers            = $request->getHeaders();
         $body               = $this->getBodyForNote($note);
 
-        $response           = new Response($status, $protocolVersion, $headers, $body);
+        $response = new Response($statusCode, $protocolVersion, $headers, $body);
 
         return $response;
     }
@@ -47,13 +39,30 @@ class ResponseFactory implements ResponseFactoryInterface
         return new StringStream($this->deserializer->serialize($note));
     }
 
+    public function createNoteCollection(RequestInterface $request, array $notes, int $statusCode): ResponseInterface
+    {
+        $protocolVersion    = $request->getProtocolVersion();
+        $headers            = $request->getHeaders();
+        $body               = $this->getBodyForNoteCollection($notes);
 
-    public function createViolationListResponse(array $violationList): ResponseInterface
+        $response = new Response($statusCode, $protocolVersion, $headers, $body);
+
+        return $response;
+    }
+
+    private function getBodyForNoteCollection(array $notes): StreamInterface
+    {
+        $body = $this->deserializer->serialize($notes);
+
+        return new StringStream($body);
+    }
+
+    public function createViolationListResponse(RequestInterface $request, array $violationList): ResponseInterface
     {
 
         $status             = 400;
-        $protocolVersion    = $this->request->getProtocolVersion();
-        $headers            = $this->request->getHeaders();
+        $protocolVersion    = $request->getProtocolVersion();
+        $headers            = $request->getHeaders();
         $body               = $this->getBodyForViolationResponse($violationList);
 
         $response           = new Response($status, $protocolVersion, $headers, $body);
@@ -72,12 +81,47 @@ class ResponseFactory implements ResponseFactoryInterface
         return new StringStream(implode($body));
     }
 
+
+    public function createNotFoundResponse(RequestInterface $request): ResponseInterface
+    {
+        $status             = 404;
+        $protocolVersion    = $request->getProtocolVersion();
+        $headers            = $request->getHeaders();
+        $body               = new StringStream(null);
+
+        $response           = new Response($status, $protocolVersion, $headers, $body);
+
+        return $response;
+    }
+
+
+
+
+
+
+
+
+
+/*
+
+    public function createPostNoteResponse(Note $note): ResponseInterface
+    {
+        $status             = 200;
+        $protocolVersion    = $this->request->getProtocolVersion();
+        $headers            = $this->request->getHeaders();
+        $body               = $this->getBodyForNote($note);
+
+        $response           = new Response($status, $protocolVersion, $headers, $body);
+
+        return $response;
+    }
+
     public function createFindAllNoteResponse(array $notes): ResponseInterface
     {
         $status             = 200;
         $protocolVersion    = $this->request->getProtocolVersion();
         $headers            = $this->request->getHeaders();
-        $body               = $this->getBodyForFindAllResponse($notes);
+        $body               = $this->getBodyForNoteCollection($notes);
 
         $response = new Response($status, $protocolVersion, $headers, $body);
 
@@ -86,13 +130,6 @@ class ResponseFactory implements ResponseFactoryInterface
         }
 
         return $response;
-    }
-
-    private function getBodyForFindAllResponse(array $notes): StreamInterface
-    {
-        $body = $this->deserializer->serialize($notes);
-
-        return new StringStream($body);
     }
 
     public function createFindNoteResponse(Note $note): ResponseInterface
@@ -130,4 +167,5 @@ class ResponseFactory implements ResponseFactoryInterface
 
         return $response;
     }
+*/
 }

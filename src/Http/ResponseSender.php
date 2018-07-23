@@ -11,7 +11,8 @@ class ResponseSender implements ResponseSenderInterface
 
     public function sendResponse($response): void
     {
-        header(sprintf('HTTP/%s %d %s',$response->getProtocolVersion(), $response->getStatusCode(), $response->getReasonPhrase()));
+//        var_dump($response);
+        header('HTTP/' . $response->getProtocolVersion() . ' ' . $response->getStatusCode() . ' ' . $response->getReasonPhrase() .'');
 
         $this->sendHeaders($response->getHeaders());
         $this->sendBody($response->getBody());
@@ -29,7 +30,7 @@ class ResponseSender implements ResponseSenderInterface
     }
 
     //todo output
-    private function sendBody(StreamInterface $body): void //???
+    private function sendBody(StreamInterface $body): void//???
     {
         if ($body->isReadable()) {
             echo $body->getContents();

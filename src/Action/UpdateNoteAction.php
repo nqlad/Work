@@ -41,8 +41,6 @@ class UpdateNoteAction implements RequestHandlerInterface
 
     public function handleRequest(RequestInterface $request): ResponseInterface
     {
-        $this->responseFactory->setRequest($request);
-
         $requestBody    = $this->getBody($request);
         $note           = $this->deserialize->deserialize($requestBody);
 
@@ -52,9 +50,9 @@ class UpdateNoteAction implements RequestHandlerInterface
         $violationList  += $this->validator->validateForNullNoteInDB($note);
 
         if (count($violationList) > 0 or !($this->persister->updateNote($note))) {
-            $response   = $this->responseFactory->createViolationListResponse($violationList);
+            $response   = $this->responseFactory->createViolationListResponse($request, $violationList);
         } else {
-            $response   = $this->responseFactory->createUpdateNoteResponse($note);
+            $response   = $this->responseFactory->createNoteResponse($request, $note,200);
         }
 
         return $response;

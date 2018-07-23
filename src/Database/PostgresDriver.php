@@ -51,20 +51,16 @@ class PostgresDriver implements PersisterInterface, FinderInterface
         return $notes;
     }
 
-    public function findOneNote(string $id): Note
+    public function findOneNote(string $id): ?Note
     {
-        $note = new Note();
+        $note = null;
 
         $query  = "select note from Notes where id = :id;";
-        $stmt   = $this->connection->prepare($query);
-        $stmt->execute([':id' => $id]);
+        $statement   = $this->connection->prepare($query);
+        $statement->setFetchMode(PDO::FETCH_CLASS, Note::class);
+        $statement->execute([':id' => $id]);
 
-        $title = $stmt->fetch(PDO::FETCH_ASSOC)['note'];
-
-        if ($title !== null) {
-            $note->id       = $id;
-            $note->title    = $title;
-        }
+        $note = $statement->fetch(PDO::FETCH_CLASS);
 
         return $note;
     }

@@ -33,9 +33,13 @@ class GetAllNoteAction implements RequestHandlerInterface
 
     public function handleRequest(RequestInterface $request): ResponseInterface
     {
-        $this->responseFactory->setRequest($request);
+        $noteCollection = $this->finder->findAllNote();
 
-        $response = $this->responseFactory->createFindAllNoteResponse($this->finder->findAllNote());
+        if (count($noteCollection) > 0) {
+            $response = $this->responseFactory->createNoteCollection($request, $noteCollection,200);
+        } else {
+            $response = $this->responseFactory->createNoteCollection($request, $noteCollection,204);
+        }
 
         return $response;
     }

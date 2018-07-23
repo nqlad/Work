@@ -14,30 +14,13 @@ $requestFactory     = new \App\Http\RequestFactory();
 $responseFactory    = new \App\Http\ResponseFactory($deserializer);
 $responseSender     = new \App\Http\ResponseSender();
 
-$request = $requestFactory->createRequest($_SERVER);
+$getNote            = new \App\Action\GetNoteAction($deserializer,$persister,$responseFactory,$validator);
+$getNoteCollection  = new \App\Action\GetAllNoteAction($deserializer,$persister,$responseFactory);
+$deleteNote         = new \App\Action\DeleteNoteAction($deserializer,$persister,$responseFactory,$validator);
+$postNote           = new \App\Action\PostNoteAction($deserializer,$persister,$responseFactory,$validator);
+$putNote            = new \App\Action\UpdateNoteAction($deserializer,$validator,$persister,$responseFactory);
 
-if ($request->getMethod() === 'GET') {
-    $requestTargets = explode('/',$request->getRequestTarget());
-    $noteId         = end($requestTargets);
-
-    if ($noteId !== 'notes') {
-        $requestHandler  = new \App\Action\GetNoteAction($deserializer,$persister,$responseFactory,$validator);
-    } else {
-        $requestHandler = new \App\Action\GetAllNoteAction($deserializer,$persister,$responseFactory);
-    }
-
-} elseif ($request->getMethod() === 'POST') {
-    $requestHandler = new \App\Action\PostNoteAction($deserializer,$persister,$responseFactory,$validator);
-} elseif ($request->getMethod() === 'DELETE') {
-    $requestHandler = new \App\Action\DeleteNoteAction($deserializer,$persister,$responseFactory,$validator);
-} elseif ($request->getMethod() === 'PUT') {
-    $requestHandler = new \App\Action\UpdateNoteAction($deserializer,$validator,$persister,$responseFactory);
-}
-
-$response = $requestHandler->handleRequest($request);
-$responseSender->sendResponse($response);
-
-
+$router = new \App\RequestHandler\RoutingHandler($requestFactory,$responseSender,$getNoteCollection,$getNote,$deleteNote,$postNote,$putNote);
 
 //$kernel = new \App\Kernel();
 //$kernel->run();

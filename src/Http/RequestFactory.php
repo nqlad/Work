@@ -16,6 +16,7 @@ class RequestFactory implements RequestFactoryInterface
         $protocolVersion    = $this->getProtocolVersion($serverConfig);
         $headers            = $this->getHeaders($serverConfig);
         $body               = $this->getBody();
+
         $request            = new Request($uri,$method,$protocolVersion,$headers,$body);
 
         return $request;

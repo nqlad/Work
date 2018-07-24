@@ -24,6 +24,7 @@ class Kernel
         $this->requestHandler = $requestHandler;
         $this->responseSender = $responseSender;
     }
+
     public function run(): void
     {
         $request = $this->requestFactory->createRequest($_SERVER);

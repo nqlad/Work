@@ -14,9 +14,6 @@ class ResponseFactory implements ResponseFactoryInterface
     /** @var SerializerInterface */
     private $deserializer;
 
-    /** @var RequestInterface */
-    private $request;
-
     public function __construct(SerializerInterface $deserializer)
     {
         $this->deserializer = $deserializer;
@@ -93,79 +90,4 @@ class ResponseFactory implements ResponseFactoryInterface
 
         return $response;
     }
-
-
-
-
-
-
-
-
-
-/*
-
-    public function createPostNoteResponse(Note $note): ResponseInterface
-    {
-        $status             = 200;
-        $protocolVersion    = $this->request->getProtocolVersion();
-        $headers            = $this->request->getHeaders();
-        $body               = $this->getBodyForNote($note);
-
-        $response           = new Response($status, $protocolVersion, $headers, $body);
-
-        return $response;
-    }
-
-    public function createFindAllNoteResponse(array $notes): ResponseInterface
-    {
-        $status             = 200;
-        $protocolVersion    = $this->request->getProtocolVersion();
-        $headers            = $this->request->getHeaders();
-        $body               = $this->getBodyForNoteCollection($notes);
-
-        $response = new Response($status, $protocolVersion, $headers, $body);
-
-        if (count($notes) === 0) {
-            $response = $response->withStatus(204);
-        }
-
-        return $response;
-    }
-
-    public function createFindNoteResponse(Note $note): ResponseInterface
-    {
-        $status             = 200;
-        $protocolVersion    = $this->request->getProtocolVersion();
-        $headers            = $this->request->getHeaders();
-        $body               = $this->getBodyForNote($note);
-
-        $response = new Response($status, $protocolVersion, $headers, $body);
-
-        return $response;
-    }
-
-    public function createDeleteNoteResponse(Note $note): ResponseInterface
-    {
-        $status             = 200;
-        $protocolVersion    = $this->request->getProtocolVersion();
-        $headers            = $this->request->getHeaders();
-        $body               = $this->getBodyForNote($note);
-
-        $response = new Response($status, $protocolVersion, $headers, $body);
-
-        return $response;
-    }
-
-    public function createUpdateNoteResponse(Note $note): ResponseInterface
-    {
-        $status             = 200;
-        $protocolVersion    = $this->request->getProtocolVersion();
-        $headers            = $this->request->getHeaders();
-        $body               = $this->getBodyForNote($note);
-
-        $response = new Response($status, $protocolVersion, $headers, $body);
-
-        return $response;
-    }
-*/
 }

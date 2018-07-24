@@ -10,7 +10,6 @@ class StringStream implements StreamInterface
     /** @var string */
     private $contents;
 
-    // read php://input to string
     public function __construct(string $contents)
     {
         $this->contents = $contents;

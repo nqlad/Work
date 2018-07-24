@@ -22,9 +22,5 @@ $putNote            = new \App\Action\UpdateNoteAction($deserializer,$validator,
 
 $router = new \App\RequestHandler\RoutingHandler($responseFactory, $getNoteCollection,$getNote,$deleteNote,$postNote,$putNote);
 
-$kernel = new \App\Kernel(
-    $requestFactory,
-    $router,
-    $responseSender
-);
+$kernel = new \App\Kernel($requestFactory, $router, $responseSender);
 $kernel->run();

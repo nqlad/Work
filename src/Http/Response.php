@@ -124,6 +124,7 @@ class Response extends Message implements ResponseInterface
 
         $response = clone $this;
         $response->setStatusCode($code);
+
         if ($reasonPhrase !== '') {
             $response->setReasonPhrase($reasonPhrase);
         } else {

@@ -41,7 +41,7 @@ class RoutingHandler implements RequestHandlerInterface
         PostNoteAction $postNoteAction,
         UpdateNoteAction $putNoteAction
     ){
-        $this->responseFactory   = $responseFactory;
+        $this->responseFactory  = $responseFactory;
         $this->getAllNoteAction = $getAllNoteAction;
         $this->getNoteAction    = $getNoteAction;
         $this->deleteNoteAction = $deleteNoteAction;

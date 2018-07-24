@@ -32,7 +32,7 @@ class UpdateNoteAction implements RequestHandlerInterface
         ValidatorInterface $validator,
         PersisterInterface $persister,
         ResponseFactoryInterface $responseFactory
-    ){
+    ) {
         $this->deserialize      = $deserialize;
         $this->validator        = $validator;
         $this->persister        = $persister;

@@ -43,7 +43,7 @@ class GetNoteAction implements RequestHandlerInterface
         $note           = $this->finder->findOneNote($noteId);
 
         if ($note === null) {
-            $response = $this->responseFactory->createNotFoundResponse($request);
+            $response   = $this->responseFactory->createNotFoundResponse($request);
 
             return $response;
         }

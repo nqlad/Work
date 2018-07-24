@@ -31,9 +31,9 @@ class PostgresDriver implements PersisterInterface, FinderInterface
 
     public function persist(Note $note): Note
     {
-        $query  = "insert into Notes values(default, :note) returning id";
+        $query  = "insert into Notes values(default, :title) returning id";
         $stmt   = $this->connection->prepare($query);
-        $stmt->execute([':note' => $note->title]);
+        $stmt->execute([':title' => $note->title]);
 
         $note->id = $stmt->fetch(PDO::FETCH_ASSOC)['id'];
 
@@ -42,7 +42,7 @@ class PostgresDriver implements PersisterInterface, FinderInterface
 
     public function findAllNote(): ?array
     {
-        $query  = "select id, note from Notes;";
+        $query  = "select id, title from Notes;";
         $stmt   = $this->connection->prepare($query);
         $stmt->execute();
 
@@ -55,7 +55,7 @@ class PostgresDriver implements PersisterInterface, FinderInterface
     {
         $note = null;
 
-        $query  = "select note from Notes where id = :id;";
+        $query  = "select * from Notes where id = :id;";
         $statement   = $this->connection->prepare($query);
         $statement->setFetchMode(PDO::FETCH_CLASS, Note::class);
         $statement->execute([':id' => $id]);
@@ -69,11 +69,11 @@ class PostgresDriver implements PersisterInterface, FinderInterface
     {
         $note = new Note();
 
-        $query  = "delete from Notes where id = :id returning note;";
+        $query  = "delete from Notes where id = :id returning title;";
         $stmt   = $this->connection->prepare($query);
         $stmt->execute([':id' => $id]);
 
-        $title = $stmt->fetch(PDO::FETCH_ASSOC)['note'];
+        $title = $stmt->fetch(PDO::FETCH_ASSOC)['title'];
 
         if ($title !== null) {
             $note->id       = $id;
@@ -85,7 +85,7 @@ class PostgresDriver implements PersisterInterface, FinderInterface
 
     public function updateNote(Note $note): bool
     {
-        $query  = "update Notes set note = :title where id = :id;";
+        $query  = "update Notes set title = :title where id = :id;";
         $stmt   = $this->connection->prepare($query);
 
         if ($stmt->execute([':id' => $note->id, ':title' => $note->title])) {

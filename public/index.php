@@ -20,7 +20,11 @@ $deleteNote         = new \App\Action\DeleteNoteAction($deserializer,$persister,
 $postNote           = new \App\Action\PostNoteAction($deserializer,$persister,$responseFactory,$validator);
 $putNote            = new \App\Action\UpdateNoteAction($deserializer,$validator,$persister,$responseFactory);
 
-$router = new \App\RequestHandler\RoutingHandler($requestFactory,$responseSender,$getNoteCollection,$getNote,$deleteNote,$postNote,$putNote);
+$router = new \App\RequestHandler\RoutingHandler($responseFactory, $getNoteCollection,$getNote,$deleteNote,$postNote,$putNote);
 
-//$kernel = new \App\Kernel();
-//$kernel->run();
+$kernel = new \App\Kernel(
+    $requestFactory,
+    $router,
+    $responseSender
+);
+$kernel->run();

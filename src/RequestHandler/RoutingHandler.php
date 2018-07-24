@@ -8,13 +8,12 @@ use App\Action\GetAllNoteAction;
 use App\Action\GetNoteAction;
 use App\Action\PostNoteAction;
 use App\Action\UpdateNoteAction;
-use App\Http\RequestFactoryInterface;
 use App\Http\RequestHandlerInterface;
-use App\Http\ResponseSenderInterface;
-use App\Kernel;
+use App\Http\ResponseFactoryInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
-class RoutingHandler
+class RoutingHandler implements RequestHandlerInterface
 {
     /** @var GetAllNoteAction */
     private $getAllNoteAction;
@@ -31,26 +30,18 @@ class RoutingHandler
     /** @var UpdateNoteAction */
     private $putNoteAction;
 
-    /** @var RequestFactoryInterface*/
-    private $requestFactory;
-
-    /** @var RequestHandlerInterface */
-    private $requestHandler;
-
-    /** @var ResponseSenderInterface */
-    private $responseSender;
+    /** @var ResponseFactoryInterface*/
+    private $responseFactory;
 
     public function __construct(
-        RequestFactoryInterface $requestFactory,
-        ResponseSenderInterface $responseSender,
+        ResponseFactoryInterface $responseFactory,
         GetAllNoteAction $getAllNoteAction,
         GetNoteAction $getNoteAction,
         DeleteNoteAction $deleteNoteAction,
         PostNoteAction $postNoteAction,
         UpdateNoteAction $putNoteAction
     ){
-        $this->requestFactory   = $requestFactory;
-        $this->responseSender   = $responseSender;
+        $this->responseFactory   = $responseFactory;
         $this->getAllNoteAction = $getAllNoteAction;
         $this->getNoteAction    = $getNoteAction;
         $this->deleteNoteAction = $deleteNoteAction;
@@ -59,19 +50,19 @@ class RoutingHandler
     }
 
 
-    public function handleRequest(RequestInterface $request): void
+    public function handleRequest(RequestInterface $request): ResponseInterface
     {
         if ($request->getMethod() === 'POST') {
 
-            $this->requestHandler = $this->postNoteAction;
+            $response       = $this->postNoteAction->handleRequest($request);
 
         } elseif ($request->getMethod() === 'PUT') {
 
-            $this->requestHandler = $this->putNoteAction;
+            $response       = $this->putNoteAction->handleRequest($request);
 
         } elseif ($request->getMethod() === 'DELETE') {
 
-            $this->requestHandler = $this->deleteNoteAction;
+            $response       = $this->deleteNoteAction->handleRequest($request);
 
         } elseif ($request->getMethod() === 'GET') {
 
@@ -79,13 +70,17 @@ class RoutingHandler
             $noteId         = end($requestTargets);
 
             if ($noteId !== 'notes') {
-                $this->requestHandler = $this->getNoteAction;
+                $response   = $this->getNoteAction->handleRequest($request);
             } else {
-                $this->requestHandler = $this->getAllNoteAction;
+                $response   = $this->getAllNoteAction->handleRequest($request);
             }
+
+        } else {
+
+            $response       = $this->responseFactory->createNotFoundResponse($request);
+
         }
 
-        $kernel = new Kernel($this->requestFactory,$this->requestHandler,$this->responseSender);
-        $kernel->run();
+        return $response;
     }
 }

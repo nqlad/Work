@@ -105,20 +105,12 @@ class DeleteNoteActionTest extends TestCase
         return $response;
     }
 
-    private function assertResponseFactory_createViolationListResponse_isCalledOnceWithRequestAndViolationList($request, $violationList, $note): void
-    {
-        \Phake::verify($this->responseFactory, \Phake::times(1))
-            ->createViolationListResponse($request, $violationList);
-        \Phake::verify($this->responseFactory,\Phake::times(0))
-            ->createNoteResponse($request,$note,200);
-    }
-
-
     private function assertPersister_deleteNote_isCalledOnceWithNoteId($noteId): void
     {
         \Phake::verify($this->persister, \Phake::times(1))
             ->deleteNote($noteId);
     }
+
 
     private function assertValidator_validateForNullNoteInDB_isCalledOnceWithNote($note): void
     {
@@ -126,31 +118,46 @@ class DeleteNoteActionTest extends TestCase
             ->validateForNullNoteInDB($note);
     }
 
+    private function assertResponseFactory_createViolationListResponse_isCalledOnceWithRequestAndViolationList($request, $violationList): void
+    {
+        \Phake::verify($this->responseFactory, \Phake::times(1))
+            ->createViolationListResponse($request, $violationList);
+    }
+
     /** @test */
     public function handleRequest_request_createNoteResponse():void
     {
-        $request    = $this->createTestRequestForViolationList();
+        $request    = $this->createTestRequestForNoteResponse();
         $deleteNote = $this->createDeleteNote();
 
-        $noteId     = $this->givenDeleteNote_getNoteIdFromUri_returnsNoteId($request);
-        $note       = $this->givenPersister_deleteNote_returnsNote($noteId);
-        $this->givenValidator_ValidateForNullNoteInDB_returnsEmptyViolationList($note);
-        $response   = $this->givenResponseFactory_createNoteResponse_returnsResponse($request,$note,200);
+        $noteId     = '1';
+        $statusCode = 200;
+        $note       = $this->givenPersister_deleteNote_returnsNote();
+        $this->givenValidator_ValidateForNullNoteInDB_returnsEmptyViolationList();
+        $response   = $this->givenResponseFactory_createNoteResponse_returnsResponse($request,$note,$statusCode);
 
         $deleteNote->handleRequest($request);
 
-        $this->assertDeleteNote_getNoteIdFromUri_isCalledOnceWithRequest($request);
         $this->assertPersister_deleteNote_isCalledOnceWithNoteId($noteId);
         $this->assertValidator_validateForNullNoteInDB_isCalledOnceWithNote($note);
+        $this->assertResponseFactory_createNoteResponse_isCalledOnceWithRequest($request,$note, $statusCode);
     }
 
-    private function givenValidator_ValidateForNullNoteInDB_returnsEmptyViolationList($note): void
+    private function createTestRequestForNoteResponse(): RequestInterface
     {
-        $violationList = [''];
+        $uri                    = new Uri('http://project.local/notes/1');
+        $body                   = new StringStream('');
+
+        return new Request($uri,'DELETE','1.1',[''=>['']],$body);
+    }
+
+    private function givenValidator_ValidateForNullNoteInDB_returnsEmptyViolationList(): void
+    {
+        $violationList = [];
 
         \Phake::when($this->validator)
-            ->ValidateForNullNoteInDB($note)
-            ->thenReturn(null);
+            ->validateForNullNoteInDB(\Phake::anyParameters())
+            ->thenReturn($violationList);
     }
 
     private function givenResponseFactory_createNoteResponse_returnsResponse($request, $note, $statusCode): ResponseInterface
@@ -164,11 +171,9 @@ class DeleteNoteActionTest extends TestCase
         return $response;
     }
 
-    private function assertResponseFactory_createNoteResponse_isCalledOnceWithRequest($request, $violationList, $note): void
+    private function assertResponseFactory_createNoteResponse_isCalledOnceWithRequest($request, $note, $statusCode): void
     {
-        \Phake::verify($this->responseFactory, \Phake::times(1))
-            ->createViolationListResponse($request, $violationList);
-        \Phake::verify($this->responseFactory,\Phake::times(0))
-            ->createNoteResponse($request,$note,200);
+        \Phake::verify($this->responseFactory,\Phake::times(1))
+            ->createNoteResponse($request,$note,$statusCode);
     }
 }

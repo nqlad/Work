@@ -11,7 +11,6 @@ use App\Serialization\DeserializerInterface;
 use App\Validation\ValidatorInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
 
 class UpdateNoteAction implements RequestHandlerInterface
 {
@@ -41,7 +40,7 @@ class UpdateNoteAction implements RequestHandlerInterface
 
     public function handleRequest(RequestInterface $request): ResponseInterface
     {
-        $requestBody    = $this->getBody($request);
+        $requestBody    = $request->getBody();
         $note           = $this->deserialize->deserialize($requestBody);
 
         $note           = $this->findNoteIdInUri($request,$note);
@@ -69,10 +68,5 @@ class UpdateNoteAction implements RequestHandlerInterface
         }
 
         return $note;
-    }
-
-    private function getBody(RequestInterface $request): StreamInterface
-    {
-        return $request->getBody();
     }
 }

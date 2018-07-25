@@ -10,7 +10,6 @@ use App\Serialization\DeserializerInterface;
 use App\Validation\ValidatorInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamInterface;
 
 class PostNoteAction implements RequestHandlerInterface
 {
@@ -40,7 +39,7 @@ class PostNoteAction implements RequestHandlerInterface
 
     public function handleRequest(RequestInterface $request): ResponseInterface
     {
-        $requestBody    = $this->getBody($request);
+        $requestBody    = $request->getBody();
         $note           = $this->deserializer->deserialize($requestBody);
 
         $validationList = $this->validator->validateForNullIdInUri($request);
@@ -49,14 +48,10 @@ class PostNoteAction implements RequestHandlerInterface
         if (count($validationList) > 0) {
             $response   = $this->responseFactory->createViolationListResponse($request,$validationList);
         } else {
-            $response   = $this->responseFactory->createNoteResponse($request, $this->persister->persist($note), 200);
+            $persistNote    = $this->persister->persist($note);
+            $response       = $this->responseFactory->createNoteResponse($request, $persistNote, 200);
         }
 
         return $response;
-    }
-
-    private function getBody(RequestInterface $request): StreamInterface
-    {
-        return $request->getBody();
     }
 }

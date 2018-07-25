@@ -41,36 +41,55 @@ class DeleteNoteActionTest extends TestCase
     /** @test */
     public function handleRequest_request_createViolationListResponse():void
     {
-        $request        = $this->createTestRequestForViolationList();
-        $deleteNote     = $this->createDeleteNote();
+        $request        = $this->givenTestRequestForViolationList();
+        $deleteNote     = $this->createDeleteNoteAction();
 
         $noteId         = 'notes';
         $note           = $this->givenPersister_deleteNote_returnsNote();
         $violationList  = $this->givenValidator_ValidateFroNullNoteInDB_returnsViolationList();
-        $response       = $this->givenResponseFactory_createViolationListResponse_returnsResponse($request, $violationList);
+        $this->givenResponseFactory_createViolationListResponse_returnsResponse($request, $violationList);
 
         $deleteNote->handleRequest($request);
 
         $this->assertPersister_deleteNote_isCalledOnceWithNoteId($noteId);
         $this->assertValidator_validateForNullNoteInDB_isCalledOnceWithNote($note);
-        $this->assertResponseFactory_createViolationListResponse_isCalledOnceWithRequestAndViolationList($request, $violationList,$note);
+        $this->assertResponseFactory_createViolationListResponse_isCalledOnceWithRequestAndViolationList($request, $violationList);
     }
 
 
 
-    private function createTestRequestForViolationList(): RequestInterface
+    /** @test */
+    public function handleRequest_request_createNoteResponse():void
     {
-        $uri                    = new Uri('http://project.local/notes');
-        $body                   = new StringStream('');
+        $request    = $this->createTestRequestForNoteResponse();
+        $deleteNote = $this->createDeleteNoteAction();
+
+        $noteId     = '1';
+        $statusCode = 200;
+        $note       = $this->givenPersister_deleteNote_returnsNote();
+        $this->givenValidator_ValidateForNullNoteInDB_returnsEmptyViolationList();
+        $this->givenResponseFactory_createNoteResponse_returnsResponse($request,$note,$statusCode);
+
+        $deleteNote->handleRequest($request);
+
+        $this->assertPersister_deleteNote_isCalledOnceWithNoteId($noteId);
+        $this->assertValidator_validateForNullNoteInDB_isCalledOnceWithNote($note);
+        $this->assertResponseFactory_createNoteResponse_isCalledOnceWithRequest($request,$note, $statusCode);
+    }
+
+    private function givenTestRequestForViolationList(): RequestInterface
+    {
+        $uri    = new Uri('http://project.local/notes');
+        $body   = new StringStream('');
 
         return new Request($uri,'DELETE','1.1',[''=>['']],$body);
     }
 
-    private function createDeleteNote(): DeleteNoteAction
+
+    private function createDeleteNoteAction(): DeleteNoteAction
     {
         return new DeleteNoteAction($this->deserialize, $this->persister, $this->responseFactory, $this->validator);
     }
-
 
     private function givenPersister_deleteNote_returnsNote(): Note
     {
@@ -94,23 +113,21 @@ class DeleteNoteActionTest extends TestCase
         return $violationList;
     }
 
-    private function givenResponseFactory_createViolationListResponse_returnsResponse($request, $violationList): ResponseInterface
+    private function givenResponseFactory_createViolationListResponse_returnsResponse($request, $violationList)
     {
         $response = \Phake::mock(ResponseInterface::class);
 
         \Phake::when($this->responseFactory)
             ->createViolationListResponse($request, $violationList)
             ->thenReturn($response);
-
-        return $response;
     }
+
 
     private function assertPersister_deleteNote_isCalledOnceWithNoteId($noteId): void
     {
         \Phake::verify($this->persister, \Phake::times(1))
             ->deleteNote($noteId);
     }
-
 
     private function assertValidator_validateForNullNoteInDB_isCalledOnceWithNote($note): void
     {
@@ -124,29 +141,10 @@ class DeleteNoteActionTest extends TestCase
             ->createViolationListResponse($request, $violationList);
     }
 
-    /** @test */
-    public function handleRequest_request_createNoteResponse():void
-    {
-        $request    = $this->createTestRequestForNoteResponse();
-        $deleteNote = $this->createDeleteNote();
-
-        $noteId     = '1';
-        $statusCode = 200;
-        $note       = $this->givenPersister_deleteNote_returnsNote();
-        $this->givenValidator_ValidateForNullNoteInDB_returnsEmptyViolationList();
-        $response   = $this->givenResponseFactory_createNoteResponse_returnsResponse($request,$note,$statusCode);
-
-        $deleteNote->handleRequest($request);
-
-        $this->assertPersister_deleteNote_isCalledOnceWithNoteId($noteId);
-        $this->assertValidator_validateForNullNoteInDB_isCalledOnceWithNote($note);
-        $this->assertResponseFactory_createNoteResponse_isCalledOnceWithRequest($request,$note, $statusCode);
-    }
-
     private function createTestRequestForNoteResponse(): RequestInterface
     {
-        $uri                    = new Uri('http://project.local/notes/1');
-        $body                   = new StringStream('');
+        $uri    = new Uri('http://project.local/notes/1');
+        $body   = new StringStream('');
 
         return new Request($uri,'DELETE','1.1',[''=>['']],$body);
     }
@@ -160,15 +158,13 @@ class DeleteNoteActionTest extends TestCase
             ->thenReturn($violationList);
     }
 
-    private function givenResponseFactory_createNoteResponse_returnsResponse($request, $note, $statusCode): ResponseInterface
+    private function givenResponseFactory_createNoteResponse_returnsResponse($request, $note, $statusCode)
     {
         $response = \Phake::mock(ResponseInterface::class);
 
         \Phake::when($this->responseFactory)
             ->createNoteResponse($request, $note, $statusCode)
             ->thenReturn($response);
-
-        return $response;
     }
 
     private function assertResponseFactory_createNoteResponse_isCalledOnceWithRequest($request, $note, $statusCode): void

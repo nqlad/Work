@@ -6,15 +6,11 @@ namespace App\Action;
 use App\Database\FinderInterface;
 use App\Http\RequestHandlerInterface;
 use App\Http\ResponseFactoryInterface;
-use App\Serialization\DeserializerInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class GetAllNoteAction implements RequestHandlerInterface
 {
-    /** @var DeserializerInterface */
-    private $deserialize;
-
     /** @var FinderInterface */
     private $finder;
 
@@ -22,11 +18,9 @@ class GetAllNoteAction implements RequestHandlerInterface
     private $responseFactory;
 
     public function __construct(
-        DeserializerInterface $deserialize,
         FinderInterface $finder,
         ResponseFactoryInterface $responseFactory
     ) {
-        $this->deserialize      = $deserialize;
         $this->finder           = $finder;
         $this->responseFactory  = $responseFactory;
     }

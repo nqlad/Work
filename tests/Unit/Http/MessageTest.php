@@ -39,13 +39,6 @@ class MessageTest extends TestCase
         $this->assertEquals('1.0', $message->getProtocolVersion());
     }
 
-    public function testGetProtocolVersion_protocolVersionInt_protocolVersionStringReturned()
-    {
-        $message = new Message(1.0, [], new StringStream(''));
-
-        $this->assertNotEquals('1.0', $message->getProtocolVersion());
-    }
-
     /**
      * @dataProvider providerWithProtocolVersion
      */

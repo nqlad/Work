@@ -84,7 +84,7 @@ class ResponseFactory implements ResponseFactoryInterface
         $status             = 404;
         $protocolVersion    = $request->getProtocolVersion();
         $headers            = $request->getHeaders();
-        $body               = new StringStream(null);
+        $body               = new StringStream('');
 
         $response           = new Response($status, $protocolVersion, $headers, $body);
 

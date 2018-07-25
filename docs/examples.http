@@ -3,7 +3,7 @@ Content-Type: application/json
 
 ###
 
-GET http://project.local/notes/97
+GET http://project.local/notes/1
 Content-Type: application/json
 
 ###

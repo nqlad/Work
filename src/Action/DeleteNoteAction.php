@@ -39,7 +39,7 @@ class DeleteNoteAction implements RequestHandlerInterface
 
     public function handleRequest(RequestInterface $request): ResponseInterface
     {
-        $noteId         = $request->getRequestTarget();
+        $noteId         = $request->getUri()->getPath();
         $note           = $this->persister->deleteNote($noteId);
 
         $violationList  = $this->validator->validateForNullNoteInDB($note);

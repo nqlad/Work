@@ -10,7 +10,9 @@ use App\Http\ResponseFactoryInterface;
 use App\Http\StringStream;
 use App\Http\Uri;
 use App\Validation\ValidatorInterface;
+use App\Validation\Violation;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 class GetNoteActionTest extends TestCase
@@ -34,17 +36,19 @@ class GetNoteActionTest extends TestCase
     /** @test */
     public function handleRequest_request_createNotFoundResponse()
     {
-        $request    = $this->givenRequestForNotFoundResponse();
-        $getNote    = $this->createGetNoteAction();
+        $request        = $this->givenRequestForNotFoundResponse();
+        $getNote        = $this->createGetNoteAction();
 
-        $noteId     = '3';
-        $this->givenFinder_findOneNote_returnsNull();
-        $this->givenResponseFactory_createNotFoundResponse_returnsResponse();
+        $noteId         = $request->getUri()->getPath();
+        $note           = $this->givenFinder_findOneNote_returnsNote();
+        $violationList  = $this->givenValidator_validateForNullNoteInDB_returnsViolationList();
+        $this->givenResponseFactory_createViolationListResponse_returnsResponse();
 
         $getNote->handleRequest($request);
 
         $this->assertFinder_FindOneNote_isCalledOnceWithNoteId($noteId);
-        $this->assertResponseFactory_createNotFoundResponse_isCalledOnceWithRequest($request);
+        $this->assertValidator_validateForNullNoteInDB_isCalledOnceWithNoteId($note);
+        $this->assertResponseFactory_createViolationListResponse_isCalledOnceWithRequestAndViolationList($request, $violationList);
     }
 
     /** @test */
@@ -53,7 +57,7 @@ class GetNoteActionTest extends TestCase
         $request        = $this->givenRequestForNoteResponse();
         $getNote        = $this->createGetNoteAction();
 
-        $noteId         = '1';
+        $noteId         = $request->getUri()->getPath();
         $statusCode     = 200;
         $note           = $this->givenFinder_findOneNote_returnsNote();
         $this->givenResponseFactory_createNoteResponse_returnsResponse();
@@ -64,12 +68,14 @@ class GetNoteActionTest extends TestCase
         $this->assertResponseFactory_createNoteResponse_isCalledOnceWithRequest($request, $note, $statusCode);
     }
 
-    private function givenRequestForNotFoundResponse(): Request
+    private function givenRequestForNotFoundResponse(): RequestInterface
     {
-        $uri    = new Uri('http://project.local/notes/3');
-        $body   = new StringStream('');
+        $uri        = new Uri('http://project.local/notes/3');
+        $body       = new StringStream('');
+        $request    = new Request($uri, 'GET', '1.1', ['' => ['']], $body);
+        $resourceId = '3';
 
-        return new Request($uri, 'GET', '1.1', ['' => ['']], $body);
+        return $request->withUri(new Uri($resourceId));
     }
 
     private function createGetNoteAction(): GetNoteAction
@@ -77,21 +83,23 @@ class GetNoteActionTest extends TestCase
         return new GetNoteAction($this->finder, $this->responseFactory, $this->validator);
     }
 
-    private function givenFinder_findOneNote_returnsNull(): void
+    private function givenValidator_validateForNullNoteInDB_returnsViolationList(): array
     {
-        $note = null;
+        $violationList = [new Violation("id","ID not found")];
 
-        \Phake::when($this->finder)
-            ->findOneNote(\Phake::anyParameters())
-            ->thenReturn($note);
+        \Phake::when($this->validator)
+            ->validateForNullNoteInDB(\Phake::anyParameters())
+            ->thenReturn($violationList);
+
+        return $violationList;
     }
 
-    private function givenResponseFactory_createNotFoundResponse_returnsResponse(): void
+    private function givenResponseFactory_createViolationListResponse_returnsResponse(): void
     {
         $response = \Phake::mock(ResponseInterface::class);
 
         \Phake::when($this->responseFactory)
-            ->createNotFoundResponse(\Phake::anyParameters())
+            ->createViolationListResponse(\Phake::anyParameters())
             ->thenReturn($response);
     }
 
@@ -101,17 +109,25 @@ class GetNoteActionTest extends TestCase
             ->findOneNote($noteId);
     }
 
-    private function assertResponseFactory_createNotFoundResponse_isCalledOnceWithRequest($request): void
+    private function assertValidator_validateForNullNoteInDB_isCalledOnceWithNoteId($note): void
+    {
+        \Phake::verify($this->validator, \Phake::times(1))
+            ->validateForNullNoteInDB($note);
+    }
+
+    private function assertResponseFactory_createViolationListResponse_isCalledOnceWithRequestAndViolationList($request, $violationList): void
     {
         \Phake::verify($this->responseFactory, \Phake::times(1))
-            ->createNotFoundResponse($request);
+            ->createViolationListResponse($request, $violationList);
     }
-    private function givenRequestForNoteResponse(): Request
+    private function givenRequestForNoteResponse(): RequestInterface
     {
         $uri    = new Uri('http://project.local/notes/1');
         $body   = new StringStream('');
+        $request = new Request($uri, 'GET', '1.1', ['' => ['']], $body);
+        $resourceId = '1';
 
-        return new Request($uri, 'GET', '1.1', ['' => ['']], $body);
+        return $request->withUri(new Uri($resourceId));
     }
 
     private function givenFinder_findOneNote_returnsNote(): Note

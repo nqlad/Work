@@ -33,11 +33,13 @@ class GetNoteAction implements RequestHandlerInterface
 
     public function handleRequest(RequestInterface $request): ResponseInterface
     {
-        $noteId         = $request->getRequestTarget();
+        $noteId         = $request->getUri()->getPath();
         $note           = $this->finder->findOneNote($noteId);
 
-        if ($note === null) {
-            $response   = $this->responseFactory->createNotFoundResponse($request);
+        $violationList  = $this->validator->validateForNullNoteInDB($note);
+
+        if (count($violationList) > 0) {
+            $response   = $this->responseFactory->createViolationListResponse($request,$violationList);
         } else {
             $response   = $this->responseFactory->createNoteResponse($request, $note,200);
         }

@@ -59,22 +59,15 @@ class RoutingHandler implements RequestHandlerInterface
     {
         $route              = $this->routeParser->parseRouteFromUri($request);
 
-        $resourceRequest    = $request->withRequestTarget($route->getResourceId());
+        $resourceRequest    = $request->withUri(new Uri($route->getResourceId()));
 
-        if ($route->getMethod() === 'POST') {
-
+        if ($route->getMethod() === 'POST' && $route->getResourceId() === null) {
             $response       = $this->postNoteAction->handleRequest($resourceRequest);
-
-        } elseif ($route->getMethod() === 'PUT') {
-
+        } elseif ($route->getMethod() === 'PUT' && $route->getResourceId() !== null) {
             $response       = $this->putNoteAction->handleRequest($resourceRequest);
-
-        } elseif ($route->getMethod() === 'DELETE') {
-
+        } elseif ($route->getMethod() === 'DELETE' && $route->getResourceId() !== null) {
             $response       = $this->deleteNoteAction->handleRequest($resourceRequest);
-
         } elseif ($route->getMethod() === 'GET') {
-
             $resourceId     = $route->getResourceId();
 
             if ($resourceId === null) {
@@ -83,9 +76,7 @@ class RoutingHandler implements RequestHandlerInterface
                 $response   = $this->getNoteAction->handleRequest($resourceRequest);
             }
         } else {
-
             $response       = $this->responseFactory->createNotFoundResponse($resourceRequest);
-
         }
 
         return $response;

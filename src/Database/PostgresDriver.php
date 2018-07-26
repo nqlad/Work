@@ -51,7 +51,7 @@ class PostgresDriver implements PersisterInterface, FinderInterface
         return $notes;
     }
 
-    public function findOneNote(string $id): ?Note
+    public function findOneNote(string $id): Note
     {
         $query  = "select * from Notes where id = :id;";
         $statement   = $this->connection->prepare($query);
@@ -61,13 +61,16 @@ class PostgresDriver implements PersisterInterface, FinderInterface
         $note = $statement->fetch(PDO::FETCH_CLASS);
 
         if(!$note){
-            $note = null;
+            $note = new Note();
+
+            $note->id       = null;
+            $note->title    = null;
         }
 
         return $note;
     }
 
-    public function deleteNote(?string $id): Note
+    public function deleteNote(string $id): Note
     {
         $note = new Note();
 
@@ -89,10 +92,12 @@ class PostgresDriver implements PersisterInterface, FinderInterface
     {
         $query  = "update Notes set title = :title where id = :id;";
         $stmt   = $this->connection->prepare($query);
+        $stmt->execute([':id' => $note->id, ':title' => $note->title]);
 
-        if ($stmt->execute([':id' => $note->id, ':title' => $note->title])) {
+        if ($stmt->rowCount() > 0) {
             return true;
         } else {
+            $note->id = null;
             return false;
         }
     }

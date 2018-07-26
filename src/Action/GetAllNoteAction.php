@@ -29,7 +29,7 @@ class GetAllNoteAction implements RequestHandlerInterface
     {
         $noteCollection = $this->finder->findAllNote();
 
-        $response = $this->responseFactory->createNoteCollection($request, $noteCollection,200);
+        $response       = $this->responseFactory->createNoteCollection($request, $noteCollection,200);
 
         return $response;
     }

@@ -42,22 +42,6 @@ class GetAllNoteActionTest extends TestCase
         $this->assertResponseFactory_creareNoteCollection_isCalledOnceWithRequestAndNoteCollectionAndStatusCode($request, $noteCollection, $statusCode);
     }
 
-    /** @test */
-    public function handleRequest_request_createNoteCollectionWith204StatusCode(): void
-    {
-        $request        = $this->givenRequestForGetAllNoteAction();
-        $getAllNote     = $this->createGetAllNoteAction();
-
-        $statusCode     = 204;
-        $noteCollection = [];
-        $this->givenResponseFactory_createNoteCollection_returnsResponse();
-
-        $getAllNote->handleRequest($request);
-
-        $this->assertFinder_findAllNote_isCalledOnce();
-        $this->assertResponseFactory_creareNoteCollection_isCalledOnceWithRequestAndNoteCollectionAndStatusCode($request, $noteCollection, $statusCode);
-    }
-
     private function givenRequestForGetAllNoteAction(): RequestInterface
     {
         $uri    = new Uri('http://project.local/notes');

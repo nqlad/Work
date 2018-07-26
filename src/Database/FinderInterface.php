@@ -9,5 +9,5 @@ interface FinderInterface
 {
     public function findAllNote(): ?array;
 
-    public function findOneNote(string $id): ?Note;
+    public function findOneNote(string $id): Note;
 }

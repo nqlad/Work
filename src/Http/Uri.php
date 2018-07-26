@@ -25,7 +25,7 @@ class Uri implements UriInterface
 
     private $uriSchemeMap = ['http','https'];
 
-    public function __construct(string $url)
+    public function __construct(?string $url)
     {
         $this->scheme   = (string) parse_url($url, PHP_URL_SCHEME);
         $this->host     = (string) parse_url($url, PHP_URL_HOST);

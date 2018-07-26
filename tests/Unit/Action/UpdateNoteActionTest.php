@@ -47,10 +47,9 @@ class UpdateNoteActionTest extends TestCase
         $requestBody    = $request->getBody();
         $note           = $this->givenDeserialize_deserialize_returnsNote();
 
-        $note->id       = 1;
+        $note->id       = (int) $request->getUri()->getPath();
 
         $violationList  = $this->givenValidator_validate_returnsViolationList();
-        $violationList  += $this->givenValidator_validateForNullIdInDB_returnsViolationList();
         $this->givenPersister_updateNote_returnsFalse();
         $this->givenResponseFactory_createViolationListResponse_returnsResponse();
 
@@ -58,7 +57,6 @@ class UpdateNoteActionTest extends TestCase
 
         $this->assertDeserialize_deserialize_isCalledOnceWithRequestBody($requestBody);
         $this->assertValidator_validate_isCalledOnceWithNote($note);
-        $this->assertValidator_validateForNullNoteInDB_isCalledOnceWithNote($note);
         $this->assertPersister_updateNote_isCalledOnceWithNote($note);
         $this->assertResponseFactory_createViolationListResponse_isCalledOnceWithRequestAndViolationList($request, $violationList);
     }
@@ -72,11 +70,10 @@ class UpdateNoteActionTest extends TestCase
         $requestBody    = $request->getBody();
         $note           = $this->givenDeserialize_deserialize_returnsNote();
 
-        $note->id       = 1;
+        $note->id       = (int) $request->getUri()->getPath();
         $statusCode     = 200;
 
         $this->givenValidator_validate_returnsEmptyViolationList();
-        $this->givenValidator_validateForNullIdInDB_returnsEmptyViolationList();
         $this->givenPersister_updateNote_returnsTrue();
         $this->givenResponseFactory_createNoteResponse_returnsResponse();
 
@@ -84,7 +81,6 @@ class UpdateNoteActionTest extends TestCase
 
         $this->assertDeserialize_deserialize_isCalledOnceWithRequestBody($requestBody);
         $this->assertValidator_validate_isCalledOnceWithNote($note);
-        $this->assertValidator_validateForNullNoteInDB_isCalledOnceWithNote($note);
         $this->assertPersister_updateNote_isCalledOnceWithNote($note);
         $this->assertResponseFactory_createNoteResponse_isCalledOnceWithRequestAndNoteAndStatusCode($request, $note, $statusCode);
     }
@@ -95,8 +91,10 @@ class UpdateNoteActionTest extends TestCase
         $note   = new Note();
         $note->title = 't';
         $body   = new StringStream(json_encode($note));
+        $request = new Request($uri, 'PUT', '1.1', ['' => ['']], $body);
+        $resourceId = '1';
 
-        return new Request($uri, 'PUT', '1.1', ['' => ['']], $body);
+        return $request->withUri(new Uri($resourceId));
     }
 
     private function createUpdateNoteAction(): UpdateNoteAction
@@ -188,8 +186,10 @@ class UpdateNoteActionTest extends TestCase
         $note   = new Note();
         $note->title = 'update';
         $body   = new StringStream(json_encode($note));
+        $request = new Request($uri, 'PUT', '1.1', ['' => ['']], $body);
+        $resourceId = '1';
 
-        return new Request($uri, 'PUT', '1.1', ['' => ['']], $body);
+        return $request->withUri(new Uri($resourceId));
     }
 
     private function givenValidator_validate_returnsEmptyViolationList(): void

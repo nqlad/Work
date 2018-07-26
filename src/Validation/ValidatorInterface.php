@@ -4,7 +4,6 @@ namespace App\Validation;
 
 
 use App\Entity\Note;
-use Psr\Http\Message\RequestInterface;
 
 interface ValidatorInterface
 {
@@ -15,6 +14,4 @@ interface ValidatorInterface
     public function validate(Note $note): array;
 
     public function validateForNullNoteInDB(Note $note): array;
-
-    public function validateForNullIdInUri(RequestInterface $request): array;
 }

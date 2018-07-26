@@ -44,10 +44,10 @@ class DeleteNoteActionTest extends TestCase
         $request        = $this->givenTestRequestForViolationList();
         $deleteNote     = $this->createDeleteNoteAction();
 
-        $noteId         = 'notes';
+        $noteId         = $request->getUri()->getPath();
         $note           = $this->givenPersister_deleteNote_returnsNote();
         $violationList  = $this->givenValidator_ValidateFroNullNoteInDB_returnsViolationList();
-        $this->givenResponseFactory_createViolationListResponse_returnsResponse($request, $violationList);
+        $this->givenResponseFactory_createViolationListResponse_returnsResponse();
 
         $deleteNote->handleRequest($request);
 
@@ -61,14 +61,14 @@ class DeleteNoteActionTest extends TestCase
     /** @test */
     public function handleRequest_request_createNoteResponse():void
     {
-        $request    = $this->createTestRequestForNoteResponse();
+        $request    = $this->givenTestRequestForNoteResponse();
         $deleteNote = $this->createDeleteNoteAction();
 
-        $noteId     = '1';
+        $noteId     = $request->getUri()->getPath();
         $statusCode = 200;
         $note       = $this->givenPersister_deleteNote_returnsNote();
         $this->givenValidator_ValidateForNullNoteInDB_returnsEmptyViolationList();
-        $this->givenResponseFactory_createNoteResponse_returnsResponse($request,$note,$statusCode);
+        $this->givenResponseFactory_createNoteResponse_returnsResponse();
 
         $deleteNote->handleRequest($request);
 
@@ -79,10 +79,12 @@ class DeleteNoteActionTest extends TestCase
 
     private function givenTestRequestForViolationList(): RequestInterface
     {
-        $uri    = new Uri('http://project.local/notes');
-        $body   = new StringStream('');
+        $uri        = new Uri('http://project.local/notes/99');
+        $body       = new StringStream('');
+        $request    = new Request($uri,'DELETE','1.1',[''=>['']],$body);
+        $resourceId = 99;
 
-        return new Request($uri,'DELETE','1.1',[''=>['']],$body);
+        return $request->withUri(new Uri($resourceId));
     }
 
 
@@ -113,12 +115,12 @@ class DeleteNoteActionTest extends TestCase
         return $violationList;
     }
 
-    private function givenResponseFactory_createViolationListResponse_returnsResponse($request, $violationList)
+    private function givenResponseFactory_createViolationListResponse_returnsResponse(): void
     {
         $response = \Phake::mock(ResponseInterface::class);
 
         \Phake::when($this->responseFactory)
-            ->createViolationListResponse($request, $violationList)
+            ->createViolationListResponse(\Phake::anyParameters())
             ->thenReturn($response);
     }
 
@@ -141,12 +143,14 @@ class DeleteNoteActionTest extends TestCase
             ->createViolationListResponse($request, $violationList);
     }
 
-    private function createTestRequestForNoteResponse(): RequestInterface
+    private function givenTestRequestForNoteResponse(): RequestInterface
     {
-        $uri    = new Uri('http://project.local/notes/1');
-        $body   = new StringStream('');
+        $uri        = new Uri('http://project.local/notes/1');
+        $body       = new StringStream('');
+        $request    = new Request($uri,'DELETE','1.1',[''=>['']],$body);
+        $resourceId = '1';
 
-        return new Request($uri,'DELETE','1.1',[''=>['']],$body);
+        return $request->withUri(new Uri($resourceId));
     }
 
     private function givenValidator_ValidateForNullNoteInDB_returnsEmptyViolationList(): void
@@ -158,12 +162,12 @@ class DeleteNoteActionTest extends TestCase
             ->thenReturn($violationList);
     }
 
-    private function givenResponseFactory_createNoteResponse_returnsResponse($request, $note, $statusCode)
+    private function givenResponseFactory_createNoteResponse_returnsResponse(): void
     {
         $response = \Phake::mock(ResponseInterface::class);
 
         \Phake::when($this->responseFactory)
-            ->createNoteResponse($request, $note, $statusCode)
+            ->createNoteResponse(\Phake::anyParameters())
             ->thenReturn($response);
     }
 

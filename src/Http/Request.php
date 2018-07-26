@@ -111,7 +111,7 @@ class Request extends Message implements RequestInterface
     }
 
 
-    public function setUri(Uri $uri): void
+    public function setUri(UriInterface $uri): void
     {
         $this->uri = $uri;
     }
@@ -125,14 +125,19 @@ class Request extends Message implements RequestInterface
     {
         $request    = clone $this;
 
-
         if ($preserveHost == false) {
             if ($uri->getHost() !== '') {
-                $request->setUri($this->uri->withHost(($uri->getHost())));
+                $request->setUri($uri->withHost($this->uri->getHost()));
+            } else {
+                $request->setUri($uri);
             }
         } elseif ($preserveHost == true) {
-            if (($this->uri->getHost() == null) and ($uri->getHost() !== null)) {
-                $request->setUri($this->uri->withHost(($uri->getHost())));
+            if (($this->uri->getHost() === null) and ($uri->getHost() !== null)) {
+                $request->setUri($uri);
+            } elseif (($this->uri->getHost() === null) and ($uri->getHost() === null)) {
+                $request->setUri($uri);
+            } elseif (($this->uri->getHost() !== null)) {
+                $request->setUri($uri->withHost($this->uri->getHost()));
             }
         }
 

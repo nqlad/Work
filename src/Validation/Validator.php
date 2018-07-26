@@ -41,15 +41,4 @@ class Validator implements ValidatorInterface
 
         return $this->violations;
     }
-
-    public function validateForNullIdInUri(RequestInterface $request): array
-    {
-        $requestTargets = explode('/',$request->getRequestTarget());
-
-        if (end($requestTargets) !== 'notes') {
-            $this->violations[] = new Violation("id","In URI MUST NOT be id");
-        }
-
-        return $this->violations;
-    }
 }

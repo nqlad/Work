@@ -42,17 +42,16 @@ class UpdateNoteActionTest extends TestCase
     public function handleRequest_request_createViolationListResponse(): void
     {
         $request        = $this->givenRequestForCreateViolationListResponse();
-        $updateNote     = new UpdateNoteAction($this->deserialize, $this->validator, $this->persister, $this->responseFactory);
+        $updateNote     = $this->createUpdateNoteAction();
 
         $requestBody    = $request->getBody();
-        $this->givenDeserialize_deserialize_returnsNote();
+        $note           = $this->givenDeserialize_deserialize_returnsNote();
 
-        $note           = new Note();
         $note->id       = 1;
 
         $violationList  = $this->givenValidator_validate_returnsViolationList();
         $violationList  += $this->givenValidator_validateForNullIdInDB_returnsViolationList();
-        $this->givenPersister_updateNote_returnsTrue();
+        $this->givenPersister_updateNote_returnsFalse();
         $this->givenResponseFactory_createViolationListResponse_returnsResponse();
 
         $updateNote->handleRequest($request);
@@ -68,18 +67,17 @@ class UpdateNoteActionTest extends TestCase
     public function handleRequest_request_createNoteResponse():void
     {
         $request        = $this->givenRequestForCreateNoteResponse();
-        $updateNote     = new UpdateNoteAction($this->deserialize, $this->validator, $this->persister, $this->responseFactory);
+        $updateNote     = $this->createUpdateNoteAction();
 
         $requestBody    = $request->getBody();
-        $this->givenDeserialize_deserialize_returnsNote();
+        $note           = $this->givenDeserialize_deserialize_returnsNote();
 
-        $note           = new Note();
         $note->id       = 1;
         $statusCode     = 200;
 
         $this->givenValidator_validate_returnsEmptyViolationList();
         $this->givenValidator_validateForNullIdInDB_returnsEmptyViolationList();
-        $this->givenPersister_updateNote_returnsFalse();
+        $this->givenPersister_updateNote_returnsTrue();
         $this->givenResponseFactory_createNoteResponse_returnsResponse();
 
         $updateNote->handleRequest($request);
@@ -101,13 +99,20 @@ class UpdateNoteActionTest extends TestCase
         return new Request($uri, 'PUT', '1.1', ['' => ['']], $body);
     }
 
-    private function givenDeserialize_deserialize_returnsNote():void
+    private function createUpdateNoteAction(): UpdateNoteAction
+    {
+        return new UpdateNoteAction($this->deserialize, $this->validator, $this->persister, $this->responseFactory);
+    }
+
+    private function givenDeserialize_deserialize_returnsNote(): Note
     {
         $note = \Phake::mock(Note::class);
 
         \Phake::when($this->deserialize)
             ->deserialize(\Phake::anyParameters())
             ->thenReturn($note);
+
+        return $note;
     }
 
     private function givenValidator_validate_returnsViolationList(): array
@@ -123,7 +128,7 @@ class UpdateNoteActionTest extends TestCase
 
     private function givenValidator_validateForNullIdInDB_returnsViolationList(): array
     {
-        $violationList = [new Violation('title', 'Length must be more than one symbol')];
+        $violationList = [];
 
         \Phake::when($this->validator)
             ->validateForNullNoteInDB(\Phake::anyParameters())
@@ -171,12 +176,12 @@ class UpdateNoteActionTest extends TestCase
         \Phake::verify($this->persister, \Phake::times(1))
             ->updateNote($note);
     }
-
     private function assertResponseFactory_createViolationListResponse_isCalledOnceWithRequestAndViolationList($request, $violationList): void
     {
         \Phake::verify($this->responseFactory, \Phake::times(1))
             ->createViolationListResponse($request, $violationList);
     }
+
     private function givenRequestForCreateNoteResponse(): RequestInterface
     {
         $uri    = new Uri('http://project.local/notes/1');

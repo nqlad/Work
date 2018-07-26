@@ -5,7 +5,6 @@ namespace App\Tests\Phake\Action;
 use App\Action\GetAllNoteAction;
 use App\Database\FinderInterface;
 use App\Http\Request;
-use App\Http\ResponseFactory;
 use App\Http\ResponseFactoryInterface;
 use App\Http\StringStream;
 use App\Http\Uri;

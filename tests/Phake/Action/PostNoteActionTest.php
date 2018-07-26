@@ -110,16 +110,6 @@ class PostNoteActionTest extends TestCase
         return $note;
     }
 
-    private function givenRequestForCreateNoteResponse(): RequestInterface
-    {
-        $uri    = new Uri('http://project.local/notes');
-        $note   = new Note();
-        $note->title = 'title';
-        $body   = new StringStream(json_encode($note));
-
-        return new Request($uri, 'POST', '1.1', ['' => ['']], $body);
-    }
-
     private function givenValidator_validateForNullIdInUri_returnsViolationList(): array
     {
         $violationList = [new Violation('title','Length must be more than one symbol')];
@@ -173,6 +163,16 @@ class PostNoteActionTest extends TestCase
     {
         \Phake::verify($this->responseFactory, \Phake::times(1))
             ->createViolationListResponse($request, $violationList);
+    }
+
+    private function givenRequestForCreateNoteResponse(): RequestInterface
+    {
+        $uri    = new Uri('http://project.local/notes');
+        $note   = new Note();
+        $note->title = 'title';
+        $body   = new StringStream(json_encode($note));
+
+        return new Request($uri, 'POST', '1.1', ['' => ['']], $body);
     }
 
     private function givenValidator_validateForNullIdInUri_returnsEmptyViolationList(): void

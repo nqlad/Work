@@ -56,9 +56,7 @@ class GetNoteActionTest extends TestCase
         $noteId         = '1';
         $statusCode     = 200;
         $note           = $this->givenFinder_findOneNote_returnsNote();
-//        $note->id       = $noteId;
-//        $note->title    = 'testPut';
-        $this->givenResponseFactory_createNotFoundResponse_returnsResponse();
+        $this->givenResponseFactory_createNoteResponse_returnsResponse();
 
         $getNote->handleRequest($request);
 
@@ -125,6 +123,14 @@ class GetNoteActionTest extends TestCase
             ->thenReturn($note);
 
         return $note;
+    }
+    private function givenResponseFactory_createNoteResponse_returnsResponse(): void
+    {
+        $response = \Phake::mock(ResponseInterface::class);
+
+        \Phake::when($this->responseFactory)
+            ->createNoteResponse(\Phake::anyParameters())
+            ->thenReturn($response);
     }
     private function assertResponseFactory_createNoteResponse_isCalledOnceWithRequest($request, $note, $statusCode): void
     {

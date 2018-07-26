@@ -33,13 +33,17 @@ class RoutingHandler implements RequestHandlerInterface
     /** @var ResponseFactoryInterface*/
     private $responseFactory;
 
+    /** @var RouteParser */
+    private $routeParser;
+
     public function __construct(
         ResponseFactoryInterface $responseFactory,
         GetAllNoteAction $getAllNoteAction,
         GetNoteAction $getNoteAction,
         DeleteNoteAction $deleteNoteAction,
         PostNoteAction $postNoteAction,
-        UpdateNoteAction $putNoteAction
+        UpdateNoteAction $putNoteAction,
+        RouteParser $routeParser
     ){
         $this->responseFactory  = $responseFactory;
         $this->getAllNoteAction = $getAllNoteAction;
@@ -47,34 +51,34 @@ class RoutingHandler implements RequestHandlerInterface
         $this->deleteNoteAction = $deleteNoteAction;
         $this->postNoteAction   = $postNoteAction;
         $this->putNoteAction    = $putNoteAction;
+        $this->routeParser      = $routeParser;
     }
 
-    //todo with RouteParser
     public function handleRequest(RequestInterface $request): ResponseInterface
     {
-        if ($request->getMethod() === 'POST') {
+        $route = $this->routeParser->parseRouteFromUri($request);
+
+        if ($route->getMethod() === 'POST') {
 
             $response       = $this->postNoteAction->handleRequest($request);
 
-        } elseif ($request->getMethod() === 'PUT') {
+        } elseif ($route->getMethod() === 'PUT') {
 
             $response       = $this->putNoteAction->handleRequest($request);
 
-        } elseif ($request->getMethod() === 'DELETE') {
+        } elseif ($route->getMethod() === 'DELETE') {
 
             $response       = $this->deleteNoteAction->handleRequest($request);
 
-        } elseif ($request->getMethod() === 'GET') {
+        } elseif ($route->getMethod() === 'GET') {
 
-            $requestTargets = explode('/',$request->getRequestTarget());
-            $noteId         = end($requestTargets);
+            $noteId         = $route->getResourceId();
 
-            if ($noteId !== 'notes') {
-                $response   = $this->getNoteAction->handleRequest($request);
-            } else {
+            if ($noteId === null) {
                 $response   = $this->getAllNoteAction->handleRequest($request);
+            } else {
+                $response   = $this->getNoteAction->handleRequest($request);
             }
-
         } else {
 
             $response       = $this->responseFactory->createNotFoundResponse($request);

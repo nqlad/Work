@@ -13,6 +13,7 @@ $persister          = new \App\Database\PostgresDriver('pgsql:host=localhost;por
 $requestFactory     = new \App\Http\RequestFactory();
 $responseFactory    = new \App\Http\ResponseFactory($deserializer);
 $responseSender     = new \App\Http\ResponseSender();
+$routeParser        = new \App\RequestHandler\RouteParser();
 
 $getNote            = new \App\Action\GetNoteAction($persister,$responseFactory,$validator);
 $getNoteCollection  = new \App\Action\GetAllNoteAction($persister,$responseFactory);
@@ -20,7 +21,7 @@ $deleteNote         = new \App\Action\DeleteNoteAction($deserializer,$persister,
 $postNote           = new \App\Action\PostNoteAction($deserializer,$persister,$responseFactory,$validator);
 $putNote            = new \App\Action\UpdateNoteAction($deserializer,$validator,$persister,$responseFactory);
 
-$router = new \App\RequestHandler\RoutingHandler($responseFactory, $getNoteCollection,$getNote,$deleteNote,$postNote,$putNote);
+$router = new \App\RequestHandler\RoutingHandler($responseFactory, $getNoteCollection,$getNote,$deleteNote,$postNote,$putNote,$routeParser);
 
 $kernel = new \App\Kernel($requestFactory, $router, $responseSender);
 $kernel->run();

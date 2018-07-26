@@ -1,20 +1,26 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: rdavletshin
- * Date: 24.07.18
- * Time: 18:40
- */
 
 namespace App\RequestHandler;
 
 
-use Psr\Http\Message\UriInterface;
+use Psr\Http\Message\RequestInterface;
 
 class RouteParser
 {
-    public function parseRouteFromUri(UriInterface $uri): Route
+    public function parseRouteFromUri(RequestInterface $request): Route
     {
+        $method = $request->getMethod();
 
+        $requestTargets = explode('/',$request->getRequestTarget());
+
+        if (is_numeric(end($requestTargets))) {
+            $resourceId     = end($requestTargets);
+            $resourceName   = array_shift($requestTargets);
+        } else {
+            $resourceId     = null;
+            $resourceName   = end($requestTargets);
+        }
+
+        return new Route($resourceId,$resourceName,$method);
     }
 }

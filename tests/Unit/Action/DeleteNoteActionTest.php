@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Phake\Action;
+namespace App\Tests\Unit\Action;
 
 use App\Action\DeleteNoteAction;
 use App\Database\PersisterInterface;

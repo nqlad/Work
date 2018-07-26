@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Tests\Phake\Action;
+namespace App\Tests\Unit\Action;
 
-use App\Action\PostNoteAction;
+use App\Action\UpdateNoteAction;
 use App\Database\PersisterInterface;
 use App\Entity\Note;
 use App\Http\Request;
@@ -16,10 +16,10 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class PostNoteActionTest extends TestCase
+class UpdateNoteActionTest extends TestCase
 {
     /** @var DeserializerInterface */
-    private $deserializer;
+    private $deserialize;
 
     /** @var ValidatorInterface */
     private $validator;
@@ -32,7 +32,7 @@ class PostNoteActionTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->deserializer     = \Phake::mock(DeserializerInterface::class);
+        $this->deserialize      = \Phake::mock(DeserializerInterface::class);
         $this->validator        = \Phake::mock(ValidatorInterface::class);
         $this->persister        = \Phake::mock(PersisterInterface::class);
         $this->responseFactory  = \Phake::mock(ResponseFactoryInterface::class);
@@ -42,21 +42,24 @@ class PostNoteActionTest extends TestCase
     public function handleRequest_request_createViolationListResponse(): void
     {
         $request        = $this->givenRequestForCreateViolationListResponse();
-        $postNote       = $this->createPostNoteAction();
+        $updateNote     = $this->createUpdateNoteAction();
 
         $requestBody    = $request->getBody();
-        $note           = $this->givenDeserializer_deserialize_returnsNote();
+        $note           = $this->givenDeserialize_deserialize_returnsNote();
 
-        $violationList  = $this->givenValidator_validateForNullIdInUri_returnsViolationList();
-        $violationList  += $this->givenValidator_validate_returnsViolationList();
+        $note->id       = 1;
 
+        $violationList  = $this->givenValidator_validate_returnsViolationList();
+        $violationList  += $this->givenValidator_validateForNullIdInDB_returnsViolationList();
+        $this->givenPersister_updateNote_returnsFalse();
         $this->givenResponseFactory_createViolationListResponse_returnsResponse();
 
-        $postNote->handleRequest($request);
+        $updateNote->handleRequest($request);
 
-        $this->assertDeserializer_deserialize_isCalledOnceWithRequestBody($requestBody);
-        $this->assertValidator_validateForNullIdInUri_isCalledOnceWithRequest($request);
+        $this->assertDeserialize_deserialize_isCalledOnceWithRequestBody($requestBody);
         $this->assertValidator_validate_isCalledOnceWithNote($note);
+        $this->assertValidator_validateForNullNoteInDB_isCalledOnceWithNote($note);
+        $this->assertPersister_updateNote_isCalledOnceWithNote($note);
         $this->assertResponseFactory_createViolationListResponse_isCalledOnceWithRequestAndViolationList($request, $violationList);
     }
 
@@ -64,72 +67,81 @@ class PostNoteActionTest extends TestCase
     public function handleRequest_request_createNoteResponse():void
     {
         $request        = $this->givenRequestForCreateNoteResponse();
-        $postNote       = $this->createPostNoteAction();
+        $updateNote     = $this->createUpdateNoteAction();
 
-        $statusCode     = 200;
         $requestBody    = $request->getBody();
-        $note           = $this->givenDeserializer_deserialize_returnsNote();
+        $note           = $this->givenDeserialize_deserialize_returnsNote();
 
-        $this->givenValidator_validateForNullIdInUri_returnsEmptyViolationList();
+        $note->id       = 1;
+        $statusCode     = 200;
+
         $this->givenValidator_validate_returnsEmptyViolationList();
-        $persistNote    = $this->givenPersister_persist_returnsPersistNote();
+        $this->givenValidator_validateForNullIdInDB_returnsEmptyViolationList();
+        $this->givenPersister_updateNote_returnsTrue();
         $this->givenResponseFactory_createNoteResponse_returnsResponse();
 
-        $postNote->handleRequest($request);
+        $updateNote->handleRequest($request);
 
-        $this->assertDeserializer_deserialize_isCalledOnceWithRequestBody($requestBody);
-        $this->assertValidator_validateForNullIdInUri_isCalledOnceWithRequest($request);
+        $this->assertDeserialize_deserialize_isCalledOnceWithRequestBody($requestBody);
         $this->assertValidator_validate_isCalledOnceWithNote($note);
-        $this->assertPersister_persist_isCalledOnceWithNote($note);
-        $this->assertResponseFactory_createNoteResponse_isCalledOnceWithRequestAndPersistNoteAndStatusCode($request, $persistNote, $statusCode);
+        $this->assertValidator_validateForNullNoteInDB_isCalledOnceWithNote($note);
+        $this->assertPersister_updateNote_isCalledOnceWithNote($note);
+        $this->assertResponseFactory_createNoteResponse_isCalledOnceWithRequestAndNoteAndStatusCode($request, $note, $statusCode);
     }
 
     private function givenRequestForCreateViolationListResponse(): RequestInterface
     {
-        $uri    = new Uri('http://project.local/notes');
+        $uri    = new Uri('http://project.local/notes/1');
         $note   = new Note();
         $note->title = 't';
         $body   = new StringStream(json_encode($note));
 
-        return new Request($uri, 'POST', '1.1', ['' => ['']], $body);
+        return new Request($uri, 'PUT', '1.1', ['' => ['']], $body);
     }
 
-    private function createPostNoteAction(): PostNoteAction
+    private function createUpdateNoteAction(): UpdateNoteAction
     {
-        return  new PostNoteAction($this->deserializer, $this->persister, $this->responseFactory, $this->validator);
+        return new UpdateNoteAction($this->deserialize, $this->validator, $this->persister, $this->responseFactory);
     }
 
-    private function givenDeserializer_deserialize_returnsNote(): Note
+    private function givenDeserialize_deserialize_returnsNote(): Note
     {
         $note = \Phake::mock(Note::class);
 
-        \Phake::when($this->deserializer)
+        \Phake::when($this->deserialize)
             ->deserialize(\Phake::anyParameters())
             ->thenReturn($note);
 
         return $note;
     }
 
-    private function givenValidator_validateForNullIdInUri_returnsViolationList(): array
-    {
-        $violationList = [new Violation('title','Length must be more than one symbol')];
-
-        \Phake::when($this->validator)
-            ->validateForNullIdInUri(\Phake::anyParameters())
-            ->thenReturn($violationList);
-
-        return $violationList;
-    }
-
     private function givenValidator_validate_returnsViolationList(): array
     {
-        $violationList = [new Violation('title','Length must be more than one symbol')];
+        $violationList = [new Violation('title', 'Length must be more than one symbol')];
 
         \Phake::when($this->validator)
             ->validate(\Phake::anyParameters())
             ->thenReturn($violationList);
 
         return $violationList;
+    }
+
+    private function givenValidator_validateForNullIdInDB_returnsViolationList(): array
+    {
+        $violationList = [];
+
+        \Phake::when($this->validator)
+            ->validateForNullNoteInDB(\Phake::anyParameters())
+            ->thenReturn($violationList);
+
+        return $violationList;
+    }
+
+    private function givenPersister_updateNote_returnsFalse(): void
+    {
+        \Phake::when($this->persister)
+            ->updateNote(\Phake::anyParameters())
+            ->thenReturn(false);
     }
 
     private function givenResponseFactory_createViolationListResponse_returnsResponse(): void
@@ -141,16 +153,10 @@ class PostNoteActionTest extends TestCase
             ->thenReturn($response);
     }
 
-    private function assertDeserializer_deserialize_isCalledOnceWithRequestBody($requestBody): void
+    private function assertDeserialize_deserialize_isCalledOnceWithRequestBody($requestBody): void
     {
-        \Phake::verify($this->deserializer, \Phake::times(1))
+        \Phake::verify($this->deserialize, \Phake::times(1))
             ->deserialize($requestBody);
-    }
-
-    private function assertValidator_validateForNullIdInUri_isCalledOnceWithRequest($request): void
-    {
-        \Phake::verify($this->validator, \Phake::times(1))
-            ->validateForNullIdInUri($request);
     }
 
     private function assertValidator_validate_isCalledOnceWithNote($note): void
@@ -159,6 +165,17 @@ class PostNoteActionTest extends TestCase
             ->validate($note);
     }
 
+    private function assertValidator_validateForNullNoteInDB_isCalledOnceWithNote($note): void
+    {
+        \Phake::verify($this->validator, \Phake::times(1))
+            ->validateForNullNoteInDB($note);
+    }
+
+    private function assertPersister_updateNote_isCalledOnceWithNote($note): void
+    {
+        \Phake::verify($this->persister, \Phake::times(1))
+            ->updateNote($note);
+    }
     private function assertResponseFactory_createViolationListResponse_isCalledOnceWithRequestAndViolationList($request, $violationList): void
     {
         \Phake::verify($this->responseFactory, \Phake::times(1))
@@ -167,21 +184,12 @@ class PostNoteActionTest extends TestCase
 
     private function givenRequestForCreateNoteResponse(): RequestInterface
     {
-        $uri    = new Uri('http://project.local/notes');
+        $uri    = new Uri('http://project.local/notes/1');
         $note   = new Note();
-        $note->title = 'title';
+        $note->title = 'update';
         $body   = new StringStream(json_encode($note));
 
-        return new Request($uri, 'POST', '1.1', ['' => ['']], $body);
-    }
-
-    private function givenValidator_validateForNullIdInUri_returnsEmptyViolationList(): void
-    {
-        $violationList = [];
-
-        \Phake::when($this->validator)
-            ->validateForNullIdInUri(\Phake::anyParameters())
-            ->thenReturn($violationList);
+        return new Request($uri, 'PUT', '1.1', ['' => ['']], $body);
     }
 
     private function givenValidator_validate_returnsEmptyViolationList(): void
@@ -189,19 +197,24 @@ class PostNoteActionTest extends TestCase
         $violationList = [];
 
         \Phake::when($this->validator)
-        ->validate(\Phake::anyParameters())
-        ->thenReturn($violationList);
+            ->validate(\Phake::anyParameters())
+            ->thenReturn($violationList);
     }
 
-    private function givenPersister_persist_returnsPersistNote(): Note
+    private function givenValidator_validateForNullIdInDB_returnsEmptyViolationList(): void
     {
-        $persistNote = \Phake::mock(Note::class);
+        $violationList = [];
 
+        \Phake::when($this->validator)
+            ->validateForNullNoteInDB(\Phake::anyParameters())
+            ->thenReturn($violationList);
+    }
+
+    private function givenPersister_updateNote_returnsTrue(): void
+    {
         \Phake::when($this->persister)
-            ->persist(\Phake::anyParameters())
-            ->thenReturn($persistNote);
-
-        return $persistNote;
+            ->updateNote(\Phake::anyParameters())
+            ->thenReturn(true);
     }
 
     private function givenResponseFactory_createNoteResponse_returnsResponse(): void
@@ -213,15 +226,9 @@ class PostNoteActionTest extends TestCase
             ->thenReturn($response);
     }
 
-    private function assertPersister_persist_isCalledOnceWithNote($note): void
-    {
-        \Phake::verify($this->persister, \Phake::times(1))
-            ->persist($note);
-    }
-
-    private function assertResponseFactory_createNoteResponse_isCalledOnceWithRequestAndPersistNoteAndStatusCode($request, $persistNote, $statusCode): void
+    private function assertResponseFactory_createNoteResponse_isCalledOnceWithRequestAndNoteAndStatusCode($request, $note, $statusCode): void
     {
         \Phake::verify($this->responseFactory, \Phake::times(1))
-            ->createNoteResponse($request, $persistNote, $statusCode);
+            ->createNoteResponse($request, $note, $statusCode);
     }
 }

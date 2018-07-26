@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Phake\Action;
+namespace App\Tests\Unit\Action;
 
 use App\Action\GetAllNoteAction;
 use App\Database\FinderInterface;

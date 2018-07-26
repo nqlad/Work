@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Phake;
+namespace App\Tests\Unit;
 
 use App\Http\RequestFactoryInterface;
 use App\Http\RequestHandlerInterface;

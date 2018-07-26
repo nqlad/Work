@@ -67,7 +67,7 @@ class PostgresDriver implements PersisterInterface, FinderInterface
         return $note;
     }
 
-    public function deleteNote(string $id): Note
+    public function deleteNote(?string $id): Note
     {
         $note = new Note();
 

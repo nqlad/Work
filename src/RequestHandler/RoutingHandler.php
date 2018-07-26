@@ -10,6 +10,7 @@ use App\Action\PostNoteAction;
 use App\Action\UpdateNoteAction;
 use App\Http\RequestHandlerInterface;
 use App\Http\ResponseFactoryInterface;
+use App\Http\Uri;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -56,32 +57,34 @@ class RoutingHandler implements RequestHandlerInterface
 
     public function handleRequest(RequestInterface $request): ResponseInterface
     {
-        $route = $this->routeParser->parseRouteFromUri($request);
+        $route              = $this->routeParser->parseRouteFromUri($request);
+
+        $resourceRequest    = $request->withRequestTarget($route->getResourceId());
 
         if ($route->getMethod() === 'POST') {
 
-            $response       = $this->postNoteAction->handleRequest($request);
+            $response       = $this->postNoteAction->handleRequest($resourceRequest);
 
         } elseif ($route->getMethod() === 'PUT') {
 
-            $response       = $this->putNoteAction->handleRequest($request);
+            $response       = $this->putNoteAction->handleRequest($resourceRequest);
 
         } elseif ($route->getMethod() === 'DELETE') {
 
-            $response       = $this->deleteNoteAction->handleRequest($request);
+            $response       = $this->deleteNoteAction->handleRequest($resourceRequest);
 
         } elseif ($route->getMethod() === 'GET') {
 
-            $noteId         = $route->getResourceId();
+            $resourceId     = $route->getResourceId();
 
-            if ($noteId === null) {
-                $response   = $this->getAllNoteAction->handleRequest($request);
+            if ($resourceId === null) {
+                $response   = $this->getAllNoteAction->handleRequest($resourceRequest);
             } else {
-                $response   = $this->getNoteAction->handleRequest($request);
+                $response   = $this->getNoteAction->handleRequest($resourceRequest);
             }
         } else {
 
-            $response       = $this->responseFactory->createNotFoundResponse($request);
+            $response       = $this->responseFactory->createNotFoundResponse($resourceRequest);
 
         }
 

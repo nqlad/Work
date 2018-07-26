@@ -15,7 +15,7 @@ class RouteParser
 
         if (is_numeric(end($requestTargets))) {
             $resourceId     = end($requestTargets);
-            $resourceName   = array_shift($requestTargets);
+            $resourceName   = prev($requestTargets);
         } else {
             $resourceId     = null;
             $resourceName   = end($requestTargets);

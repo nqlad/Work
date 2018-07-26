@@ -43,7 +43,7 @@ class UpdateNoteAction implements RequestHandlerInterface
         $requestBody    = $request->getBody();
         $note           = $this->deserialize->deserialize($requestBody);
 
-        $note           = $this->findNoteIdInUri($request,$note);
+        $note->id       = $request->getRequestTarget() === null ? null : (int) $request->getRequestTarget();
 
         $violationList  = $this->validator->validate($note);
         $violationList  += $this->validator->validateForNullNoteInDB($note);
@@ -57,18 +57,5 @@ class UpdateNoteAction implements RequestHandlerInterface
         }
 
         return $response;
-    }
-
-    private function findNoteIdInUri(RequestInterface $request,Note $note): Note
-    {
-        $requestTargets = explode('/',$request->getRequestTarget());
-
-        if (end($requestTargets) === 'notes') {
-            $note->id = null;
-        } else {
-            $note->id = (int) end($requestTargets);
-        }
-
-        return $note;
     }
 }

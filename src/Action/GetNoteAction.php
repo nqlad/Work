@@ -33,7 +33,7 @@ class GetNoteAction implements RequestHandlerInterface
 
     public function handleRequest(RequestInterface $request): ResponseInterface
     {
-        $noteId         = $this->getNoteIdFromUri($request);
+        $noteId         = $request->getRequestTarget();
         $note           = $this->finder->findOneNote($noteId);
 
         if ($note === null) {
@@ -43,12 +43,5 @@ class GetNoteAction implements RequestHandlerInterface
         }
 
         return $response;
-    }
-
-    private function getNoteIdFromUri(RequestInterface $request): string
-    {
-        $requestTargets = explode('/',$request->getRequestTarget());
-
-        return end($requestTargets);
     }
 }

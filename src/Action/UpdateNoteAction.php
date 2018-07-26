@@ -4,7 +4,6 @@ namespace App\Action;
 
 
 use App\Database\PersisterInterface;
-use App\Entity\Note;
 use App\Http\RequestHandlerInterface;
 use App\Http\ResponseFactoryInterface;
 use App\Serialization\DeserializerInterface;

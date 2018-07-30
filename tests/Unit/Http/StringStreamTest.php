@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: rdavletshin
- * Date: 17.07.18
- * Time: 18:59
- */
 
 namespace App\Tests\Unit\Http;
 
@@ -13,26 +7,28 @@ use PHPUnit\Framework\TestCase;
 
 class StringStreamTest extends TestCase
 {
-
     /**
+     * @test
      * @expectedException \DomainException
      */
-    public function testSeek_seek_DomainException()
+    public function testSeek_seek_DomainException(): void
     {
         $stream = new StringStream('test');
         $stream->seek('');
     }
 
     /**
+     * @test
      * @expectedException \DomainException
      */
-    public function testTell_tell_DomainException()
+    public function testTell_tell_DomainException(): void
     {
         $stream = new StringStream('test');
         $stream->tell();
     }
 
-    public function testIsReadable_isReadableTrueReturned()
+    /** @test */
+    public function testIsReadable_isReadableTrueReturned(): void
     {
         $stream = new StringStream('test');
 
@@ -40,40 +36,45 @@ class StringStreamTest extends TestCase
     }
 
     /**
+     * @test
      * @expectedException \DomainException
      */
-    public function testEof_eof_DomainException()
+    public function testEof_eof_DomainException(): void
     {
         $stream = new StringStream('test');
         $stream->eof();
     }
 
     /**
+     * @test
      * @expectedException \DomainException
      */
-    public function testDetach_detach_DomainException()
+    public function testDetach_detach_DomainException(): void
     {
         $stream = new StringStream('test');
         $stream->detach();
     }
 
     /**
+     * @test
      * @expectedException \DomainException
      */
-    public function testIsSeekable_isSeekable_DomainException()
+    public function testIsSeekable_isSeekable_DomainException(): void
     {
         $stream = new StringStream('test');
         $stream->isSeekable();
     }
 
-    public function testRead_readInt_readString()
+    /** @test */
+    public function testRead_readInt_readString(): void
     {
         $stream = new StringStream('test');
 
         $this->assertEquals('t',$stream->read(1));
     }
 
-    public function testWrite_writeString_writeInt()
+    /** @test */
+    public function testWrite_writeString_writeInt(): void
     {
         $stream = new StringStream('test');
 
@@ -81,47 +82,53 @@ class StringStreamTest extends TestCase
     }
 
     /**
+     * @test
      * @expectedException \DomainException
      */
-    public function testRewind_rewind_DomainException()
+    public function testRewind_rewind_DomainException(): void
     {
         $stream = new StringStream('test');
         $stream->rewind();
     }
 
     /**
+     * @test
      * @expectedException \DomainException
      */
-    public function testGetMetadata_getMetadata_DomainException()
+    public function testGetMetadata_getMetadata_DomainException(): void
     {
         $stream = new StringStream('test');
         $stream->getMetadata();
     }
 
     /**
+     * @test
      * @expectedException \DomainException
      */
-    public function testClose_close_DomainException()
+    public function testClose_close_DomainException(): void
     {
         $stream = new StringStream('test');
         $stream->close();
     }
 
-    public function testIsWritable_isWritableTrueReturned()
+    /** @test */
+    public function testIsWritable_isWritableTrueReturned(): void
     {
         $stream = new StringStream('test');
 
         $this->assertTrue($stream->isWritable());
     }
 
-    public function testGetSize_getSizeStringStream_getSizeIntReturned()
+    /** @test */
+    public function testGetSize_getSizeStringStream_getSizeIntReturned(): void
     {
         $stream = new StringStream('test');
 
         $this->assertEquals(4,$stream->getSize());
     }
 
-    public function testGetContents_getContentsStreamString_getContentStringReturned()
+    /** @test */
+    public function testGetContents_getContentsStreamString_getContentStringReturned(): void
     {
         $stream = new StringStream('test');
 

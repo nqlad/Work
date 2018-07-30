@@ -2,7 +2,6 @@
 
 namespace App\Http;
 
-
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\StreamInterface;
 
@@ -44,7 +43,6 @@ class Message implements MessageInterface
 
         $this->headers = $headers;
     }
-
 
     private function setProtocolVersion(string $protocolVersion): void
     {

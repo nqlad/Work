@@ -2,7 +2,6 @@
 
 namespace App\RequestHandler;
 
-
 use Psr\Http\Message\RequestInterface;
 
 class RouteParser

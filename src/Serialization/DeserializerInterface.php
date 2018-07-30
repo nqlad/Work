@@ -2,7 +2,6 @@
 
 namespace App\Serialization;
 
-
 use App\Entity\Note;
 
 interface DeserializerInterface

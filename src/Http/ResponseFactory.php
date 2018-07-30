@@ -2,7 +2,6 @@
 
 namespace App\Http;
 
-
 use App\Entity\Note;
 use App\Serialization\SerializerInterface;
 use Psr\Http\Message\RequestInterface;
@@ -18,7 +17,6 @@ class ResponseFactory implements ResponseFactoryInterface
     {
         $this->deserializer = $deserializer;
     }
-
 
     public function createNoteResponse(RequestInterface $request, Note $note, int $statusCode): ResponseInterface
     {
@@ -56,7 +54,6 @@ class ResponseFactory implements ResponseFactoryInterface
 
     public function createViolationListResponse(RequestInterface $request, array $violationList): ResponseInterface
     {
-
         $status             = 400;
         $protocolVersion    = $request->getProtocolVersion();
         $headers            = $request->getHeaders();
@@ -77,7 +74,6 @@ class ResponseFactory implements ResponseFactoryInterface
 
         return new StringStream(implode($body));
     }
-
 
     public function createNotFoundResponse(RequestInterface $request): ResponseInterface
     {

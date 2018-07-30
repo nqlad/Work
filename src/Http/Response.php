@@ -2,7 +2,6 @@
 
 namespace App\Http;
 
-
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 
@@ -88,7 +87,7 @@ class Response extends Message implements ResponseInterface
         string $protocolVersion,
         array $headers,
         StreamInterface $body
-    ){
+    ) {
         parent::__construct($protocolVersion, $headers, $body);
 
         if (!is_int($status)) {

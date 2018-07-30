@@ -10,8 +10,10 @@ class Kernel
 {
     /** @var RequestFactoryInterface*/
     private $requestFactory;
+
     /** @var RequestHandlerInterface */
     private $requestHandler;
+
     /** @var ResponseSenderInterface */
     private $responseSender;
 

@@ -18,6 +18,8 @@ use Psr\Http\Message\ResponseInterface;
 
 class DeleteNoteActionTest extends TestCase
 {
+    private const RESPONSE_STATUS_CODE = 200;
+
     /** @var DeserializerInterface */
     private $deserialize;
 
@@ -43,7 +45,6 @@ class DeleteNoteActionTest extends TestCase
     {
         $request        = $this->givenTestRequestForViolationList();
         $deleteNote     = $this->createDeleteNoteAction();
-
         $noteId         = $request->getUri()->getPath();
         $note           = $this->givenPersister_deleteNote_returnsNote();
         $violationList  = $this->givenValidator_ValidateFroNullNoteInDB_returnsViolationList();
@@ -56,16 +57,12 @@ class DeleteNoteActionTest extends TestCase
         $this->assertResponseFactory_createViolationListResponse_isCalledOnceWithRequestAndViolationList($request, $violationList);
     }
 
-
-
     /** @test */
     public function handleRequest_request_createNoteResponse():void
     {
         $request    = $this->givenTestRequestForNoteResponse();
         $deleteNote = $this->createDeleteNoteAction();
-
         $noteId     = $request->getUri()->getPath();
-        $statusCode = 200;
         $note       = $this->givenPersister_deleteNote_returnsNote();
         $this->givenValidator_ValidateForNullNoteInDB_returnsEmptyViolationList();
         $this->givenResponseFactory_createNoteResponse_returnsResponse();
@@ -74,7 +71,7 @@ class DeleteNoteActionTest extends TestCase
 
         $this->assertPersister_deleteNote_isCalledOnceWithNoteId($noteId);
         $this->assertValidator_validateForNullNoteInDB_isCalledOnceWithNote($note);
-        $this->assertResponseFactory_createNoteResponse_isCalledOnceWithRequest($request,$note, $statusCode);
+        $this->assertResponseFactory_createNoteResponse_isCalledOnceWithRequest($request,$note, self::RESPONSE_STATUS_CODE);
     }
 
     private function givenTestRequestForViolationList(): RequestInterface
@@ -86,7 +83,6 @@ class DeleteNoteActionTest extends TestCase
 
         return $request->withUri(new Uri($resourceId));
     }
-
 
     private function createDeleteNoteAction(): DeleteNoteAction
     {
@@ -123,7 +119,6 @@ class DeleteNoteActionTest extends TestCase
             ->createViolationListResponse(\Phake::anyParameters())
             ->thenReturn($response);
     }
-
 
     private function assertPersister_deleteNote_isCalledOnceWithNoteId($noteId): void
     {

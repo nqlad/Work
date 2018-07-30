@@ -2,9 +2,8 @@
 
 namespace App\RequestHandler;
 
-
 use App\Action\DeleteNoteAction;
-use App\Action\GetAllNoteAction;
+use App\Action\GetNoteCollectionAction;
 use App\Action\GetNoteAction;
 use App\Action\PostNoteAction;
 use App\Action\UpdateNoteAction;
@@ -16,7 +15,7 @@ use Psr\Http\Message\ResponseInterface;
 
 class RoutingHandler implements RequestHandlerInterface
 {
-    /** @var GetAllNoteAction */
+    /** @var GetNoteCollectionAction */
     private $getAllNoteAction;
 
     /** @var GetNoteAction */
@@ -39,7 +38,7 @@ class RoutingHandler implements RequestHandlerInterface
 
     public function __construct(
         ResponseFactoryInterface $responseFactory,
-        GetAllNoteAction $getAllNoteAction,
+        GetNoteCollectionAction $getAllNoteAction,
         GetNoteAction $getNoteAction,
         DeleteNoteAction $deleteNoteAction,
         PostNoteAction $postNoteAction,
@@ -75,6 +74,7 @@ class RoutingHandler implements RequestHandlerInterface
             } else {
                 $response   = $this->getNoteAction->handleRequest($resourceRequest);
             }
+
         } else {
             $response       = $this->responseFactory->createNotFoundResponse($resourceRequest);
         }

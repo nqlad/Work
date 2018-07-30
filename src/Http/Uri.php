@@ -2,7 +2,6 @@
 
 namespace App\Http;
 
-
 use Psr\Http\Message\UriInterface;
 
 class Uri implements UriInterface
@@ -38,9 +37,8 @@ class Uri implements UriInterface
         $this->fragment = (string) parse_url($url, PHP_URL_FRAGMENT);
 
         $this->setUserInfo($url);
-        $this->setAuthority($url);
+        $this->setAuthority();
     }
-
 
     public function getHost(): string
     {
@@ -112,7 +110,7 @@ class Uri implements UriInterface
     public function withUserInfo($user, $password = null): UriInterface
     {
         $uri            = clone $this;
-        $uri->userInfo = $user ? $user . ($password == null ? '' : ':' . $password) : '';
+        $uri->userInfo  = $user ? $user . ($password == null ? '' : ':' . $password) : '';
 
         return $uri;
     }
@@ -132,7 +130,7 @@ class Uri implements UriInterface
         return $authority;
     }
 
-    private function setAuthority($authority): void
+    private function setAuthority(): void
     {
         $userInfo   = $this->getUserInfo();
         $host       = $this->getHost();

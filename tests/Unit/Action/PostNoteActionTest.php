@@ -18,6 +18,8 @@ use Psr\Http\Message\ResponseInterface;
 
 class PostNoteActionTest extends TestCase
 {
+    private const RESPONSE_STATUS_CODE = 200;
+
     /** @var DeserializerInterface */
     private $deserializer;
 
@@ -43,7 +45,6 @@ class PostNoteActionTest extends TestCase
     {
         $request        = $this->givenRequestForCreateViolationListResponse();
         $postNote       = $this->createPostNoteAction();
-
         $requestBody    = $request->getBody();
         $note           = $this->givenDeserializer_deserialize_returnsNote();
         $violationList  = $this->givenValidator_validate_returnsViolationList();
@@ -61,8 +62,6 @@ class PostNoteActionTest extends TestCase
     {
         $request        = $this->givenRequestForCreateNoteResponse();
         $postNote       = $this->createPostNoteAction();
-
-        $statusCode     = 200;
         $requestBody    = $request->getBody();
         $note           = $this->givenDeserializer_deserialize_returnsNote();
         $this->givenValidator_validate_returnsEmptyViolationList();
@@ -74,15 +73,15 @@ class PostNoteActionTest extends TestCase
         $this->assertDeserializer_deserialize_isCalledOnceWithRequestBody($requestBody);
         $this->assertValidator_validate_isCalledOnceWithNote($note);
         $this->assertPersister_persist_isCalledOnceWithNote($note);
-        $this->assertResponseFactory_createNoteResponse_isCalledOnceWithRequestAndPersistNoteAndStatusCode($request, $persistNote, $statusCode);
+        $this->assertResponseFactory_createNoteResponse_isCalledOnceWithRequestAndPersistNoteAndStatusCode($request, $persistNote, self::RESPONSE_STATUS_CODE);
     }
 
     private function givenRequestForCreateViolationListResponse(): RequestInterface
     {
-        $uri    = new Uri('http://project.local/notes');
-        $note   = new Note();
-        $note->title = 't';
-        $body   = new StringStream(json_encode($note));
+        $uri            = new Uri('http://project.local/notes');
+        $note           = new Note();
+        $note->title    = 't';
+        $body           = new StringStream(json_encode($note));
 
         return new Request($uri, 'POST', '1.1', ['' => ['']], $body);
     }
@@ -143,10 +142,10 @@ class PostNoteActionTest extends TestCase
 
     private function givenRequestForCreateNoteResponse(): RequestInterface
     {
-        $uri    = new Uri('http://project.local/notes');
-        $note   = new Note();
-        $note->title = 'title';
-        $body   = new StringStream(json_encode($note));
+        $uri            = new Uri('http://project.local/notes');
+        $note           = new Note();
+        $note->title    = 'title';
+        $body           = new StringStream(json_encode($note));
 
         return new Request($uri, 'POST', '1.1', ['' => ['']], $body);
     }

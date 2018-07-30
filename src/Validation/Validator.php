@@ -2,9 +2,7 @@
 
 namespace App\Validation;
 
-
 use App\Entity\Note;
-use Psr\Http\Message\RequestInterface;
 
 class Validator implements ValidatorInterface
 {
@@ -21,7 +19,7 @@ class Validator implements ValidatorInterface
 
     private function checkLengthAndAddViolation(Note $note): void
     {
-        if (strlen($note->title) <= 1){
+        if (strlen($note->title) <= 1) {
             $this->violations[] = new Violation("title", "Length must be more than one symbol");
         }
     }

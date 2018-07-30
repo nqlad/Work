@@ -9,30 +9,34 @@ use PHPUnit\Framework\TestCase;
 class MessageTest extends TestCase
 {
     /**
+     * @test
      * @expectedException \InvalidArgumentException
      */
-    public function testCreateMessageObject_headerNameNotString_InvalidArgumentExceptionThrown()
+    public function testCreateMessageObject_headerNameNotString_InvalidArgumentExceptionThrown(): void
     {
         new Message('1', [1 => ['testHeaderValue']], new StringStream(''));
     }
 
     /**
+     * @test
      * @expectedException \InvalidArgumentException
      */
-    public function testCreateMessageObject_headerValuesNotArray_InvalidArgumentExceptionThrown()
+    public function testCreateMessageObject_headerValuesNotArray_InvalidArgumentExceptionThrown(): void
     {
         new Message('1', ['testHeaderName' => 'testHeaderValue'], new StringStream(''));
     }
 
     /**
+     * @test
      * @expectedException \InvalidArgumentException
      */
-    public function testCreateMessageObject_headerValueNotString_InvalidArgumentExceptionThrown()
+    public function testCreateMessageObject_headerValueNotString_InvalidArgumentExceptionThrown(): void
     {
         new Message('1', ['testHeaderName' => [1]], new StringStream(''));
     }
 
-    public function testGetProtocolVersion_protocolVersionString_protocolVersionStringReturned()
+    /** @test */
+    public function testGetProtocolVersion_protocolVersionString_protocolVersionStringReturned(): void
     {
         $message = new Message('1.0', [], new StringStream(''));
 
@@ -40,9 +44,11 @@ class MessageTest extends TestCase
     }
 
     /**
+     * @test
+     * @param $testData
      * @dataProvider providerWithProtocolVersion
      */
-    public function testWithProtocolVersion_withNewProtocolVersionStringOrInt_MessageObjectWithNewProtocolVersionStringReturned($testData)
+    public function testWithProtocolVersion_withNewProtocolVersionStringOrInt_MessageObjectWithNewProtocolVersionStringReturned($testData): void
     {
         $message        = new Message($testData, [], new StringStream(''));
         $testMessage    = $message->withProtocolVersion($testData);
@@ -50,12 +56,13 @@ class MessageTest extends TestCase
         $this->assertEquals('1.1', $testMessage->getProtocolVersion());
     }
 
-    public function providerWithProtocolVersion()
+    public function providerWithProtocolVersion(): array
     {
         return [[1.1], ['1.1']];
     }
 
-    public function testWithBody_withNewBodyString_MessageObjectWithNewBodyStringReturned()
+    /** @test */
+    public function testWithBody_withNewBodyString_MessageObjectWithNewBodyStringReturned(): void
     {
         $message        = new Message('', [], new StringStream(''));
         $testMessage    = $message->withBody(new StringStream('Test'));
@@ -63,7 +70,8 @@ class MessageTest extends TestCase
         $this->assertEquals('Test', $testMessage->getBody());
     }
 
-    public function testWithHeader_withNewHeaderStringString_MessageObjectWithNewHeaderArrayReturned()
+    /** @test */
+    public function testWithHeader_withNewHeaderStringString_MessageObjectWithNewHeaderArrayReturned(): void
     {
         $message        = new Message('', ['testHeaderName' => ['example']], new StringStream(''));
         $testMessage    = $message->withHeader('testHeaderName', 'testHeaderValue');
@@ -71,16 +79,18 @@ class MessageTest extends TestCase
         $this->assertEquals(['testHeaderName' => ['testHeaderValue']], $testMessage->getHeaders());
     }
 
-    public function testWithHeader_withNewHeaderStringArray_MessageObjectWithNewHeaderArrayReturned()
+    /** @test */
+    public function testWithHeader_withNewHeaderStringArray_MessageObjectWithNewHeaderArrayReturned(): void
     {
         $message            = new Message('', ['testHeaderName' => ['example']], new StringStream(''));
         $testHeaderValues   = ['testHeaderValue_1', 'testHeaderValue_2', 'testHeaderValue_3'];
-        $testMessage            = $message->withHeader('testHeaderName', $testHeaderValues);
+        $testMessage        = $message->withHeader('testHeaderName', $testHeaderValues);
 
         $this->assertEquals(['testHeaderName' => $testHeaderValues], $testMessage->getHeaders());
     }
 
-    public function testWithAddedHeader_withAddedHeaderStringString_MessageObjectWithAddedHeaderArrayReturned()
+    /** @test */
+    public function testWithAddedHeader_withAddedHeaderStringString_MessageObjectWithAddedHeaderArrayReturned(): void
     {
         $message        = new Message('', [], new StringStream(''));
         $testMessage    = $message->withAddedHeader('testHeaderName', 'testHeaderValue');
@@ -88,7 +98,8 @@ class MessageTest extends TestCase
         $this->assertEquals(['testHeaderName' => ['testHeaderValue']], $testMessage->getHeaders());
     }
 
-    public function testWithAddedHeader_withAddedHeaderStringArray_MessageObjectWithAddedHeaderArrayReturned()
+    /** @test */
+    public function testWithAddedHeader_withAddedHeaderStringArray_MessageObjectWithAddedHeaderArrayReturned(): void
     {
         $message        = new Message('', [], new StringStream(''));
         $testMessage    = $message->withAddedHeader('testHeaderName', ['testHeaderValue_1', 'testHeaderValue_1']);
@@ -96,50 +107,56 @@ class MessageTest extends TestCase
         $this->assertEquals(['testHeaderName' => ['testHeaderValue_1', 'testHeaderValue_1']], $testMessage->getHeaders());
     }
 
-    public function testGetHeaders_getHeadersArray_getHeadersArrayReturned()
+    /** @test */
+    public function testGetHeaders_getHeadersArray_getHeadersArrayReturned(): void
     {
         $message = new Message('', ['testHeaderName' => ['testHeaderValue']], new StringStream(''));
 
         $this->assertEquals(['testHeaderName' => ['testHeaderValue']], $message->getHeaders());
     }
 
-    public function testGetBody_getBodyString_getBodyStringReturned()
+    /** @test */
+    public function testGetBody_getBodyString_getBodyStringReturned(): void
     {
         $message = new Message('', [], new StringStream('testStringStream'));
 
         $this->assertEquals('testStringStream', $message->getBody());
     }
 
-
-    public function testHasHeader_hasHeaderString_hasHeaderTrueReturned()
+    /** @test */
+    public function testHasHeader_hasHeaderString_hasHeaderTrueReturned(): void
     {
         $message = new Message('', ['testHeaderName' => ['testHeaderValue']], new StringStream(''));
 
         $this->assertTrue($message->hasHeader('testHeaderName'));
     }
 
-    public function testHasHeader_hasHeaderString_hasHeaderFalseReturned()
+    /** @test */
+    public function testHasHeader_hasHeaderString_hasHeaderFalseReturned(): void
     {
         $message = new Message('', ['testHeaderName' => ['testHeaderValue']], new StringStream(''));
 
         $this->assertFalse($message->hasHeader('testHeaderName_1'));
     }
 
-    public function testGetHeaderLine_getHeaderLineAnotherHeaderNameString_getHeaderLineEmptyReturned()
+    /** @test */
+    public function testGetHeaderLine_getHeaderLineAnotherHeaderNameString_getHeaderLineEmptyReturned(): void
     {
         $message = new Message('', ['testHeaderName' => ['testHeaderValue']], new StringStream(''));
 
         $this->assertEquals('', $message->getHeaderLine('testHeaderName_1'));
     }
 
-    public function testGetHeaderLine_getHeaderLineExistHeaderNameString_getHeaderLineHeaderValueStringReturned()
+    /** @test */
+    public function testGetHeaderLine_getHeaderLineExistHeaderNameString_getHeaderLineHeaderValueStringReturned(): void
     {
         $message = new Message('', ['testHeaderName' => ['testHeaderValue']], new StringStream(''));
 
         $this->assertEquals('testHeaderValue', $message->getHeaderLine('testHeaderName'));
     }
 
-    public function testGetHeaderLine_getHeaderLineExistHeaderNameString_getHeaderLineHeaderValueArrayReturned()
+    /** @test */
+    public function testGetHeaderLine_getHeaderLineExistHeaderNameString_getHeaderLineHeaderValueArrayReturned(): void
     {
         $testHeader     = ['testHeaderName' => ['testHeaderValue_1', 'testHeaderValue_2']];
         $message        = new Message('', $testHeader, new StringStream(''));
@@ -147,7 +164,8 @@ class MessageTest extends TestCase
         $this->assertEquals('testHeaderValue_1, testHeaderValue_2', $message->getHeaderLine('testHeaderName'));
     }
 
-    public function testWithoutHeader_withoutHeaderExistHeaderName_MessageObjectWithoutHeaderEmptyReturned()
+    /** @test */
+    public function testWithoutHeader_withoutHeaderExistHeaderName_MessageObjectWithoutHeaderEmptyReturned(): void
     {
         $message        = new Message('', ['testHeaderName' => ['testHeaderValue']], new StringStream(''));
         $testMessage    = $message->withoutHeader('testHeaderName');
@@ -155,14 +173,16 @@ class MessageTest extends TestCase
         $this->assertEquals([], $testMessage->getHeaders());
     }
 
-    public function testGetHeader_getHeaderString_getHeaderStringReturned()
+    /** @test */
+    public function testGetHeader_getHeaderString_getHeaderStringReturned(): void
     {
         $message = new Message('', ['testHeaderName' => ['testHeaderValue']], new StringStream(''));
 
         $this->assertEquals(['testHeaderValue'], $message->getHeader('testHeaderName'));
     }
 
-    public function testGetHeader_getHeaderString_getHeaderArrayReturned()
+    /** @test */
+    public function testGetHeader_getHeaderString_getHeaderArrayReturned(): void
     {
         $testHeader     = ['testHeaderName' => ['testHeaderValue_1', 'testHeaderValue_2']];
         $message        = new Message('', $testHeader, new StringStream(''));

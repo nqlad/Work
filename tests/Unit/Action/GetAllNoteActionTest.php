@@ -2,7 +2,7 @@
 
 namespace App\Tests\Unit\Action;
 
-use App\Action\GetAllNoteAction;
+use App\Action\GetNoteCollectionAction;
 use App\Database\FinderInterface;
 use App\Http\Request;
 use App\Http\ResponseFactoryInterface;
@@ -14,6 +14,8 @@ use Psr\Http\Message\ResponseInterface;
 
 class GetAllNoteActionTest extends TestCase
 {
+    private const RESPONSE_STATUS_CODE = 200;
+
     /** @var FinderInterface */
     private $finder;
 
@@ -31,15 +33,13 @@ class GetAllNoteActionTest extends TestCase
     {
         $request        = $this->givenRequestForGetAllNoteAction();
         $getAllNote     = $this->createGetAllNoteAction();
-
-        $statusCode     = 200;
         $noteCollection = $this->givenFinder_findAllNote_returnsNoteCollection();
         $this->givenResponseFactory_createNoteCollection_returnsResponse();
 
         $getAllNote->handleRequest($request);
 
         $this->assertFinder_findAllNote_isCalledOnce();
-        $this->assertResponseFactory_creareNoteCollection_isCalledOnceWithRequestAndNoteCollectionAndStatusCode($request, $noteCollection, $statusCode);
+        $this->assertResponseFactory_creareNoteCollection_isCalledOnceWithRequestAndNoteCollectionAndStatusCode($request, $noteCollection, self::RESPONSE_STATUS_CODE);
     }
 
     private function givenRequestForGetAllNoteAction(): RequestInterface
@@ -50,9 +50,9 @@ class GetAllNoteActionTest extends TestCase
         return new Request($uri, 'GET', '1.1', ['' => ['']], $body);
     }
 
-    private function createGetAllNoteAction(): GetAllNoteAction
+    private function createGetAllNoteAction(): GetNoteCollectionAction
     {
-        return new GetAllNoteAction($this->finder, $this->responseFactory);
+        return new GetNoteCollectionAction($this->finder, $this->responseFactory);
     }
 
     private function givenFinder_findAllNote_returnsNoteCollection(): array
@@ -60,7 +60,7 @@ class GetAllNoteActionTest extends TestCase
         $noteCollection = [2 => 'testPost', 1 => 'testPut'];
 
         \Phake::when($this->finder)
-            ->findAllNote()
+            ->findNoteCollection()
             ->thenReturn($noteCollection);
 
         return $noteCollection;
@@ -78,7 +78,7 @@ class GetAllNoteActionTest extends TestCase
     private function assertFinder_findAllNote_isCalledOnce(): void
     {
         \Phake::verify($this->finder, \Phake::times(1))
-            ->findAllNote();
+            ->findNoteCollection();
     }
 
     private function assertResponseFactory_creareNoteCollection_isCalledOnceWithRequestAndNoteCollectionAndStatusCode($request, $noteCollection, $statusCode): void

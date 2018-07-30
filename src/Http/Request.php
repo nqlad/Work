@@ -2,7 +2,6 @@
 
 namespace App\Http;
 
-
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\UriInterface;
 
@@ -41,7 +40,7 @@ class Request extends Message implements RequestInterface
         string $protocolVersion,
         array $headers,
         StringStream $body
-    ){
+    ) {
         parent::__construct($protocolVersion,$headers,$body);
 
         $this->uri = $uri;
@@ -56,7 +55,7 @@ class Request extends Message implements RequestInterface
         $this->requestTarget .= $this->uri->getQuery() ? '?' . $this->uri->getQuery() : '';
     }
 
-    public function getRequestTarget(): ?string
+    public function getRequestTarget(): string
     {
         return $this->requestTarget;
     }
@@ -109,7 +108,6 @@ class Request extends Message implements RequestInterface
     {
         return $this->uri;
     }
-
 
     public function setUri(UriInterface $uri): void
     {

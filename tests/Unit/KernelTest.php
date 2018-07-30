@@ -32,7 +32,6 @@ class KernelTest extends TestCase
     public function run_noParameters_requestCreatedAndHandledAndResponseSent(): void
     {
         $kernel     = $this->createKernel();
-
         $request    = $this->givenRequestFactory_createRequest_returnsRequest();
         $response   = $this->givenRequestHandler_handleRequest_returnsResponse();
 

@@ -2,7 +2,6 @@
 
 namespace App\RequestHandler;
 
-
 class Route
 {
     /** @var string|null */
@@ -16,9 +15,9 @@ class Route
 
     public function __construct(?string $resourceId, string $resourceName, string $method)
     {
-        $this->resourceId = $resourceId;
+        $this->resourceId   = $resourceId;
         $this->resourceName = $resourceName;
-        $this->method = $method;
+        $this->method       = $method;
     }
 
     public function getResourceId(): ?string

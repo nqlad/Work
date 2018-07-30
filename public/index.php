@@ -16,7 +16,7 @@ $responseSender     = new \App\Http\ResponseSender();
 $routeParser        = new \App\RequestHandler\RouteParser();
 
 $getNote            = new \App\Action\GetNoteAction($persister,$responseFactory,$validator);
-$getNoteCollection  = new \App\Action\GetAllNoteAction($persister,$responseFactory);
+$getNoteCollection  = new \App\Action\GetNoteCollectionAction($persister,$responseFactory);
 $deleteNote         = new \App\Action\DeleteNoteAction($deserializer,$persister,$responseFactory,$validator);
 $postNote           = new \App\Action\PostNoteAction($deserializer,$persister,$responseFactory,$validator);
 $putNote            = new \App\Action\UpdateNoteAction($deserializer,$validator,$persister,$responseFactory);

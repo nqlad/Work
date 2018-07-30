@@ -2,7 +2,6 @@
 
 namespace App\Http;
 
-
 use App\Entity\Note;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;

@@ -2,7 +2,6 @@
 
 namespace App\Validation;
 
-
 use App\Entity\Note;
 
 interface ValidatorInterface

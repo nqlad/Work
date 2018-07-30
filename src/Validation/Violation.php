@@ -2,7 +2,6 @@
 
 namespace App\Validation;
 
-
 class Violation implements \JsonSerializable
 {
     /** @var string */

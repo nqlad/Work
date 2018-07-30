@@ -18,6 +18,8 @@ use Psr\Http\Message\ResponseInterface;
 
 class UpdateNoteActionTest extends TestCase
 {
+    private const RESPONSE_STATUS_CODE = 200;
+
     /** @var DeserializerInterface */
     private $deserialize;
 
@@ -43,12 +45,9 @@ class UpdateNoteActionTest extends TestCase
     {
         $request        = $this->givenRequestForCreateViolationListResponse();
         $updateNote     = $this->createUpdateNoteAction();
-
         $requestBody    = $request->getBody();
         $note           = $this->givenDeserialize_deserialize_returnsNote();
-
         $note->id       = (int) $request->getUri()->getPath();
-
         $violationList  = $this->givenValidator_validate_returnsViolationList();
         $this->givenPersister_updateNote_returnsFalse();
         $this->givenResponseFactory_createViolationListResponse_returnsResponse();
@@ -66,13 +65,9 @@ class UpdateNoteActionTest extends TestCase
     {
         $request        = $this->givenRequestForCreateNoteResponse();
         $updateNote     = $this->createUpdateNoteAction();
-
         $requestBody    = $request->getBody();
         $note           = $this->givenDeserialize_deserialize_returnsNote();
-
         $note->id       = (int) $request->getUri()->getPath();
-        $statusCode     = 200;
-
         $this->givenValidator_validate_returnsEmptyViolationList();
         $this->givenPersister_updateNote_returnsTrue();
         $this->givenResponseFactory_createNoteResponse_returnsResponse();
@@ -82,17 +77,17 @@ class UpdateNoteActionTest extends TestCase
         $this->assertDeserialize_deserialize_isCalledOnceWithRequestBody($requestBody);
         $this->assertValidator_validate_isCalledOnceWithNote($note);
         $this->assertPersister_updateNote_isCalledOnceWithNote($note);
-        $this->assertResponseFactory_createNoteResponse_isCalledOnceWithRequestAndNoteAndStatusCode($request, $note, $statusCode);
+        $this->assertResponseFactory_createNoteResponse_isCalledOnceWithRequestAndNoteAndStatusCode($request, $note, self::RESPONSE_STATUS_CODE);
     }
 
     private function givenRequestForCreateViolationListResponse(): RequestInterface
     {
-        $uri    = new Uri('http://project.local/notes/1');
-        $note   = new Note();
-        $note->title = 't';
-        $body   = new StringStream(json_encode($note));
-        $request = new Request($uri, 'PUT', '1.1', ['' => ['']], $body);
-        $resourceId = '1';
+        $uri            = new Uri('http://project.local/notes/1');
+        $note           = new Note();
+        $note->title    = 't';
+        $body           = new StringStream(json_encode($note));
+        $request        = new Request($uri, 'PUT', '1.1', ['' => ['']], $body);
+        $resourceId     = '1';
 
         return $request->withUri(new Uri($resourceId));
     }
@@ -119,17 +114,6 @@ class UpdateNoteActionTest extends TestCase
 
         \Phake::when($this->validator)
             ->validate(\Phake::anyParameters())
-            ->thenReturn($violationList);
-
-        return $violationList;
-    }
-
-    private function givenValidator_validateForNullIdInDB_returnsViolationList(): array
-    {
-        $violationList = [];
-
-        \Phake::when($this->validator)
-            ->validateForNullNoteInDB(\Phake::anyParameters())
             ->thenReturn($violationList);
 
         return $violationList;
@@ -163,12 +147,6 @@ class UpdateNoteActionTest extends TestCase
             ->validate($note);
     }
 
-    private function assertValidator_validateForNullNoteInDB_isCalledOnceWithNote($note): void
-    {
-        \Phake::verify($this->validator, \Phake::times(1))
-            ->validateForNullNoteInDB($note);
-    }
-
     private function assertPersister_updateNote_isCalledOnceWithNote($note): void
     {
         \Phake::verify($this->persister, \Phake::times(1))
@@ -182,12 +160,12 @@ class UpdateNoteActionTest extends TestCase
 
     private function givenRequestForCreateNoteResponse(): RequestInterface
     {
-        $uri    = new Uri('http://project.local/notes/1');
-        $note   = new Note();
-        $note->title = 'update';
-        $body   = new StringStream(json_encode($note));
-        $request = new Request($uri, 'PUT', '1.1', ['' => ['']], $body);
-        $resourceId = '1';
+        $uri            = new Uri('http://project.local/notes/1');
+        $note           = new Note();
+        $note->title    = 'update';
+        $body           = new StringStream(json_encode($note));
+        $request        = new Request($uri, 'PUT', '1.1', ['' => ['']], $body);
+        $resourceId     = '1';
 
         return $request->withUri(new Uri($resourceId));
     }
@@ -198,15 +176,6 @@ class UpdateNoteActionTest extends TestCase
 
         \Phake::when($this->validator)
             ->validate(\Phake::anyParameters())
-            ->thenReturn($violationList);
-    }
-
-    private function givenValidator_validateForNullIdInDB_returnsEmptyViolationList(): void
-    {
-        $violationList = [];
-
-        \Phake::when($this->validator)
-            ->validateForNullNoteInDB(\Phake::anyParameters())
             ->thenReturn($violationList);
     }
 

@@ -2,7 +2,6 @@
 
 namespace App\Action;
 
-
 use App\Database\PersisterInterface;
 use App\Http\RequestHandlerInterface;
 use App\Http\ResponseFactoryInterface;

@@ -2,14 +2,13 @@
 
 namespace App\Action;
 
-
 use App\Database\FinderInterface;
 use App\Http\RequestHandlerInterface;
 use App\Http\ResponseFactoryInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-class GetAllNoteAction implements RequestHandlerInterface
+class GetNoteCollectionAction implements RequestHandlerInterface
 {
     /** @var FinderInterface */
     private $finder;
@@ -27,7 +26,7 @@ class GetAllNoteAction implements RequestHandlerInterface
 
     public function handleRequest(RequestInterface $request): ResponseInterface
     {
-        $noteCollection = $this->finder->findAllNote();
+        $noteCollection = $this->finder->findNoteCollection();
 
         $response       = $this->responseFactory->createNoteCollection($request, $noteCollection,200);
 

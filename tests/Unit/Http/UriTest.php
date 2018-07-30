@@ -7,7 +7,8 @@ use PHPUnit\Framework\TestCase;
 
 class UriTest extends TestCase
 {
-    public function testWithQuery_withQueryNewQueryString_UriObjectWithNewQuery()
+    /** @test */
+    public function testWithQuery_withQueryNewQueryString_UriObjectWithNewQuery(): void
     {
         $uri        = new Uri('http://secure.example.com/test/query.php?kingkong=toto#doc3');
         $testUri    = $uri->withQuery('testQuery');
@@ -16,7 +17,8 @@ class UriTest extends TestCase
         $this->assertEquals($checkUri->getQuery(), $testUri->getQuery());
     }
 
-    public function testWithUserInfo_withUserInfoWithNewLoginWithoutPass_UriObjectWithNewLoginWithoutPass()
+    /** @test */
+    public function testWithUserInfo_withUserInfoWithNewLoginWithoutPass_UriObjectWithNewLoginWithoutPass(): void
     {
         $uri        = new Uri('http://login:pass@secure.example.com:443/test/query.php');
         $testUri    = $uri->withUserInfo('testLogin');
@@ -25,7 +27,8 @@ class UriTest extends TestCase
         $this->assertEquals($checkUri->getUserInfo(), $testUri->getUserInfo());
     }
 
-    public function testWithUserInfo_withUserInfoWithNewLoginWithNewPass_UriObjectWithNewLoginWithNewPass()
+    /** @test */
+    public function testWithUserInfo_withUserInfoWithNewLoginWithNewPass_UriObjectWithNewLoginWithNewPass(): void
     {
         $uri        = new Uri('http://login:pass@secure.example.com:443/test/query.php');
         $testUri    = $uri->withUserInfo('testLogin', 'testPassword');
@@ -34,7 +37,8 @@ class UriTest extends TestCase
         $this->assertEquals($checkUri->getUserInfo(), $testUri->getUserInfo());
     }
 
-    public function testWithPort_withNewPortInt_UriObjectWithNewPort()
+    /** @test */
+    public function testWithPort_withNewPortInt_UriObjectWithNewPort(): void
     {
         $uri        = new Uri('http://login:pass@secure.example.com:443/test/query.php?kingkong=toto#doc3');
         $testUri    = $uri->withPort(555);
@@ -44,24 +48,27 @@ class UriTest extends TestCase
     }
 
     /**
+     * @test
      * @expectedException \InvalidArgumentException
      */
-    public function testWithPort_portEqualsZero_InvalidArgumentException()
+    public function testWithPort_portEqualsZero_InvalidArgumentException(): void
     {
         $uri = new Uri('http://login:pass@secure.example.com:443/test/query.php?kingkong=toto#doc3');
         $uri->withPort(0);
     }
 
     /**
+     * @test
      * @expectedException \InvalidArgumentException
      */
-    public function testWithPort_biggerThanNeed_InvalidArgumentException()
+    public function testWithPort_biggerThanNeed_InvalidArgumentException(): void
     {
         $uri = new Uri('http://login:pass@secure.example.com:443/test/query.php?kingkong=toto#doc3');
         $uri->withPort(80000);
     }
 
-    public function testWithScheme_withNewSchemeString_UriObjectWithNewScheme()
+    /** @test */
+    public function testWithScheme_withNewSchemeString_UriObjectWithNewScheme(): void
     {
         $uri        = new Uri('http://login:pass@secure.example.com:443/test/query.php?kingkong=toto#doc3');
         $testUri    = $uri->withScheme('https');
@@ -71,15 +78,17 @@ class UriTest extends TestCase
     }
 
     /**
+     * @test
      * @expectedException \InvalidArgumentException
      */
-    public function testWithScheme_withIncorrectScheme_InvalidArgumentException()
+    public function testWithScheme_withIncorrectScheme_InvalidArgumentException(): void
     {
         $uri = new Uri('http://login:pass@secure.example.com:443/test/query.php?kingkong=toto#doc3');
         $uri->withScheme('test');
     }
 
-    public function testWithPath_withNewPath_UriObjectWithNewPath()
+    /** @test */
+    public function testWithPath_withNewPath_UriObjectWithNewPath(): void
     {
         $uri        = new Uri('http://login:pass@secure.example.com:443/test/query.php');
         $testUri    = $uri->withPath('/testPath/test.php');
@@ -88,7 +97,8 @@ class UriTest extends TestCase
         $this->assertEquals($checkUri->getPath(), $testUri->getPath());
     }
 
-    public function testWithFragment_withNewFragment_UriObjectWithNewFragment()
+    /** @test */
+    public function testWithFragment_withNewFragment_UriObjectWithNewFragment(): void
     {
         $uri        = new Uri('http://secure.example.com/test/query.php?kingkong=toto#doc3');
         $testUri    = $uri->withFragment('test');

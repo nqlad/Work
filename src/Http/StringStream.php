@@ -2,7 +2,6 @@
 
 namespace App\Http;
 
-
 use Psr\Http\Message\StreamInterface;
 
 class StringStream implements StreamInterface
@@ -23,12 +22,12 @@ class StringStream implements StreamInterface
         return $this->contents;
     }
 
-    public function close()
+    public function close(): void
     {
         throw new \DomainException('Not implemented');
     }
 
-    public function detach()
+    public function detach(): void
     {
         throw new \DomainException('Not implemented');
     }
@@ -38,27 +37,27 @@ class StringStream implements StreamInterface
         return strlen($this->contents);
     }
 
-    public function tell()
+    public function tell(): void
     {
         throw new \DomainException('Not implemented');
     }
 
-    public function eof()
+    public function eof(): void
     {
         throw new \DomainException('Not implemented');
     }
 
-    public function isSeekable()
+    public function isSeekable(): void
     {
         throw new \DomainException('Not implemented');
     }
 
-    public function seek($offset, $whence = SEEK_SET)
+    public function seek($offset, $whence = SEEK_SET): void
     {
         throw new \DomainException('Not implemented');
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         throw new \DomainException('Not implemented');
     }
@@ -71,6 +70,7 @@ class StringStream implements StreamInterface
     public function write($string): int
     {
         $this->contents .= $string;
+
         return strlen($string);
     }
 

@@ -2,12 +2,10 @@
 
 namespace App\Serialization;
 
-
 use App\Entity\Note;
 
 class JsonSerializer implements SerializerInterface,DeserializerInterface
 {
-
     public function serialize($data): string
     {
         return json_encode($data);

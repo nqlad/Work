@@ -2,7 +2,6 @@
 
 namespace App\Action;
 
-
 use App\Database\FinderInterface;
 use App\Http\RequestHandlerInterface;
 use App\Http\ResponseFactoryInterface;

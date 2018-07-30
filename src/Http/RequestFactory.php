@@ -2,13 +2,11 @@
 
 namespace App\Http;
 
-
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\UriInterface;
 
 class RequestFactory implements RequestFactoryInterface
 {
-
     public function createRequest(array $serverConfig): RequestInterface
     {
         $uri                = $this->getUri($serverConfig);
@@ -21,12 +19,12 @@ class RequestFactory implements RequestFactoryInterface
 
         return $request;
     }
+
     private function getHeaders(array $serverConfig): array
     {
         $headers = [''=>['']];
 
-        foreach ($serverConfig as $name => $values){
-
+        foreach ($serverConfig as $name => $values) {
             if (strncmp($name,'HTTP_',5) === 0) {
                 $name       = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
                 $value      = explode(',',$values);
@@ -34,6 +32,7 @@ class RequestFactory implements RequestFactoryInterface
             }
 
         }
+
         unset($headers['']);
 
         return $headers;

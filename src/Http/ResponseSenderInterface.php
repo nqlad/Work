@@ -2,7 +2,6 @@
 
 namespace App\Http;
 
-
 use Psr\Http\Message\ResponseInterface;
 
 interface ResponseSenderInterface

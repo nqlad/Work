@@ -2,7 +2,6 @@
 
 namespace App\Action;
 
-
 use App\Database\PersisterInterface;
 use App\Http\RequestHandlerInterface;
 use App\Http\ResponseFactoryInterface;
@@ -48,7 +47,7 @@ class UpdateNoteAction implements RequestHandlerInterface
 
         $successfulUpdateNote   = $this->persister->updateNote($note);
 
-        if (count($violationList) < 1 and $successfulUpdateNote) {
+        if (count($violationList) < 1 && $successfulUpdateNote) {
             $response           = $this->responseFactory->createNoteResponse($request, $note,200);
         } else {
             $violationList      += $this->validator->validateForNullNoteInDB($note);

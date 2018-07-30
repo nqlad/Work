@@ -125,19 +125,17 @@ class Request extends Message implements RequestInterface
     {
         $request    = clone $this;
 
-        if ($preserveHost == false) {
-            if ($uri->getHost() !== '') {
+        if ($preserveHost === false) {
+            if ($uri->getHost() === "") {
                 $request->setUri($uri->withHost($this->uri->getHost()));
             } else {
                 $request->setUri($uri);
             }
-        } elseif ($preserveHost == true) {
-            if (($this->uri->getHost() === null) and ($uri->getHost() !== null)) {
-                $request->setUri($uri);
-            } elseif (($this->uri->getHost() === null) and ($uri->getHost() === null)) {
-                $request->setUri($uri);
-            } elseif (($this->uri->getHost() !== null)) {
+        } elseif ($preserveHost === true) {
+            if (($this->uri->getHost() !== "")) {
                 $request->setUri($uri->withHost($this->uri->getHost()));
+            } else {
+                $request->setUri($uri);
             }
         }
 

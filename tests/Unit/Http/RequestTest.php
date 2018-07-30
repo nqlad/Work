@@ -81,7 +81,7 @@ class RequestTest extends TestCase
         $this->assertEquals('http://login:pass@secure.example.com:443', $request->getUri());
     }
 
-    public function testWithUri_withUriOldUriHaveHostNewUriWithoutHost_RequestObjectWithOldHost()
+    public function testWithUri_withUriOldUriHaveHostNewUriWithoutHost_RequestObjectWithNewUri()
     {
         $uri            = new Uri('http://secure.example.com:443');
         $request        = new Request($uri, 'GET', '1.0', [], new StringStream(''));
@@ -89,10 +89,10 @@ class RequestTest extends TestCase
         $testRequest    = $request->withUri($testUri);
         $testRequestUri = $testRequest->getUri();
 
-        $this->assertEquals('secure.example.com', $testRequestUri->getHost());
+        $this->assertEquals('http://secure.example.com/test.php', $testRequestUri->__toString());
     }
 
-    public function testWithUri_withUriOldUriHaveHostNewUriWithNewHost_RequestObjectWithNewHost()
+    public function testWithUri_withUriOldUriHaveHostNewUriWithNewHost_RequestObjectWithNewUri()
     {
         $uri            = new Uri('http://secure.example.com:443/test.php');
         $request        = new Request($uri, 'GET', '1.0', [], new StringStream(''));
@@ -100,10 +100,10 @@ class RequestTest extends TestCase
         $testRequest    = $request->withUri($testUri);
         $testRequestUri = $testRequest->getUri();
 
-        $this->assertEquals('test.com', $testRequestUri->getHost());
+        $this->assertEquals('http://test.com/test.php', $testRequestUri->__toString());
     }
 
-    public function testWithUri_withUriOldUriWithoutHostNewUriWithHostPreserveHostTrue_RequestObjectWithNewHost()
+    public function testWithUri_withUriOldUriWithoutHostNewUriWithHostPreserveHostTrue_RequestObjectWithNewUri()
     {
         $uri            = new Uri('http:/test.php');
         $request        = new Request($uri, 'GET', '1.0', [], new StringStream(''));
@@ -111,10 +111,10 @@ class RequestTest extends TestCase
         $testRequest    = $request->withUri($testUri, true);
         $testRequestUri = $testRequest->getUri();
 
-        $this->assertEquals('test.com', $testRequestUri->getHost());
+        $this->assertEquals('http://test.com/test.php', $testRequestUri->__toString());
     }
 
-    public function testWithUri_withUriOldUriWithoutHostNewUriWithoutHostPreserveHostTrue_RequestObjectWithEmptyHost()
+    public function testWithUri_withUriOldUriWithoutHostNewUriWithoutHostPreserveHostTrue_RequestObjectWithNewUri()
     {
         $uri            = new Uri('http:/test_1.php');
         $request        = new Request($uri, 'GET', '1.0', [], new StringStream(''));
@@ -122,10 +122,10 @@ class RequestTest extends TestCase
         $testRequest    = $request->withUri($testUri, true);
         $testRequestUri = $testRequest->getUri();
 
-        $this->assertEquals('', $testRequestUri->getHost());
+        $this->assertEquals('http:/test_2.php', $testRequestUri->__toString());
     }
 
-    public function testWithUri_withUriOldUriWithHostNewUriWithHostPreserveHostTrue_RequestObjectWithOldHost()
+    public function testWithUri_withUriOldUriWithHostNewUriWithHostPreserveHostTrue_RequestObjectWithNewUri()
     {
         $uri            = new Uri('http://secure.example.com:443');
         $request        = new Request($uri, 'GET', '1.0', [], new StringStream(''));
@@ -133,10 +133,10 @@ class RequestTest extends TestCase
         $testRequest    = $request->withUri($testUri, true);
         $testRequestUri = $testRequest->getUri();
 
-        $this->assertEquals('secure.example.com', $testRequestUri->getHost());
+        $this->assertEquals('http://secure.example.com/test.php', $testRequestUri->__toString());
     }
 
-    public function testWithUri_withUriOldUriWithHostNewUriWithoutHostPreserveHostTrue_RequestObjectWithOldHost()
+    public function testWithUri_withUriOldUriWithHostNewUriWithoutHostPreserveHostTrue_RequestObjectWithNewUri()
     {
         $uri            = new Uri('http://secure.example.com:443');
         $request        = new Request($uri, 'GET', '1.0', [], new StringStream(''));
@@ -144,6 +144,6 @@ class RequestTest extends TestCase
         $testRequest    = $request->withUri($testUri, true);
         $testRequestUri = $testRequest->getUri();
 
-        $this->assertEquals('secure.example.com', $testRequestUri->getHost());
+        $this->assertEquals('http://secure.example.com/test.php', $testRequestUri->__toString());
     }
 }

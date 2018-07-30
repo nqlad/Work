@@ -1,0 +1,68 @@
+parameters:
+  dsn: 'pgsql:host=localhost;port=5432;dbname=postgres'
+  username: 'postgres'
+  password: 'yfNL4W'
+
+services:
+  jsonSerialize:
+    class: App\Serialization\JsonSerializer
+  validator:
+    class: App\Validation\Validator
+  postgresDriver:
+    class: App\Database\PostgresDriver
+    arguments:
+      - '%dsn%'
+      - '%username%'
+      - '%password%'
+  requestFactory:
+    class: App\Http\RequestFactory
+  responseFactory:
+    class: App\Http\ResponseFactory
+    arguments:
+      - '@jsonSerialize'
+  responseSender:
+    class: App\Http\ResponseSender
+  routeParser:
+    class: App\RequestHandler\RouteParser
+  getNoteAction:
+    class: App\Action\GetNoteAction
+    arguments:
+      - '@postgresDriver'
+      - '@responseFactory'
+      - '@validator'
+  getNoteCollectionAction:
+    class: App\Action\GetNoteCollectionAction
+    arguments:
+      - '@postgresDriver'
+      - '@responseFactory'
+  deleteNoteAction:
+    class: App\Action\DeleteNoteAction
+    arguments:
+      - '@jsonSerialize'
+      - '@postgresDriver'
+      - '@responseFactory'
+      - '@validator'
+  postNoteAction:
+    class: App\Action\PostNoteAction
+    arguments:
+      - '@jsonSerialize'
+      - '@postgresDriver'
+      - '@responseFactory'
+      - '@validator'
+  putNoteAction:
+    class: App\Action\UpdateNoteAction
+    arguments:
+      - '@jsonSerialize'
+      - '@postgresDriver'
+      - '@responseFactory'
+      - '@validator'
+  routingHandler:
+    class: App\RequestHandler\RoutingHandler
+    arguments:
+      - '@responseFactory'
+      - '@getNoteCollectionAction'
+      - '@getNoteAction'
+      - '@deleteNoteAction'
+      - '@postNoteAction'
+      - '@putNoteAction'
+      - '@routeParser'

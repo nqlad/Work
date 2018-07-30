@@ -12,6 +12,8 @@ use Psr\Http\Message\ResponseInterface;
 
 class DeleteNoteAction implements RequestHandlerInterface
 {
+    private const RESPONSE_STATUS_CODE = 200;
+
     /** @var DeserializerInterface */
     private $deserialize;
 
@@ -46,7 +48,7 @@ class DeleteNoteAction implements RequestHandlerInterface
         if (count($violationList) > 0) {
             $response   = $this->responseFactory->createViolationListResponse($request,$violationList);
         } else {
-            $response   = $this->responseFactory->createNoteResponse($request,$note,200);
+            $response   = $this->responseFactory->createNoteResponse($request,$note,self::RESPONSE_STATUS_CODE);
         }
 
         return $response;

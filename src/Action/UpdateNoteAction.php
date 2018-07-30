@@ -12,6 +12,8 @@ use Psr\Http\Message\ResponseInterface;
 
 class UpdateNoteAction implements RequestHandlerInterface
 {
+    private const RESPONSE_STATUS_CODE = 200;
+
     /** @var DeserializerInterface */
     private $deserialize;
 
@@ -26,14 +28,14 @@ class UpdateNoteAction implements RequestHandlerInterface
 
     public function __construct(
         DeserializerInterface $deserialize,
-        ValidatorInterface $validator,
         PersisterInterface $persister,
-        ResponseFactoryInterface $responseFactory
+        ResponseFactoryInterface $responseFactory,
+        ValidatorInterface $validator
     ) {
         $this->deserialize      = $deserialize;
-        $this->validator        = $validator;
         $this->persister        = $persister;
         $this->responseFactory  = $responseFactory;
+        $this->validator        = $validator;
     }
 
     public function handleRequest(RequestInterface $request): ResponseInterface
@@ -48,7 +50,7 @@ class UpdateNoteAction implements RequestHandlerInterface
         $successfulUpdateNote   = $this->persister->updateNote($note);
 
         if (count($violationList) < 1 && $successfulUpdateNote) {
-            $response           = $this->responseFactory->createNoteResponse($request, $note,200);
+            $response           = $this->responseFactory->createNoteResponse($request, $note,self::RESPONSE_STATUS_CODE);
         } else {
             $violationList      += $this->validator->validateForNullNoteInDB($note);
             $response           = $this->responseFactory->createViolationListResponse($request, $violationList);

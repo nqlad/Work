@@ -11,6 +11,8 @@ use Psr\Http\Message\ResponseInterface;
 
 class GetNoteAction implements RequestHandlerInterface
 {
+    private const RESPONSE_STATUS_CODE = 200;
+
     /** @var FinderInterface */
     private $finder;
 
@@ -40,7 +42,7 @@ class GetNoteAction implements RequestHandlerInterface
         if (count($violationList) > 0) {
             $response   = $this->responseFactory->createViolationListResponse($request,$violationList);
         } else {
-            $response   = $this->responseFactory->createNoteResponse($request, $note,200);
+            $response   = $this->responseFactory->createNoteResponse($request, $note,self::RESPONSE_STATUS_CODE);
         }
 
         return $response;

@@ -94,7 +94,7 @@ class UpdateNoteActionTest extends TestCase
 
     private function createUpdateNoteAction(): UpdateNoteAction
     {
-        return new UpdateNoteAction($this->deserialize, $this->validator, $this->persister, $this->responseFactory);
+        return new UpdateNoteAction($this->deserialize, $this->persister, $this->responseFactory, $this->validator);
     }
 
     private function givenDeserialize_deserialize_returnsNote(): Note

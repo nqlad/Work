@@ -12,6 +12,8 @@ use Psr\Http\Message\ResponseInterface;
 
 class PostNoteAction implements RequestHandlerInterface
 {
+    private const RESPONSE_STATUS_CODE = 200;
+
     /** @var DeserializerInterface */
     private $deserializer;
 
@@ -47,7 +49,7 @@ class PostNoteAction implements RequestHandlerInterface
             $response       = $this->responseFactory->createViolationListResponse($request,$validationList);
         } else {
             $persistNote    = $this->persister->persist($note);
-            $response       = $this->responseFactory->createNoteResponse($request, $persistNote, 200);
+            $response       = $this->responseFactory->createNoteResponse($request, $persistNote, self::RESPONSE_STATUS_CODE);
         }
 
         return $response;

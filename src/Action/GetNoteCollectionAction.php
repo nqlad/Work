@@ -10,6 +10,8 @@ use Psr\Http\Message\ResponseInterface;
 
 class GetNoteCollectionAction implements RequestHandlerInterface
 {
+    private const RESPONSE_STATUS_CODE = 200;
+
     /** @var FinderInterface */
     private $finder;
 
@@ -28,7 +30,7 @@ class GetNoteCollectionAction implements RequestHandlerInterface
     {
         $noteCollection = $this->finder->findNoteCollection();
 
-        $response       = $this->responseFactory->createNoteCollection($request, $noteCollection,200);
+        $response       = $this->responseFactory->createNoteCollection($request, $noteCollection,self::RESPONSE_STATUS_CODE);
 
         return $response;
     }

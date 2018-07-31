@@ -29,7 +29,7 @@ class PostgresDriver implements PersisterInterface, FinderInterface
 
     public function persist(Note $note): Note
     {
-        $query      = "insert into Notes values(default, :title) returning id";
+        $query      = "insert into notes values(default, :title) returning id";
         $statement  = $this->connection->prepare($query);
         $statement->execute([':title' => $note->title]);
 
@@ -40,7 +40,7 @@ class PostgresDriver implements PersisterInterface, FinderInterface
 
     public function findNoteCollection(): ?array
     {
-        $query      = "select id, title from Notes;";
+        $query      = "select id, title from notes;";
         $statement  = $this->connection->prepare($query);
         $statement->execute();
 
@@ -51,7 +51,7 @@ class PostgresDriver implements PersisterInterface, FinderInterface
 
     public function findOneNote(string $id): Note
     {
-        $query      = "select * from Notes where id = :id;";
+        $query      = "select * from notes where id = :id;";
         $statement  = $this->connection->prepare($query);
         $statement->setFetchMode(PDO::FETCH_CLASS, Note::class);
         $statement->execute([':id' => $id]);
@@ -71,7 +71,7 @@ class PostgresDriver implements PersisterInterface, FinderInterface
     {
         $note       = new Note();
 
-        $query      = "delete from Notes where id = :id returning title;";
+        $query      = "delete from notes where id = :id returning title;";
         $statement  = $this->connection->prepare($query);
         $statement->execute([':id' => $id]);
 
@@ -87,7 +87,7 @@ class PostgresDriver implements PersisterInterface, FinderInterface
 
     public function updateNote(Note $note): bool
     {
-        $query      = "update Notes set title = :title where id = :id;";
+        $query      = "update notes set title = :title where id = :id;";
         $statement  = $this->connection->prepare($query);
         $statement->execute([':id' => $note->id, ':title' => $note->title]);
 

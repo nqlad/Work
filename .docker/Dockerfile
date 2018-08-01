@@ -9,5 +9,5 @@ RUN apt-get update && apt-get install -y \
         libpq-dev \
         libxpm-dev \
         libvpx-dev \
-    && docker-php-ext-install -j$(nproc) pgsql \
-    && docker-php-ext-install -j$(nproc) pdo_pgsql \
+    && docker-php-ext-install pgsql \
+    && docker-php-ext-install pdo_pgsql \

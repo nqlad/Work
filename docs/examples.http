@@ -30,3 +30,12 @@ DELETE  http://project.local/notes/15
 Content-Type: application/json
 
 ###
+
+POST http://localhost:8888/notes
+Content-Type: application/json
+
+{
+    "title": "title"
+}
+
+###

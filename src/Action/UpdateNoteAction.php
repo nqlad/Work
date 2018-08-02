@@ -50,9 +50,9 @@ class UpdateNoteAction implements RequestHandlerInterface
         $successfulUpdateNote   = $this->persister->updateNote($note);
 
         if (count($violationList) < 1 && $successfulUpdateNote) {
-            $response           = $this->responseFactory->createNoteResponse($request, $note,self::RESPONSE_STATUS_CODE);
+            $response           = $this->responseFactory->createNoteResponse($request, $note, self::RESPONSE_STATUS_CODE);
         } else {
-            $violationList      += $this->validator->validateForNullNoteInDB($note);
+            $violationList += $this->validator->validateForNullNoteInDB($note);
             $response           = $this->responseFactory->createViolationListResponse($request, $violationList);
         }
 

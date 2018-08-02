@@ -4,7 +4,7 @@ namespace App\Serialization;
 
 use App\Entity\Note;
 
-class JsonSerializer implements SerializerInterface,DeserializerInterface
+class JsonSerializer implements SerializerInterface, DeserializerInterface
 {
     public function serialize($data): string
     {

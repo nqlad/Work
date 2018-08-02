@@ -13,11 +13,8 @@ class StringStream implements StreamInterface
     {
         $this->contents = $contents;
     }
-
-    /**
-     * @return string
-     */
-    public function __toString():string
+    
+    public function __toString(): string
     {
         return $this->contents;
     }
@@ -81,7 +78,7 @@ class StringStream implements StreamInterface
 
     public function read($length): string
     {
-        return substr($this->contents,0,$length);
+        return substr($this->contents, 0, $length);
     }
 
     public function getContents(): string
@@ -89,7 +86,7 @@ class StringStream implements StreamInterface
         return $this->contents;
     }
 
-    public function getMetadata($key = null)
+    public function getMetadata($key = null): void
     {
         throw new \DomainException('Not implemented');
     }

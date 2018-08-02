@@ -10,7 +10,7 @@ class ResponseSender implements ResponseSenderInterface
 
     public function sendResponse($response): void
     {
-        header('HTTP/' . $response->getProtocolVersion() . ' ' . $response->getStatusCode() . ' ' . $response->getReasonPhrase() .'');
+        header('HTTP/'.$response->getProtocolVersion().' '.$response->getStatusCode().' '.$response->getReasonPhrase().'');
 
         $this->sendHeaders($response->getHeaders());
         $this->sendBody($response->getBody());
@@ -21,7 +21,7 @@ class ResponseSender implements ResponseSenderInterface
         foreach ($headers as $name => $values) {
             $replace = true;
             foreach ($values as $value) {
-                header("$name: $value", $replace);
+                header("${name}: ${value}", $replace);
                 $replace = false;
             }
         }

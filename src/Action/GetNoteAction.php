@@ -40,9 +40,9 @@ class GetNoteAction implements RequestHandlerInterface
         $violationList  = $this->validator->validateForNullNoteInDB($note);
 
         if (count($violationList) > 0) {
-            $response   = $this->responseFactory->createViolationListResponse($request,$violationList);
+            $response   = $this->responseFactory->createViolationListResponse($request, $violationList);
         } else {
-            $response   = $this->responseFactory->createNoteResponse($request, $note,self::RESPONSE_STATUS_CODE);
+            $response   = $this->responseFactory->createNoteResponse($request, $note, self::RESPONSE_STATUS_CODE);
         }
 
         return $response;

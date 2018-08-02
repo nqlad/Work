@@ -30,8 +30,6 @@ class GetNoteCollectionAction implements RequestHandlerInterface
     {
         $noteCollection = $this->finder->findNoteCollection();
 
-        $response       = $this->responseFactory->createNoteCollection($request, $noteCollection,self::RESPONSE_STATUS_CODE);
-
-        return $response;
+        return $this->responseFactory->createNoteCollection($request, $noteCollection, self::RESPONSE_STATUS_CODE);
     }
 }

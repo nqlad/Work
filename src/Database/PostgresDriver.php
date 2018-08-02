@@ -12,16 +12,13 @@ class PostgresDriver implements PersisterInterface, FinderInterface
 
     public function __construct(string $dsn, string $username, string $password)
     {
-        try{
+        try {
             $this->connection = new \PDO($dsn, $username, $password);
-        }catch (\PDOException $exception){
-            echo "Connection error: " . $exception->getMessage();
+        } catch (\PDOException $exception) {
+            echo 'Connection error: '.$exception->getMessage();
         }
     }
-
-    /**
-     * @return \PDO
-     */
+    
     public function getConnection(): \PDO
     {
         return $this->connection;
@@ -29,7 +26,7 @@ class PostgresDriver implements PersisterInterface, FinderInterface
 
     public function persist(Note $note): Note
     {
-        $query      = "insert into notes values(default, :title) returning id";
+        $query      = 'insert into notes values(default, :title) returning id';
         $statement  = $this->connection->prepare($query);
         $statement->execute([':title' => $note->title]);
 
@@ -40,25 +37,23 @@ class PostgresDriver implements PersisterInterface, FinderInterface
 
     public function findNoteCollection(): ?array
     {
-        $query      = "select id, title from notes;";
+        $query      = 'select id, title from notes;';
         $statement  = $this->connection->prepare($query);
         $statement->execute();
 
-        $notes      = $statement->fetchAll(PDO::FETCH_KEY_PAIR);
-
-        return $notes;
+        return $statement->fetchAll(PDO::FETCH_KEY_PAIR);
     }
 
     public function findOneNote(string $id): Note
     {
-        $query      = "select * from notes where id = :id;";
+        $query      = 'select * from notes where id = :id;';
         $statement  = $this->connection->prepare($query);
         $statement->setFetchMode(PDO::FETCH_CLASS, Note::class);
         $statement->execute([':id' => $id]);
 
         $note       = $statement->fetch(PDO::FETCH_CLASS);
 
-        if(!$note){
+        if (!$note) {
             $note           = new Note();
             $note->id       = null;
             $note->title    = null;
@@ -71,13 +66,13 @@ class PostgresDriver implements PersisterInterface, FinderInterface
     {
         $note       = new Note();
 
-        $query      = "delete from notes where id = :id returning title;";
+        $query      = 'delete from notes where id = :id returning title;';
         $statement  = $this->connection->prepare($query);
         $statement->execute([':id' => $id]);
 
         $title      = $statement->fetch(PDO::FETCH_ASSOC)['title'];
 
-        if ($title !== null) {
+        if (null !== $title) {
             $note->id       = $id;
             $note->title    = $title;
         }
@@ -87,15 +82,15 @@ class PostgresDriver implements PersisterInterface, FinderInterface
 
     public function updateNote(Note $note): bool
     {
-        $query      = "update notes set title = :title where id = :id;";
+        $query      = 'update notes set title = :title where id = :id;';
         $statement  = $this->connection->prepare($query);
         $statement->execute([':id' => $note->id, ':title' => $note->title]);
 
         if ($statement->rowCount() > 0) {
             return true;
-        } else {
-            $note->id = null;
-            return false;
         }
+        $note->id = null;
+
+        return false;
     }
 }

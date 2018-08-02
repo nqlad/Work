@@ -12,7 +12,7 @@ class Violation implements \JsonSerializable
 
     public function __construct(string $path, string $message)
     {
-        $this->path = $path;
+        $this->path    = $path;
         $this->message = $message;
     }
 

@@ -18,9 +18,8 @@ class Message implements MessageInterface
 
     /**
      * Message constructor.
-     * @param string $protocolVersion
+     *
      * @param \string[][] $headers
-     * @param StreamInterface $body
      */
     public function __construct(string $protocolVersion, array $headers, StreamInterface $body)
     {
@@ -56,7 +55,6 @@ class Message implements MessageInterface
 
     /**
      * @param string $version
-     * @return MessageInterface
      */
     public function withProtocolVersion($version): MessageInterface
     {
@@ -90,9 +88,8 @@ class Message implements MessageInterface
     }
 
     /**
-     * @param string $name
+     * @param string          $name
      * @param string|string[] $value
-     * @return MessageInterface
      */
     public function withHeader($name, $value): MessageInterface
     {
@@ -137,9 +134,8 @@ class Message implements MessageInterface
     }
 
     /**
-     * @param string $name
+     * @param string          $name
      * @param string|string[] $value
-     * @return MessageInterface
      */
     public function withAddedHeader($name, $value): MessageInterface
     {
@@ -159,7 +155,6 @@ class Message implements MessageInterface
 
     /**
      * @param string $name
-     * @return MessageInterface
      */
     public function withoutHeader($name): MessageInterface
     {
@@ -186,11 +181,7 @@ class Message implements MessageInterface
     {
         return $this->body;
     }
-
-    /**
-     * @param StreamInterface $body
-     * @return MessageInterface
-     */
+    
     public function withBody(StreamInterface $body): MessageInterface
     {
         $message = clone $this;

@@ -3,8 +3,8 @@
 namespace App\RequestHandler;
 
 use App\Action\DeleteNoteAction;
-use App\Action\GetNoteCollectionAction;
 use App\Action\GetNoteAction;
+use App\Action\GetNoteCollectionAction;
 use App\Action\PostNoteAction;
 use App\Action\UpdateNoteAction;
 use App\Http\RequestHandlerInterface;
@@ -30,7 +30,7 @@ class RoutingHandler implements RequestHandlerInterface
     /** @var UpdateNoteAction */
     private $putNoteAction;
 
-    /** @var ResponseFactoryInterface*/
+    /** @var ResponseFactoryInterface */
     private $responseFactory;
 
     /** @var RouteParser */
@@ -44,7 +44,7 @@ class RoutingHandler implements RequestHandlerInterface
         PostNoteAction $postNoteAction,
         UpdateNoteAction $putNoteAction,
         RouteParser $routeParser
-    ){
+    ) {
         $this->responseFactory  = $responseFactory;
         $this->getAllNoteAction = $getAllNoteAction;
         $this->getNoteAction    = $getNoteAction;
@@ -60,21 +60,20 @@ class RoutingHandler implements RequestHandlerInterface
 
         $resourceRequest    = $request->withUri(new Uri($route->getResourceId()));
 
-        if ($route->getMethod() === 'POST' && $route->getResourceId() === null) {
+        if ('POST' === $route->getMethod() && null === $route->getResourceId()) {
             $response       = $this->postNoteAction->handleRequest($resourceRequest);
-        } elseif ($route->getMethod() === 'PUT' && $route->getResourceId() !== null) {
+        } elseif ('PUT' === $route->getMethod() && null !== $route->getResourceId()) {
             $response       = $this->putNoteAction->handleRequest($resourceRequest);
-        } elseif ($route->getMethod() === 'DELETE' && $route->getResourceId() !== null) {
+        } elseif ('DELETE' === $route->getMethod() && null !== $route->getResourceId()) {
             $response       = $this->deleteNoteAction->handleRequest($resourceRequest);
-        } elseif ($route->getMethod() === 'GET') {
+        } elseif ('GET' === $route->getMethod()) {
             $resourceId     = $route->getResourceId();
 
-            if ($resourceId === null) {
+            if (null === $resourceId) {
                 $response   = $this->getAllNoteAction->handleRequest($resourceRequest);
             } else {
                 $response   = $this->getNoteAction->handleRequest($resourceRequest);
             }
-
         } else {
             $response       = $this->responseFactory->createNotFoundResponse($resourceRequest);
         }

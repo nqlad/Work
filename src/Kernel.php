@@ -8,7 +8,7 @@ use App\Http\ResponseSenderInterface;
 
 class Kernel
 {
-    /** @var RequestFactoryInterface*/
+    /** @var RequestFactoryInterface */
     private $requestFactory;
 
     /** @var RequestHandlerInterface */
@@ -29,7 +29,7 @@ class Kernel
 
     public function run(): void
     {
-        $request = $this->requestFactory->createRequest($_SERVER);
+        $request  = $this->requestFactory->createRequest($_SERVER);
         $response = $this->requestHandler->handleRequest($request);
         $this->responseSender->sendResponse($response);
     }

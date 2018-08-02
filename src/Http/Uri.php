@@ -22,7 +22,7 @@ class Uri implements UriInterface
 
     private $fragment;
 
-    private $uriSchemeMap = ['http','https'];
+    private $uriSchemeMap = ['http', 'https'];
 
     public function __construct(?string $url)
     {
@@ -30,7 +30,7 @@ class Uri implements UriInterface
         $this->host     = (string) parse_url($url, PHP_URL_HOST);
 
         $port           = (int) parse_url($url, PHP_URL_PORT);
-        $this->port     = $port === 0 ? null : $port;
+        $this->port     = 0 === $port ? null : $port;
 
         $this->path     = (string) parse_url($url, PHP_URL_PATH);
         $this->query    = (string) parse_url($url, PHP_URL_QUERY);
@@ -52,7 +52,6 @@ class Uri implements UriInterface
 
     /**
      * @param string $host
-     * @return UriInterface
      */
     public function withHost($host): UriInterface
     {
@@ -74,13 +73,12 @@ class Uri implements UriInterface
 
     /**
      * @param string $scheme
-     * @return UriInterface
      */
     public function withScheme($scheme): UriInterface
     {
         $uri = clone $this;
 
-        if (!in_array($scheme,$this->uriSchemeMap)) {
+        if (!in_array($scheme, $this->uriSchemeMap, true)) {
             throw new \InvalidArgumentException('Unsupported schemes!');
         }
 
@@ -99,18 +97,17 @@ class Uri implements UriInterface
         $userName       = parse_url($userInfo, PHP_URL_USER);
         $password       = parse_url($userInfo, PHP_URL_PASS);
 
-        $this->userInfo = $userName . ($password ? ':' . $password : '');
+        $this->userInfo = $userName.($password ? ':'.$password : '');
     }
 
     /**
      * @param string $user
-     * @param null $password
-     * @return UriInterface
+     * @param null   $password
      */
     public function withUserInfo($user, $password = null): UriInterface
     {
         $uri            = clone $this;
-        $uri->userInfo  = $user ? $user . ($password == null ? '' : ':' . $password) : '';
+        $uri->userInfo  = $user ? $user.(null === $password ? '' : ':'.$password) : '';
 
         return $uri;
     }
@@ -119,12 +116,12 @@ class Uri implements UriInterface
     {
         $authority = $this->host;
 
-        if ($this->userInfo !== '') {
-            $authority = $this->userInfo . '@' . $authority;
+        if ('' !== $this->userInfo) {
+            $authority = $this->userInfo.'@'.$authority;
         }
 
-        if ($this->port !== null) {
-            $authority .= ':' . $this->port;
+        if (null !== $this->port) {
+            $authority .= ':'.$this->port;
         }
 
         return $authority;
@@ -136,7 +133,7 @@ class Uri implements UriInterface
         $host       = $this->getHost();
         $port       = $this->getPort();
 
-        $this->authority = ($userInfo ? $userInfo . '@' : '') . $host . ($port === null ? '' : ':' . $port);
+        $this->authority = ($userInfo ? $userInfo.'@' : '').$host.(null === $port ? '' : ':'.$port);
     }
 
     /**
@@ -154,7 +151,6 @@ class Uri implements UriInterface
 
     /**
      * @param int|null $port
-     * @return UriInterface
      */
     public function withPort($port): UriInterface
     {
@@ -181,7 +177,6 @@ class Uri implements UriInterface
 
     /**
      * @param string $path
-     * @return UriInterface
      */
     public function withPath($path): UriInterface
     {
@@ -203,7 +198,6 @@ class Uri implements UriInterface
 
     /**
      * @param string $query
-     * @return UriInterface
      */
     public function withQuery($query): UriInterface
     {
@@ -225,7 +219,6 @@ class Uri implements UriInterface
 
     /**
      * @param string $fragment
-     * @return UriInterface
      */
     public function withFragment($fragment): UriInterface
     {
@@ -243,11 +236,11 @@ class Uri implements UriInterface
         $query      = $this->getQuery();
         $fragment   = $this->getFragment();
 
-        $uri  = $scheme ? $scheme . ':' : '';
-        $uri .= $authority ? '//' . $authority : '';
-        $uri .= $path ? $path : '';
-        $uri .= $query ? '?' . $query : '';
-        $uri .= $fragment ? '#' . $fragment : '';
+        $uri  = $scheme ? $scheme.':' : '';
+        $uri .= $authority ? '//'.$authority : '';
+        $uri .= $path ?: '';
+        $uri .= $query ? '?'.$query : '';
+        $uri .= $fragment ? '#'.$fragment : '';
 
         return $uri;
     }

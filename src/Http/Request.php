@@ -10,7 +10,7 @@ class Request extends Message implements RequestInterface
     /** @var Uri */
     private $uri;
 
-    /** @var string  */
+    /** @var string */
     private $method;
 
     private $httpMethodsMap = [
@@ -20,19 +20,14 @@ class Request extends Message implements RequestInterface
         'PUT',
         'DELETE',
         'OPTIONS',
-        'PATCH'
+        'PATCH',
     ];
 
-    /** @var string  */
+    /** @var string */
     private $requestTarget;
 
     /**
      * Request constructor.
-     * @param UriInterface $uri
-     * @param string $method
-     * @param string $protocolVersion
-     * @param array $headers
-     * @param StringStream $body
      */
     public function __construct(
         UriInterface $uri,
@@ -41,18 +36,18 @@ class Request extends Message implements RequestInterface
         array $headers,
         StringStream $body
     ) {
-        parent::__construct($protocolVersion,$headers,$body);
+        parent::__construct($protocolVersion, $headers, $body);
 
         $this->uri = $uri;
 
-        if (!in_array($method,$this->httpMethodsMap)) {
+        if (!in_array($method, $this->httpMethodsMap, true)) {
             throw new \InvalidArgumentException('Error! Incorrect Http Method!');
         }
 
         $this->method = $method;
 
         $this->requestTarget = $this->uri->getPath() ? $this->uri->getPath() : '/';
-        $this->requestTarget .= $this->uri->getQuery() ? '?' . $this->uri->getQuery() : '';
+        $this->requestTarget .= $this->uri->getQuery() ? '?'.$this->uri->getQuery() : '';
     }
 
     public function getRequestTarget(): string
@@ -67,7 +62,6 @@ class Request extends Message implements RequestInterface
 
     /**
      * @param mixed $requestTarget
-     * @return RequestInterface
      */
     public function withRequestTarget($requestTarget): RequestInterface
     {
@@ -89,13 +83,12 @@ class Request extends Message implements RequestInterface
 
     /**
      * @param string $method
-     * @return RequestInterface
      */
     public function withMethod($method): RequestInterface
     {
         $request = clone $this;
 
-        if (!in_array($method,$this->httpMethodsMap)) {
+        if (!in_array($method, $this->httpMethodsMap, true)) {
             throw new \InvalidArgumentException('Invalid Http Method!');
         }
 
@@ -115,22 +108,20 @@ class Request extends Message implements RequestInterface
     }
 
     /**
-     * @param UriInterface $uri
      * @param bool $preserveHost
-     * @return RequestInterface
      */
     public function withUri(UriInterface $uri, $preserveHost = false): RequestInterface
     {
         $request    = clone $this;
 
-        if ($preserveHost === false) {
-            if ($uri->getHost() === "") {
+        if (false === $preserveHost) {
+            if ('' === $uri->getHost()) {
                 $request->setUri($uri->withHost($this->uri->getHost()));
             } else {
                 $request->setUri($uri);
             }
-        } elseif ($preserveHost === true) {
-            if (($this->uri->getHost() !== "")) {
+        } elseif (true === $preserveHost) {
+            if (('' !== $this->uri->getHost())) {
                 $request->setUri($uri->withHost($this->uri->getHost()));
             } else {
                 $request->setUri($uri);

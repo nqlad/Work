@@ -8,11 +8,11 @@ use Psr\Http\Message\ResponseInterface;
 
 interface ResponseFactoryInterface
 {
-    public function createNoteResponse(RequestInterface $request,Note $note,int $statusCode):ResponseInterface;
+    public function createNoteResponse(RequestInterface $request, Note $note, int $statusCode): ResponseInterface;
 
-    public function createNoteCollection(RequestInterface $request,array $notes,int $statusCode): ResponseInterface;
+    public function createNoteCollection(RequestInterface $request, array $notes, int $statusCode): ResponseInterface;
 
     public function createViolationListResponse(RequestInterface $request, array $violationList): ResponseInterface;
 
-    public function createNotFoundResponse(RequestInterface $request):ResponseInterface;
+    public function createNotFoundResponse(RequestInterface $request): ResponseInterface;
 }

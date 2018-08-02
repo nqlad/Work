@@ -1,0 +1,25 @@
+imports:
+    - { resource: 'vendor/symplify/easy-coding-standard/config/clean-code.yml' }
+    - { resource: 'vendor/symplify/easy-coding-standard/config/common.yml' }
+    - { resource: 'vendor/symplify/easy-coding-standard/config/php71.yml' }
+    - { resource: 'vendor/symplify/easy-coding-standard/config/psr12.yml' }
+    - { resource: 'vendor/symplify/easy-coding-standard/config/symfony.yml' }
+
+services:
+    PhpCsFixer\Fixer\PhpUnit\PhpUnitTestAnnotationFixer:
+        style: 'annotation'
+    PhpCsFixer\Fixer\Operator\BinaryOperatorSpacesFixer:
+        align_double_arrow: true
+        align_equals: true
+
+parameters:
+    exclude_checkers:
+        # conflicting checkers
+        - PhpCsFixer\Fixer\Operator\NotOperatorWithSuccessorSpaceFixer
+
+        # disabled due to possible bugs with Phake library
+        - SlevomatCodingStandard\Sniffs\TypeHints\NullableTypeForNullDefaultValueSniff
+
+        # temporary ignored
+        - PhpCsFixer\Fixer\Strict\DeclareStrictTypesFixer
+        - SlevomatCodingStandard\Sniffs\TypeHints\TypeHintDeclarationSniff

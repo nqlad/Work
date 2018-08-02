@@ -15,9 +15,7 @@ class RequestFactory implements RequestFactoryInterface
         $headers            = $this->getHeaders($serverConfig);
         $body               = $this->getBody();
 
-        $request            = new Request($uri,$method,$protocolVersion,$headers,$body);
-
-        return $request;
+        return new Request($uri, $method, $protocolVersion, $headers, $body);
     }
 
     private function getHeaders(array $serverConfig): array
@@ -25,12 +23,11 @@ class RequestFactory implements RequestFactoryInterface
         $headers = [''=>['']];
 
         foreach ($serverConfig as $name => $values) {
-            if (strncmp($name,'HTTP_',5) === 0) {
+            if (0 === strncmp($name, 'HTTP_', 5)) {
                 $name       = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
-                $value      = explode(',',$values);
-                $headers    += [$name => $value];
+                $value      = explode(',', $values);
+                $headers += [$name => $value];
             }
-
         }
 
         unset($headers['']);

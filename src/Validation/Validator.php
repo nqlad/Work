@@ -20,21 +20,21 @@ class Validator implements ValidatorInterface
     private function checkLengthAndAddViolation(Note $note): void
     {
         if (strlen($note->title) <= 1) {
-            $this->violations[] = new Violation("title", "Length must be more than one symbol");
+            $this->violations[] = new Violation('title', 'Length must be more than one symbol');
         }
     }
 
     private function checkForNullTitleAndAddViolation(Note $note): void
     {
-        if ($note->title === null) {
-            $this->violations[] = new Violation("title", "The request is missing title");
+        if (null === $note->title) {
+            $this->violations[] = new Violation('title', 'The request is missing title');
         }
     }
 
     public function validateForNullNoteInDB(Note $note): array
     {
-        if ($note->id === null) {
-            $this->violations[] = new Violation("id","ID not found");
+        if (null === $note->id) {
+            $this->violations[] = new Violation('id', 'ID not found');
         }
 
         return $this->violations;

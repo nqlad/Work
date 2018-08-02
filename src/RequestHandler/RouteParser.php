@@ -10,7 +10,7 @@ class RouteParser
     {
         $method = $request->getMethod();
 
-        $requestTargets = explode('/',$request->getRequestTarget());
+        $requestTargets = explode('/', $request->getRequestTarget());
 
         if (is_numeric(end($requestTargets))) {
             $resourceId     = end($requestTargets);
@@ -20,6 +20,6 @@ class RouteParser
             $resourceName   = end($requestTargets);
         }
 
-        return new Route($resourceId,$resourceName,$method);
+        return new Route($resourceId, $resourceName, $method);
     }
 }

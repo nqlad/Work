@@ -24,9 +24,7 @@ class ResponseFactory implements ResponseFactoryInterface
         $headers            = $request->getHeaders();
         $body               = $this->getBodyForNote($note);
 
-        $response = new Response($statusCode, $protocolVersion, $headers, $body);
-
-        return $response;
+        return new Response($statusCode, $protocolVersion, $headers, $body);
     }
 
     private function getBodyForNote(Note $note): StreamInterface
@@ -40,9 +38,7 @@ class ResponseFactory implements ResponseFactoryInterface
         $headers            = $request->getHeaders();
         $body               = $this->getBodyForNoteCollection($notes);
 
-        $response = new Response($statusCode, $protocolVersion, $headers, $body);
-
-        return $response;
+        return new Response($statusCode, $protocolVersion, $headers, $body);
     }
 
     private function getBodyForNoteCollection(array $notes): StreamInterface
@@ -59,9 +55,7 @@ class ResponseFactory implements ResponseFactoryInterface
         $headers            = $request->getHeaders();
         $body               = $this->getBodyForViolationResponse($violationList);
 
-        $response           = new Response($status, $protocolVersion, $headers, $body);
-
-        return $response;
+        return new Response($status, $protocolVersion, $headers, $body);
     }
 
     private function getBodyForViolationResponse(array $violationList): StreamInterface
@@ -69,7 +63,7 @@ class ResponseFactory implements ResponseFactoryInterface
         $body = [];
 
         foreach ($violationList as $violation) {
-            array_push($body,$this->deserializer->serialize($violation));
+            array_push($body, $this->deserializer->serialize($violation));
         }
 
         return new StringStream(implode($body));
@@ -82,8 +76,6 @@ class ResponseFactory implements ResponseFactoryInterface
         $headers            = $request->getHeaders();
         $body               = new StringStream('');
 
-        $response           = new Response($status, $protocolVersion, $headers, $body);
-
-        return $response;
+        return new Response($status, $protocolVersion, $headers, $body);
     }
 }

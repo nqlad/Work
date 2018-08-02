@@ -7,7 +7,7 @@ use Psr\Http\Message\StreamInterface;
 
 class Response extends Message implements ResponseInterface
 {
-    /** @var int  */
+    /** @var int */
     private $statusCode;
 
     /** @var string */
@@ -79,7 +79,7 @@ class Response extends Message implements ResponseInterface
         507 => 'Insufficient Storage',
         508 => 'Loop Detected',
         510 => 'Not Extended',
-        511 => 'Network Authentication Required'
+        511 => 'Network Authentication Required',
     ];
 
     public function __construct(
@@ -111,9 +111,8 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
-     * @param int $code
+     * @param int    $code
      * @param string $reasonPhrase
-     * @return ResponseInterface
      */
     public function withStatus($code, $reasonPhrase = ''): ResponseInterface
     {
@@ -124,7 +123,7 @@ class Response extends Message implements ResponseInterface
         $response = clone $this;
         $response->setStatusCode($code);
 
-        if ($reasonPhrase !== '') {
+        if ('' !== $reasonPhrase) {
             $response->setReasonPhrase($reasonPhrase);
         } else {
             $response->setReasonPhrase($this->httpStatusCodeMap[$code]);

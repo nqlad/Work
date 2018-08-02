@@ -1,0 +1,14 @@
+build:
+  nodes:
+    application:
+      environment:
+        php:
+          version: 7.2
+      tests:
+        override:
+        - php-scrutinizer-run
+        -
+          command: ./vendor/bin/phpunit --coverage-clover ./build/logs/clover.xml
+          coverage:
+            file: ./build/logs/clover.xml
+            format: php-clover
